@@ -1,0 +1,94 @@
+## Place all the behaviors and hooks related to the matching controller here.
+## All this logic will automatically be available in application.js.
+## You can use CoffeeScript in this file: http://coffeescript.org/
+
+@debug = (data) ->
+  for k,v of data
+    console.log "#{k}, #{v}"
+
+
+@divClass = (status) ->
+  if status in ["ok", "created", "success"]
+    divClass = "alert alert-info"
+  else
+    divClass = "alert alert-danger"
+
+
+@writeItemToDiv = (type, status, itemId, message) ->
+  messageDiv = $("#" + type + "-" + itemId + " .message")
+  messageDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{message}</div>"
+
+
+@writeSummaryToDiv = (data, summaryTargetDiv, status) ->
+  summary = data["messages"]
+  summaryTargetDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{summary}</div>"
+
+
+@processImportResponse = (data) ->
+  if data.hasOwnProperty("works")
+    data["works"].forEach( (item, idx) ->
+      writeItemToDiv("story", item["status"], item["original_id"], item["messages"].join("<br/>"))
+    )
+  if data.hasOwnProperty("bookmarks")
+    data["bookmarks"].forEach( (item, idx) ->
+      writeItemToDiv("bookmark", item["status"], item["original_id"], item["messages"].join("<br/>"))
+    )
+
+
+@bindImport = (event) ->
+  link = $(event.target)
+  buttonType = link.attr("data-button")
+  type = link.attr("data-type")
+  authorId = link.attr("data-author")
+  itemId = link.attr("data-item")
+  summaryDiv = $("#author-" + authorId + " .author.message")
+  summaryDiv.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
+
+  if buttonType in ["import", "mark", "dni"]
+    $.ajax
+      type: "POST"
+      url: link[0]
+      dataType: "json"
+      success: (data, status, xhr) ->
+        writeSummaryToDiv(data[0], summaryDiv, status)
+
+        authorArticle = $("#author-#{authorId}")
+        switch buttonType
+          when "import"
+            processImportResponse(data[0], summaryDiv)
+          when "dni"
+            if data[0]["dni"] == true
+              authorArticle.addClass("donotimport")
+              link.text "Mark as ALLOW import"
+            else
+              authorArticle.removeClass("donotimport")
+              link.text "Mark as do NOT import"
+          when "mark"
+            if data[0]["mark"] == true
+              authorArticle.addClass("imported")
+              link.text "Mark as NOT imported"
+              $("#author-#{authorId} a[data-button='import']").hide()
+            else
+              authorArticle.removeClass("imported")
+              link.text "Mark as imported"
+              $("#author-#{authorId} a[data-button='import']").show()
+          else
+            alert "Unknown button"
+      error: (data, status, error) ->
+        message = "<p class=\"alert alert-danger\">An error occurred while processing the request: #{error}</p>"
+        summaryDiv.html message
+        debug(data)
+  else
+    alert "Unknown button - something is broken!"
+  event.preventDefault();
+  false
+
+
+$ ->
+  $("body").on("click", "a[data-button]", bindImport)
+
+  $.ajaxSetup {
+    beforeSend: (xhr) ->
+      xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+  }
+

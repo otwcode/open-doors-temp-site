@@ -1,0 +1,10 @@
+default: &default
+  :sitekey: testsite
+  :port: 3010
+  :name: Test Site FTW
+
+development:
+  <<: *default
+
+production:
+  <<: *default
