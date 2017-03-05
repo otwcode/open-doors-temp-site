@@ -1,0 +1,31 @@
+FactoryGirl.define do
+  sequence :id do |n|
+    n
+  end
+
+  factory :story do
+    author
+    id { generate :id }
+  end
+
+  factory :author do
+    id { generate :id }
+    sequence(:name) { |n| "Author name #{n}" }
+
+    # user_with_posts will create post data after the user has been created
+    factory :author_with_stories do
+      transient do
+        stories_count 5
+      end
+
+      # the after(:create) yields two values; the user instance itself and the
+      # evaluator, which stores all values from the factory, including transient
+      # attributes; `create_list`'s second argument is the number of records to create
+      after(:create) do |author, evaluator|
+        create_list(:story, evaluator.stories_count, author: author)
+      end
+    end
+  end
+
+  factory :chapter
+end

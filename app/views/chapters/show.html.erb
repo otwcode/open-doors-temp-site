@@ -1,0 +1,67 @@
+<% content_for :title, @chapter.story.title + " - Chapter #{@chapter.position}" %>
+
+<%
+  is_first_chapter = @chapter.position <= 1
+%>
+
+
+<!-- Body Content -->
+<h2><%= @chapter.title %></h2>
+
+<fieldset>
+
+  <div class="form-group">
+    <label for="property.PropertyName" style="width: 150px">Title:</label> <%= @chapter.story.title %>
+  </div>
+
+  <% if is_first_chapter && @config.present? %>
+    <div class="form-group">
+    <label for="note" style="width: 150px">Note:</label><br />
+    <div style="border: 1px silver solid;">
+      <%= @config.ODNote %>
+      <% if @chapter.story.notes %>
+        <br /><br /><span>Author's notes:</span> <%= @chapter.story.notes %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
+  <div class="form-group">
+    <label for="storySummary" style="width: 150px">Summary:</label>
+    <%= raw @chapter.story.summary %>
+  </div>
+
+  <div class="form-group">
+    <% if is_first_chapter && @chapter.story.date.present? ||
+      (!is_first_chapter && @chapter.story.date.present? && !@chapter.story.updated.present?) %>
+    <!--// DON'T INDENT - THIS GETS SCRAPED-->
+      <label for="date" style="width: 150px">Date:</label> <%= @chapter.story.date.to_s(:iso_date) %>
+    <% elsif @chapter.story.updated.present? %>
+      <label for="updated" style="width: 150px">Date:</label> <%= @chapter.story.updated.to_s(:iso_date) %>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <label for="property.PropertyName" style="width: 150px">Chapter Title:</label> <%= @chapter.title %>
+  </div>
+
+  <div class="form-group">
+    <label for="position" style="width: 150px">Chapter Number:</label> <%= @chapter.position %>
+  </div>
+
+  <% if @chapter.date.present? %>
+    <div class="form-group">
+      <label for="posted" style="width: 150px">Chapter posted</label> <%= @chapter.date.to_s(:date) %>
+    </div>
+  <% end %>
+</fieldset>
+
+<div class="chapter-content" style="white-space: pre-line">
+  <% if @chapter.notes.present? %>
+   <div class="form-group">
+    <label for="property.PropertyName" style="width: 150px">Author's notes:</label> <%= raw @chapter.notes %>
+  </div>
+  <hr />
+  <% end %>
+  <%= raw @chapter.text %>
+</div>

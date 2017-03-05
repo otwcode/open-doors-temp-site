@@ -1,0 +1,10 @@
+<div id="<%= "#{type}-#{item.id}" %>">
+  <%= type %> -
+  <%= item.title %><br/>
+  <% if type != :coauthored_story %>
+      <%= link_to "Import", item_import_path(type, item.id),
+                  id: "item-import-#{item.id}", remote: true,
+                  data: { method: :post, button: :import, item: item.id, type: type, class: "btn btn-info" } %>
+  <% end %>
+  <div class="message"></div>
+</div>

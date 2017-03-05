@@ -1,0 +1,61 @@
+<nav><%= alphabetical_paginate @letters %></nav>
+<%= will_paginate(@authors, renderer: "BootstrapPaginationHelper::LinkRenderer") ||
+    '<nav class="pagination"><ul class="pagination will_paginate justify-content-center"><li/></ul></nav>'.html_safe %>
+
+<div id="pagination_table">
+  <% @authors.each do |author|
+    css_class = (author.imported ? "imported" : "") + (author.doNotImport ? " donotimport" : "")
+  %>
+
+    <article id="<%= "author-#{author.id}" %>" class="<%= css_class %>">
+      <a name="<%= author.name %>"></a>
+        <div class="row justify-content-lg-center">
+          <div class="col-lg-4">
+            <h2><%= author.name %></h2>
+          </div>
+          <div class="col-md-8 col-sm-9 extra-space">
+            <% unless author.imported %>
+              <%= link_to "Import Everything", author_import_path(author.id),
+                          id: "author-import-#{author.id}", remote: true,
+                          data: { method: :post, button: :import, author: author.id } %>
+                <!--, class: "btn btn-info" -->
+            <% end %>
+            <span>&nbsp;</span>
+            <%= link_to (author.imported ? "Mark NOT imported" : "Mark as imported"), author_mark_path(author.id),
+                        id: "author-mark-#{author.id}", remote: true,
+                        data: { method: :post, button: :mark, author: author.id } %>
+            <!--, class: "btn btn-warning"-->
+            <span>&nbsp;</span>
+             <%= link_to (author.doNotImport ? "Mark as ALLOW import" : "Mark as do NOT import"), author_dni_path(author.id),
+                        id: "author-dni-#{author.id}", remote: true,
+                        data: { method: :post, button: :dni, author: author.id, confirm: "Are you sure this author should have no works imported?" } %>
+            <!-- , class: "btn btn-success" -->
+          </div>
+        </div>
+        <div class="author message"></div>
+        <% if author.stories.present? %>
+          <h3>Stories</h3>
+          <% author.stories.each do |story| %>
+              <%= render partial: "/shared/meta", locals: { item: story, type: :story } %>
+          <% end %>
+        <% end %>
+
+        <% if author.bookmarks.present? %>
+          <h3>Bookmarks</h3>
+          <% author.bookmarks.each do |bookmark| %>
+              <%= render partial: "/shared/meta", locals: { item: bookmark, type: :bookmark } %>
+          <% end %>
+        <% end %>
+
+        <% if author.coauthored_stories.present? %>
+          <h3>Co-authored stories</h3>
+          <% author.coauthored_stories.each do |story| %>
+            <%= render partial: "/shared/meta", locals: { item: story, type: :co_authored_story } %>
+          <% end %>
+        <% end %>
+    </article>
+  <% end %>
+</div>
+
+<%= will_paginate @authors, renderer: "BootstrapPaginationHelper::LinkRenderer" %>
+<nav><%= alphabetical_paginate @letters %></nav>
