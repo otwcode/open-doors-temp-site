@@ -18,7 +18,7 @@ server {
 
     # Match up any subpath with a corresponding puma socket
     location ~^\/([^\/]*)(\/.*)? {
-      proxy_pass http://unix:/var/www/opendoors/$1/sockets/puma.sock;
+      proxy_pass http://unix:/var/www/opendoors/$1/runtime/sockets/puma.sock;
     }
 
 	location / {

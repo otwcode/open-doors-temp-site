@@ -18,14 +18,14 @@ environment rails_env
 if rails_env == "production"
 
   # Set up socket location
-  bind "unix://#{shared_dir}/sockets/puma.sock"
+  bind "unix://#{shared_dir}/runtime/sockets/puma.sock"
 
   # Logging
   stdout_redirect "#{shared_dir}/log/puma.stdout.log", "#{shared_dir}/log/puma.stderr.log", true
 
   # Set master PID and state locations
-  pidfile "#{shared_dir}/pids/puma.pid"
-  state_path "#{shared_dir}/pids/puma.state"
+  pidfile "#{shared_dir}/runtime/pids/puma.pid"
+  state_path "#{shared_dir}/runtime/pids/puma.state"
   activate_control_app
 
   on_worker_boot do
