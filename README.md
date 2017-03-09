@@ -30,7 +30,22 @@ $ bundle install
 $ bin/rails server
 ``` 
 
-In your browser, navigate to 
+In your browser, navigate to http://localhost:3010 to view the temp site.
 
-#
-The server that hosts the 
+# Deployment
+Before you proceed, you will need to install Ansible (https://www.ansible.com/).
+1. Create a file called `hosts` with the following contents:
+```
+[otw]
+[[SERVER_NAME]] ansible_ssh_user=[[SERVER_USER]]
+```
+Where `SERVER_NAME` and `SERVER_USER` are the server and user provided by Systems. 
+
+1. Make a copy of `variables.yml.example` as `variables.yml` and fill it in with the details 
+of the site you're creating.
+
+1. Run 
+```bash
+$ cd scripts/ansible
+$ ansible-playbook deploy-site.yml -i hosts --extra-vars "@variables.yml"
+```

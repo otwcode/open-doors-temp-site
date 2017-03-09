@@ -1,0 +1,3 @@
+sitekey: << unique id for the site used as database name and url path >>
+name: << Site name (displayed on website) >>
+remote_user: << user >>
