@@ -34,6 +34,7 @@ In your browser, navigate to http://localhost:3010 to view the temp site.
 
 # Deployment
 Before you proceed, you will need to install Ansible (https://www.ansible.com/).
+
 1. Create a file called `hosts` with the following contents:
 ```
 [otw]
@@ -43,6 +44,9 @@ Where `SERVER_NAME` and `SERVER_USER` are the server and user provided by System
 
 1. Make a copy of `variables.yml.example` as `variables.yml` and fill it in with the details 
 of the site you're creating.
+
+1. Make a copy of `config/secrets.yml.example` as `config/secrets.yml` (you'll probably need to have one for development 
+anyway - make sure it has a valid `production` section)
 
 1. Run 
 ```bash
