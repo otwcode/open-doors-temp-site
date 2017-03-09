@@ -5,7 +5,7 @@
 
   vars:
     repo: https://github.com/otwcode/open-doors-temp-site.git
-    deploy_path: /var/www/opendoors/{{ sitekey }}
+    deploy_path: "{{ remote_path }}/{{ sitekey }}"
     puma_line: "{{ sitekey }},{{ remote_user }}"
 
   tasks:
@@ -17,20 +17,20 @@
   - name: Create directory on Open Doors site
     file:
       path: "{{ deploy_path }}"
-      owner: opendoors_web
-      group: otwmysql
+      owner: "{{ remote_user }}"
+      group: "{{ remote_group }}"
       state: directory
 
   - name: Clone code from Github
     git:
-      repo: https://github.com/otwcode/open-doors-temp-site.git
+      repo: "{{ repo }}"
       dest: "{{ deploy_path }}"
       depth: 1 # Don't retrieve history
       accept_hostkey: yes
       update: yes
-      version: OD-109-deploy-script
+      version: deploy
 
-  - name: Remove .git directory
+  - name: Remove .git directory so the repo can't be inadvertently updated
     file:
       path: "{{ deploy_path }}/.git"
       state: absent
@@ -47,8 +47,14 @@
 
   - name: Copy site config
     copy:
-      src: ../config/{{ sitekey }}.yml
+      src: "{{ playbook_dir }}/../config/{{ sitekey }}.yml"
       dest: "{{ deploy_path }}/config/config.yml"
+
+  - name: Copy secrets
+    copy:
+      src: "{{ playbook_dir }}/../../config/secrets.yml"
+      dest: "{{ deploy_path }}/config/secrets.yml"
+
 
   # Copy puma.conf
   - name: Check if puma.conf already has the line
@@ -89,8 +95,25 @@
       - runtime/sockets
       - runtime/pids
 
-  # Install and start
+  # Copy start and stop script, install and start
+  - name: Create startup script
+    template:
+      src: start.sh.j2
+      dest: "{{ deploy_path }}/start.sh"
+      mode: "u=rwx,g=rw,o=rw"
+
+  - name: Create stop script
+    template:
+      src: stop.sh.j2
+      dest: "{{ deploy_path }}/stop.sh"
+      mode: "u=rwx,g=rw,o=rw"
+
   - name: Install bundle
     command: bundle install --deployment
+    args:
+      chdir: "{{ deploy_path }}"
+
+  - name: Start website
+    command: ./start.sh
     args:
       chdir: "{{ deploy_path }}"
