@@ -6,7 +6,9 @@ class ItemsController < ApplicationController
   include ApplicationHelper
 
   def initialize
-    import_config = OtwArchive::ImportConfig.new("http://localhost:3000", Rails.application.secrets[:ao3api][:local][:key], "testy")
+    active_api   = Rails.application.secrets[:ao3api][:active]
+    api_settings = Rails.application.secrets[:ao3api][active_api.to_sym]
+    import_config = OtwArchive::ImportConfig.new("http://" + api_settings[:url], api_settings[:key], "testy")
     @client = OtwArchive::Client.new(import_config)
     super
   end
