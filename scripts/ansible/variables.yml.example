@@ -3,3 +3,4 @@ name: << Site name (displayed on website) >>
 remote_user: << user on remote site >>
 remote_group: << user's group on remote site >>
 remote_path: << remote path >>
+repo_version: << Github branch, hash, tag, or HEAD >>
