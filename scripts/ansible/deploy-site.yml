@@ -1,5 +1,5 @@
 ---
-- name: Deploy Open Doors temporary site
+- name: Deploy Open Doors temporary site for '{{ sitekey }}'
   hosts: otw
   remote_user: "{{ remote_user }}"
 
@@ -28,7 +28,7 @@
       depth: 1 # Don't retrieve history
       accept_hostkey: yes
       update: yes
-      version: deploy
+      version: "{{ repo_version }}"
 
   - name: Remove .git directory so the repo can't be inadvertently updated
     file:
@@ -36,19 +36,10 @@
       state: absent
 
   # Config
-  - name: Check if site conf already exists
-    local_action: stat path=../config/{{ sitekey }}.yml
-    register: config_file
-    ignore_errors: yes
-
-  - name: Create local config file
-    local_action: template src=config.yml.j2 dest="{{ playbook_dir }}/../config/{{ sitekey }}.yml"
-    when: not(config_file.stat.exists)
-
-  - name: Copy site config
-    copy:
-      src: "{{ playbook_dir }}/../config/{{ sitekey }}.yml"
-      dest: "{{ deploy_path }}/config/config.yml"
+  - name: Create site config file
+    template:
+     src: config.yml.j2
+     dest: "{{ deploy_path }}/config/config.yml"
 
   - name: Copy secrets
     copy:
@@ -57,11 +48,11 @@
 
 
   # Copy puma.conf
-  - name: Check if puma.conf already has the line
+  - name: Check if puma.conf already has the line '{{ puma_line }}'
     replace:
       dest: /etc/puma.conf
-      replace: '{{ puma_line }}'
-      regexp: '{{ puma_line }}-$'
+      replace: "-{{ puma_line }}-"
+      regexp: "{{ puma_line }}$"
       backup: yes
     become: yes
     register: site_already_registered
@@ -71,17 +62,16 @@
      state: present
      dest: /etc/puma.conf
      line: '{{ puma_line }}'
-     regexp: ''
      insertafter: EOF
     become: yes
     when: site_already_registered.changed == false
 
   - name: Fix line if regex above replaced it
-    lineinfile:
-      state: present
-      dest: /dir/file
-      line: '{{ puma_line }}'
-      regexp: '{{ puma_line }}-$'
+    replace:
+      dest: /etc/puma.conf
+      replace: "{{ puma_line }}"
+      regexp: "-{{ puma_line }}-$"
+      backup: yes
     become: yes
     when: site_already_registered.changed
 
@@ -109,7 +99,7 @@
       mode: "u=rwx,g=rw,o=rw"
 
   - name: Install bundle
-    command: bundle install --deployment
+    command: bundle install --deployment --path={{ remote_path }}/../bundle/{{ repo_version }}
     args:
       chdir: "{{ deploy_path }}"
 
