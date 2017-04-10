@@ -5,10 +5,10 @@ default: &default
   username: <%= Rails.application.secrets[:database][:username] %>
   password: <%= Rails.application.secrets[:database][:password] %>
   socket: <%= Rails.application.secrets[:database][:socket] %>
-  database: <%= APP_CONFIG[:sitekey] %>
 
 development:
   <<: *default
+  database: <%= APP_CONFIG[:sitekey] %>
 
 test:
   <<: *default
@@ -16,3 +16,4 @@ test:
 
 production:
   <<: *default
+  database: <%= APP_CONFIG[:sitekey] %>

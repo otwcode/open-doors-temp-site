@@ -64,7 +64,6 @@ $(function() {
   function loadPage(url){
     $(".pagination.alpha").html(img);
     $.get(url, function (result) {
-console.log("loadPage");
       var pagination_table = $("article", result).closest("div#pagination_table").html(),
           will_paginate = $(".pagination.will_paginate", result).html();
 

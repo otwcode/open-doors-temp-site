@@ -16,7 +16,12 @@ class AuthorsController < ApplicationController
 
   def index
     letter_authors, @letters = Author.with_stories_or_bookmarks
-                                     .alpha_paginate(params[:letter], bootstrap3: true) { |author| author.name.downcase }
+                                     .alpha_paginate(params[:letter],
+                                                     bootstrap3: true,
+                                                     include_all: false,
+                                                     numbers: true,
+                                                     others: true
+                                     ) { |author| author.name.downcase }
     @authors = letter_authors.paginate(page: params[:page], per_page: 30)
   end
 

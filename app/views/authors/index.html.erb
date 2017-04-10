@@ -1,6 +1,6 @@
-<nav><%= alphabetical_paginate @letters %></nav>
+<nav class="text-center"><%= alphabetical_paginate @letters %></nav>
 <%= will_paginate(@authors, renderer: "BootstrapPaginationHelper::LinkRenderer") ||
-    '<nav class="pagination"><ul class="pagination will_paginate justify-content-center"><li/></ul></nav>'.html_safe %>
+                            '<nav><ul class="pagination will_paginate justify-content-center"><li/></ul></nav>'.html_safe %>
 
 <div id="pagination_table">
   <% @authors.each do |author|
@@ -58,4 +58,4 @@
 </div>
 
 <%= will_paginate @authors, renderer: "BootstrapPaginationHelper::LinkRenderer" %>
-<nav><%= alphabetical_paginate @letters %></nav>
+<nav class="text-center"><%= alphabetical_paginate @letters %></nav>

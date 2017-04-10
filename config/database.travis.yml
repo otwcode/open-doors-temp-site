@@ -1,5 +1,9 @@
-test:
+default: &default
   adapter: mysql2
   database: opendoorstempsite_test
   username: root
   encoding: utf8
+
+test:
+  <<: *default
+  database: opendoorstempsite_test

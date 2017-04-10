@@ -4,12 +4,33 @@
     <title><%= APP_CONFIG[:name] %><%= content_for?(:title) ? " - #{yield(:title)}" : "" %></title>
     <%= csrf_meta_tags %>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'jquery-3.1.1.min', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body class="container">
+    <h1><%= APP_CONFIG[:name] %></h1>
+
+    <div class="card">
+      <dl class="row card-block <%= @active_host %>">
+        <dt class="col-sm-2">Send emails:</dt>
+        <dd class="col-sm-10"><%= @site_config.send_email %></dd>
+
+        <dt class="col-sm-2">Post works as drafts:</dt>
+        <dd class="col-sm-10"><%= @site_config.post_preview %></dd>
+
+        <dt class="col-sm-2">Archive server:</dt>
+        <dd class="col-sm-10"><%= @active_host %></dd>
+
+        <dt class="col-sm-2">Archivist:</dt>
+        <dd class="col-sm-10"><%= @site_config.archivist %></dd>
+
+        <dt class="col-sm-2">Collection:</dt>
+        <dd class="col-sm-10"><%= @site_config.collection_name %></dd>
+      </dl>
+    </div>
+
     <%= yield %>
   </body>
 </html>
