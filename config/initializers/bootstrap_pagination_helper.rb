@@ -35,7 +35,7 @@ module BootstrapPaginationHelper
     end
 
     def html_container(html)
-      tag(:nav, tag(:ul, html, class: 'pagination will_paginate justify-content-center'), container_attributes)
+      tag(:nav, tag(:ul, html, class: 'pagination will_paginate justify-content-center'), container_attributes.merge({class: 'text-center'}))
     end
 
     private

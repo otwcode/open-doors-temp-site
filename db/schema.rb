@@ -12,6 +12,23 @@
 
 ActiveRecord::Schema.define(version: 0) do
 
+  create_table :archive_configs, id: :integer, default: 0, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "key", limit: 45, null: false
+    t.string "name", limit: 255
+    t.string "fandom", limit: 255
+    t.text "stories_note", limit: 65535
+    t.text "bookmarks_note", limit: 65535
+    t.boolean "send_email", default: false, null: false
+    t.boolean "post_preview", default: false, null: false
+    t.integer "items_per_page", default: 30, null: false
+    t.string "archivist", limit: 255, default: "testy", null: false
+    t.string "collection_name", limit: 255
+    t.integer "imported", default: 0
+    t.integer "notImported", default: 0
+    t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
+    t.index ["key"], name: "key_UNIQUE", unique: true, using: :btree
+  end
+
   create_table "authors", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string  "name",        default: "",    null: false
     t.string  "email",       default: "",    null: false
@@ -45,7 +62,7 @@ ActiveRecord::Schema.define(version: 0) do
   end
 
   create_table "chapters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint   "position"
+    t.integer   "position"
     t.string   "title",                     default: "", null: false
     t.integer  "authorID",                  default: 0,  null: false
     t.text     "text",     limit: 16777215

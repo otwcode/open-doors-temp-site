@@ -16,6 +16,16 @@
 
 @import "bootstrap";
 
+* {
+  font-size: 14px;
+}
+
+.pagination {
+  display: inline-flex;
+  margin: 0 auto;
+  margin-top: 1rem;
+}
+
 ul.pagination > li {
   @extend .page-item;
 }
@@ -30,6 +40,7 @@ ul.pagination > li.active {
 
 ul.pagination > li > a {
   @extend .page-link;
+  line-height: inherit;
 }
 
 ul.pagination > li.active > a {
@@ -37,6 +48,16 @@ ul.pagination > li.active > a {
   color: #fff;
   background-color: #0275d8;
   border-color: #0275d8;
+}
+
+.loading {
+  width: 16px;
+  height: 16px;
+}
+
+/* Listings */
+#pagination_table {
+  margin-top: 1rem;
 }
 
 article {
