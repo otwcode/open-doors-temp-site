@@ -3,7 +3,7 @@ require 'yaml'
 # Get specific configuration for this app and its location
 APP_CONFIG = YAML.load_file('config/config.yml')
 app_dir = File.expand_path("../..", __FILE__)
-shared_dir = "/var/www/opendoors/#{APP_CONFIG[:sitekey]}"
+shared_dir = "/home/opendoors_web/www/#{APP_CONFIG[:sitekey]}"
 
 # Change to match your CPU core count
 workers 1
