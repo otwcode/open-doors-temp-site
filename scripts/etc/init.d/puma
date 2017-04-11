@@ -23,7 +23,7 @@ DAEMON=$NAME
 SCRIPTNAME=/etc/init.d/$NAME
 CONFIG=/etc/puma.conf
 JUNGLE=`cat $CONFIG`
-BASEDIR=/var/www/opendoors
+BASEDIR=/home/opendoors_web/www
 RUNPUMA=/usr/local/bin/run-puma
 USE_LOCAL_BUNDLE=0
 
