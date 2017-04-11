@@ -1,0 +1,49 @@
+USE {{ sitekey }};
+CREATE TABLE IF NOT EXISTS `archive_configs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `key` varchar(45) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `fandom` varchar(255) DEFAULT NULL,
+  `stories_note` text,
+  `bookmarks_note` text,
+  `send_email` tinyint(1) NOT NULL DEFAULT '0',
+  `post_preview` tinyint(1) NOT NULL DEFAULT '0',
+  `items_per_page` int(11) NOT NULL DEFAULT '30',
+  `archivist` varchar(100) NOT NULL DEFAULT 'testy',
+  `collection_name` varchar(255) DEFAULT NULL,
+  `imported` int(11) DEFAULT '0',
+  `notImported` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `Key_UNIQUE` (`key`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+-- This will only insert the row the first time it is run
+INSERT IGNORE INTO `archive_configs`
+        (`id`,
+        `key`,
+        `name`,
+        `fandom`,
+        `stories_note`,
+        `bookmarks_note`,
+        `send_email`,
+        `post_preview`,
+        `items_per_page`,
+        `archivist`,
+        `collection_name`,
+        `imported`,
+        `notImported`)
+        VALUES
+        (1,
+        "{{ sitekey }}",
+        "{{ name }}",
+        "Testing",
+        "OD STORY NOTE",
+        "OD BOOKMARK NOTE",
+        0,
+        0,
+        30,
+        "testy",
+        "COLLECTION_NAME",
+        0,
+        0);
+
