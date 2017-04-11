@@ -4,3 +4,6 @@ remote_user: << user on remote site >>
 remote_group: << user's group on remote site >>
 remote_path: << remote path >>
 repo_version: << Github branch, hash, tag, or HEAD >>
+mysql_user: << MySQL user on the remote host >>
+mysql_pw: << password for the MySQL user on the remote host >>
+mysql_socket: << remote path to MySQL socket >>

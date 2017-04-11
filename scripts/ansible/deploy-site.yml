@@ -107,3 +107,17 @@
     command: ./start.sh
     args:
       chdir: "{{ deploy_path }}"
+
+  - name: Create site config MySQL script
+    template:
+      src: archive_config.sql.j2
+      dest: "{{ deploy_path }}/archive_config.sql"
+
+  - name: Create site config in MySQL
+    mysql_db:
+      name: "{{ sitekey }}"
+      state: import
+      target: "{{ deploy_path }}/archive_config.sql"
+      login_user: "{{ mysql_user }}"
+      login_password: "{{ mysql_pw }}"
+      login_unix_socket: "{{ mysql_socket }}"
