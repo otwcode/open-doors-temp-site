@@ -1,36 +1,70 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= APP_CONFIG[:name] %><%= content_for?(:title) ? " - #{yield(:title)}" : "" %></title>
-    <%= csrf_meta_tags %>
+<head>
+  <title><%= APP_CONFIG[:name] %><%= content_for?(:title) ? " - #{yield(:title)}" : "" %></title>
+  <%= csrf_meta_tags %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'jquery-3.1.1.min', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'jquery-3.1.1.min', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
 
-  <body class="container">
-    <h1><%= APP_CONFIG[:name] %></h1>
+<body>
+<nav class="navbar navbar-toggleable-sm navbar-inverse bg-primary">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+          data-target="#navbarMainMenu" aria-controls="navbarMainMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="<%= authors_path %>">
+    <img src="<%= asset_path('Opendoors.png') %>"
+         style="width: 50px;"/>
+  </a>
 
-    <div class="card">
-      <dl class="row card-block <%= @active_host %>">
-        <dt class="col-sm-2">Send emails:</dt>
-        <dd class="col-sm-10"><%= @site_config.send_email %></dd>
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="navbarMainMenu">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item <%= "active" if params[:controller] == "authors" %>">
+        <%= link_to "Works by Author (use for importing)", authors_path, class: "nav-link" %>
+      </li>
 
-        <dt class="col-sm-2">Post works as drafts:</dt>
-        <dd class="col-sm-10"><%= @site_config.post_preview %></dd>
+      <!--<li class="<%= "active" if params[:controller] == "stories" && params[:action] == "index" %>">-->
+      <!--&lt;!&ndash;= link_to "Stories still to be imported" %>&ndash;&gt;-->
+      <!--</li>-->
 
-        <dt class="col-sm-2">Archive server:</dt>
-        <dd class="col-sm-10"><%= @active_host %></dd>
+      <!--<li class="<%= "active" if params[:controller] == "stories" && params[:action] == "imported" %>">-->
+      <!--&lt;!&ndash;= link_to "Imported stories" %>&ndash;&gt;-->
+      <!--</li>-->
 
-        <dt class="col-sm-2">Archivist:</dt>
-        <dd class="col-sm-10"><%= @site_config.archivist %></dd>
+      <!--<li class="<%= "active" if params[:controller] == "stories" && params[:action] == "do_not_import" %>">-->
+      <!--&lt;!&ndash;= link_to "Stories marked do not import" %>&ndash;&gt;-->
+      <!--</li>-->
+    </ul>
+  </div>
+  <!-- /.navbar-collapse -->
+</nav>
+<div class="container">
+  <h1><%= APP_CONFIG[:name] %></h1>
 
-        <dt class="col-sm-2">Collection:</dt>
-        <dd class="col-sm-10"><%= @site_config.collection_name %></dd>
-      </dl>
-    </div>
+  <div class="card">
+    <dl class="row card-block <%= @active_host %>">
+      <dt class="col-sm-2">Send emails:</dt>
+      <dd class="col-sm-10"><%= @site_config.send_email %></dd>
 
-    <%= yield %>
-  </body>
+      <dt class="col-sm-2">Post works as drafts:</dt>
+      <dd class="col-sm-10"><%= @site_config.post_preview %></dd>
+
+      <dt class="col-sm-2">Archive server:</dt>
+      <dd class="col-sm-10"><%= @active_host %></dd>
+
+      <dt class="col-sm-2">Archivist:</dt>
+      <dd class="col-sm-10"><%= @site_config.archivist %></dd>
+
+      <dt class="col-sm-2">Collection:</dt>
+      <dd class="col-sm-10"><%= @site_config.collection_name %></dd>
+    </dl>
+  </div>
+
+  <%= yield %>
+</div>
+</body>
 </html>

@@ -14,14 +14,39 @@ describe AuthorsController, type: :controller do
     let(:response) { get :index }
 
     it "displays the site name" do
-      Rails.logger.info(config.inspect)
       expect(response.body).to include(APP_CONFIG[:name])
     end
 
-    it "displays the send emails status"
-    it "displays the post as preview status"
-    it "displays the collection"
-    it "displays the archivist"
-    it "displays the archive server as a link"
+    it "displays the send emails status" do
+      expect(response.body).to include("Send emails:")
+    end
+
+    it "displays the post as preview status" do
+      expect(response.body).to include("Post works as drafts:")
+    end
+
+    it "displays the collection" do
+      expect(response.body).to include("Collection:")
+    end
+
+    it "displays the archivist" do
+      expect(response.body).to include("Archivist:")
+    end
+
+    it "displays the archive server" do
+      expect(response.body).to include("Archive server:")
+    end
+  end
+
+  context "displays the navigation bar" do
+    let(:response) { get :index }
+
+    it "displays the site logo" do
+      expect(response.body).to include("<img src=\"/opendoorstempsite/assets/Opendoors")
+    end
+
+    it "includes the authors link" do
+      expect(response.body).to include("Works by Author (use for importing)")
+    end
   end
 end
