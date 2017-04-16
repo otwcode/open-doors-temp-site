@@ -6,6 +6,7 @@
 
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
   <%= javascript_include_tag 'jquery-3.1.1.min', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'bootstrap.min', 'data-turbolinks-track': 'reload' %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 </head>
 
@@ -27,22 +28,37 @@
         <%= link_to "Works by Author (use for importing)", authors_path, class: "nav-link" %>
       </li>
 
-      <!--<li class="<%= "active" if params[:controller] == "stories" && params[:action] == "index" %>">-->
-      <!--&lt;!&ndash;= link_to "Stories still to be imported" %>&ndash;&gt;-->
-      <!--</li>-->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle <%= "active" if params[:controller] == "stories" %>"
+           href="<%= authors_path(letter: params[:letter]) %>" id="navbarDropdownStories"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Stories
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownStories">
+          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Stories to be imported</a>
+          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Stories NOT to be imported</a>
+          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Imported stories</a>
+        </div>
+      </li>
 
-      <!--<li class="<%= "active" if params[:controller] == "stories" && params[:action] == "imported" %>">-->
-      <!--&lt;!&ndash;= link_to "Imported stories" %>&ndash;&gt;-->
-      <!--</li>-->
-
-      <!--<li class="<%= "active" if params[:controller] == "stories" && params[:action] == "do_not_import" %>">-->
-      <!--&lt;!&ndash;= link_to "Stories marked do not import" %>&ndash;&gt;-->
-      <!--</li>-->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle <%= "active" if params[:controller] == "bookmarks" %>" href="<%= authors_path %>"
+           id="navbarDropdownBookmarks" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          External links
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownBookmarks">
+          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Links to be bookmarked</a>
+          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Links NOT to be bookmarked</a>
+          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Broken links</a>
+          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Bookmarked links</a>
+        </div>
+      </li>
     </ul>
   </div>
   <!-- /.navbar-collapse -->
 </nav>
 <div class="container">
+  <p>&nbsp;</p>
   <h1><%= APP_CONFIG[:name] %></h1>
 
   <div class="card">
