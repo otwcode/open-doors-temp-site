@@ -20,6 +20,11 @@
   font-size: 14px;
 }
 
+h4 .badge {
+  font-size: 10px;
+  vertical-align: middle;
+}
+
 .pagination {
   display: inline-flex;
   margin: 0 auto;
@@ -72,19 +77,21 @@ article {
   margin-bottom: 10px;
 }
 
-.imported
-{
+section {
+  margin-top: 10px;
+}
+
+.imported {
   background-color: lightgray;
   border-radius: 10px;
   text-decoration: none;
   margin-left: 0px;
   margin-right: 5px;
   padding: 2px 10px;
-  color: darkgray;
+  color: #484848;
 }
 
-.donotimport
-{
+.donotimport {
   background-color: #f7d0cb;
   border-radius: 10px;
   text-decoration: none;
@@ -92,4 +99,19 @@ article {
   margin-right: 5px;
   padding: 2px 10px;
   color: gray;
+}
+
+.brokenLink {
+  background-color: #fbc680;
+  border-radius: 10px;
+  text-decoration: none;
+  margin-left: 0px;
+  margin-right: 5px;
+  color: #494949;
+}
+
+.audit {
+  font-size: small;
+  text-decoration: none;
+  font-weight: normal;
 }
