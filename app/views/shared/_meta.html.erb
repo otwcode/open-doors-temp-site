@@ -7,14 +7,14 @@
   item_id = "#{type}-#{item.id}"
 %>
 
-<section class="row item <%= css_class %>"
+<section class="item <%= css_class %>"
          id="<%= item_id %>">
-  <div class="col-lg-6 col-md-7 col-sm-6">
 
+  <div class="row col-12">
     <!-- Title and authors -->
-    <h4>
+    <h4 class="col">
       <span class="badge badge-info"><%= item.id %></span>
-      <a href="<%= "#meta-#{item_id}" %>" data-toggle="collapse" aria-expanded="false" aria-controls="<%= "meta-#{item_id}" %>">
+      <a href="<%= "#details-#{item_id}" %>" data-toggle="collapse">
         <% if (is_story || type == :coauthored_story) && item.chapters.size > 0 %>
           <span><%= item.title %></span>
         <% else %>
@@ -32,17 +32,30 @@
         <% if is_story %>
           (<%= item.chapters.size %> chapters)
         <% else %>
-          <span><a href="<%= "#meta-#{type}-#{item.id}" %>" data-toggle="collapse">(expand)</a></span>
+          <a href="<%= "#details-#{type}-#{item.id}" %>" data-toggle="collapse">(expand)</a>
         <% end %>
         <% if item.importnotes.present? %>
-          <span><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></span>
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
         <% end %>
       </a>
     </h4>
 
-    <!-- Blurb -->
-    <div id="<%= "meta-#{item_id}" %>" class="<%= "blurb-#{item_id}" %> collapse">
-      <span class="summary">[<%= item.rating %>]
+    <!-- Buttons -->
+    <div class="col">
+      <% if type != :coauthored_story %>
+        <%= link_to "Import", item_import_path(type, item.id),
+                    id: "item-import-#{item.id}", remote: true,
+                    data: {method: :post, button: :import, item: item.id, type: type, class: "btn btn-info"} %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="w-100"></div>
+
+  <!-- Blurb -->
+  <div id="<%= "details-#{item_id}" %>" class="row col-12 collapse">
+    <div id="<%= "meta-#{item_id}" %>" class="col col-6">
+      [<%= item.rating %>]
         <% if item.categories.present? %>
           - <%= item.categories %>
         <% end %>
@@ -73,9 +86,8 @@
         <% if item.tags.present? %>
           <b>Tags:</b> <%= item.tags %><br/>
         <% end %>
-      </span>
 
-      <span class="summary"><b>Summary:</b> <%= item.summary.html_safe %></span><br/>
+      <b>Summary:</b> <%= item.summary.html_safe %><br/>
 
       <% if is_story %>
         <ol>
@@ -93,22 +105,15 @@
         </ol>
       <% end %>
     </div><!-- end meta -->
-  </div>
 
-  <!-- Buttons -->
-  <% if type != :coauthored_story %>
-    <%= link_to "Import", item_import_path(type, item.id),
-                id: "item-import-#{item.id}", remote: true,
-                data: {method: :post, button: :import, item: item.id, type: type, class: "btn btn-info"} %>
-  <% end %>
-
-  <!-- Audit -->
-  <div id="<%= "audit-#{item_id}" %>" class="col-lg-6 col-md-5 col-sm-6 audit blurb-<%= item_id %> collapse">
-    <%= item.importnotes %>
-  </div>
+    <!-- Audit -->
+    <div id="<%= "audit-#{item_id}" %>" class="col col-6">
+      <%= item.importnotes %>
+    </div>
+  </div> <!-- end details -->
 
   <% if "(hasStoryResult || hasBookmarkResult)" == "true" %>
-    <div class="message-info <%=  %>">
+    <div class="message-info <%= %>">
       <ul>
         <% messages.each do |s| %>
           <li><%= s.html_safe %></li>

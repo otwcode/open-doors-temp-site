@@ -20,6 +20,11 @@
   font-size: 14px;
 }
 
+h2 .badge {
+  font-size: 12px;
+  vertical-align: middle;
+}
+
 h4 .badge {
   font-size: 10px;
   vertical-align: middle;
@@ -79,6 +84,7 @@ article {
 
 section {
   margin-top: 10px;
+  display: block;
 }
 
 .imported {
@@ -87,7 +93,6 @@ section {
   text-decoration: none;
   margin-left: 0px;
   margin-right: 5px;
-  padding: 2px 10px;
   color: #484848;
 }
 
@@ -97,7 +102,6 @@ section {
   text-decoration: none;
   margin-left: 0px;
   margin-right: 5px;
-  padding: 2px 10px;
   color: gray;
 }
 
