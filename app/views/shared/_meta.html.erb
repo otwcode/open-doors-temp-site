@@ -4,7 +4,7 @@
   css_class += " donotimport" if item.donotimport
   css_class += " brokenLink" if item.has_attribute?(:brokenlink) && item.brokenlink
   css_class += " #{type}"
-  item_id = "#{type}-#{item.id}"
+  item_id = item_id(type, item.id)
 %>
 
 <section class="item <%= css_class %>"
@@ -108,17 +108,18 @@
 
     <!-- Audit -->
     <div id="<%= "audit-#{item_id}" %>" class="col col-6">
-      <%= item.importnotes %>
+      <%= item.importnotes.html_safe %>
     </div>
   </div> <!-- end details -->
 
-  <% if "(hasStoryResult || hasBookmarkResult)" == "true" %>
-    <div class="message-info <%= %>">
-      <ul>
-        <% messages.each do |s| %>
-          <li><%= s.html_safe %></li>
-        <% end %>
-      </ul>
+    <div class="message">
+      <% if @api_response.present? && @api_response[item_id.to_sym] %>
+        <ul>
+          <% @api_response[item_id.to_sym][:messages].each do |s| %>
+            <li><%= s.html_safe %></li>
+          <% end %>
+        </ul>
+      <% end %>
     </div>
-  <% end %>
+
 </section>
