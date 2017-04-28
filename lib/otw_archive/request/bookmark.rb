@@ -1,9 +1,9 @@
 module OtwArchive
   module Request
     class Bookmark
-      def initialize(pseudId, id, url, author, title, summary, fandom_string, rating_string, category_string,
+      def initialize(pseud_id, id, url, author, title, summary, fandom_string, rating_string, category_string,
                      collection_names, notes, tag_string, private, rec)
-        @pseudId = pseudId
+        @pseud_id = pseud_id
         @id = id
         @url = url
         @author = author

@@ -29,10 +29,14 @@ class AuthorsController < ApplicationController
     respond_to :json
     author = Author.find(params[:author_id])
     works = author.stories.map { |s| story_to_work(s) }
-    bookmarks = author.bookmarks.map { |s| bookmark_to_work(s, @client.config.archivist) }
+    bookmarks = author.bookmarks.map { |b| bookmark_to_ao3(b, @client.config.archivist) }
     Rails.logger.info bookmarks.inspect
-    response = @client.import({ works: works, bookmarks: author.bookmarks})
-    render json: response, content_type: 'text/json'
+    response = @client.import(works: works, bookmarks: author.bookmarks)
+    if request.xhr?
+      render json: response, content_type: 'text/json'
+    else
+      @api_response = response[:messages]
+    end
   end
 
   def mark

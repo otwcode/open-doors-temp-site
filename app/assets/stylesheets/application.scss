@@ -85,14 +85,15 @@ article {
 section {
   margin-top: 10px;
   display: block;
-}
-
-.imported {
-  background-color: lightgray;
+  background-color: rgba(195, 241, 255, 0.2);
   border-radius: 10px;
   text-decoration: none;
   margin-left: 0px;
   margin-right: 5px;
+}
+
+.imported {
+  background-color: lightgray;
   color: #484848;
 }
 
@@ -100,8 +101,6 @@ section {
   background-color: #f7d0cb;
   border-radius: 10px;
   text-decoration: none;
-  margin-left: 0px;
-  margin-right: 5px;
   color: gray;
 }
 
@@ -109,8 +108,6 @@ section {
   background-color: #fbc680;
   border-radius: 10px;
   text-decoration: none;
-  margin-left: 0px;
-  margin-right: 5px;
   color: #494949;
 }
 

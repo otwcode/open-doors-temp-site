@@ -6,5 +6,4 @@ class ApplicationController < ActionController::Base
     @active_host = Rails.application.secrets[:ao3api][:active]
     @site_config = ArchiveConfig.site_config
   end
-
 end

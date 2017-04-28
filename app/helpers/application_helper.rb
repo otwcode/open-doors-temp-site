@@ -2,6 +2,10 @@ module ApplicationHelper
   include OtwArchive
   include OtwArchive::Request
 
+  def item_id(type, id)
+    "#{type}-#{id}"
+  end
+
   def story_to_work(story)
     Request::Work.new(
       story.title,
@@ -21,25 +25,25 @@ module ApplicationHelper
       story.id,
       story.summary,
       story.chapters.map { |c| url_for(c) }
-  )
+    )
   end
 
   def bookmark_to_ao3(bookmark, archivist)
     Request::Bookmark.new(
-        pseud_id = archivist,
-        id = bookmark.id,
-        url = bookmark.url,
+        archivist,
+        bookmark.id,
+        bookmark.url,
         bookmark.author.name,
         bookmark.title,
         bookmark.summary,
         bookmark.fandoms,
         bookmark.rating,
         bookmark.categories,
-        collection_names = "",
+        "",
         bookmark.notes,
         bookmark.tags,
-        private = false,
-        rec = false
+        private: false,
+        rec: false
     )
   end
 end
