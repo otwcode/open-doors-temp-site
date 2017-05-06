@@ -4,7 +4,7 @@
 
 <div id="pagination_table">
   <% @authors.each do |author|
-    css_class = (author.imported ? "imported" : "") + (author.doNotImport ? " donotimport" : "")
+    css_class = (author.imported ? "imported" : "") + (author.do_not_import ? " do_not_import" : "")
   %>
 
     <article id="<%= "author-#{author.id}" %>" class="<%= css_class %>">
@@ -29,7 +29,7 @@
                         data: { method: :post, button: :mark, author: author.id } %>
             <!--, class: "btn btn-warning"-->
             <span>&nbsp;</span>
-             <%= link_to (author.doNotImport ? "Mark as ALLOW import" : "Mark as do NOT import"), author_dni_path(author.id),
+             <%= link_to (author.do_not_import ? "Mark as ALLOW import" : "Mark as do NOT import"), author_dni_path(author.id),
                         id: "author-dni-#{author.id}", remote: true,
                         data: { method: :post, button: :dni, author: author.id, confirm: "Are you sure this author should have no works imported?" } %>
             <!-- , class: "btn btn-success" -->
