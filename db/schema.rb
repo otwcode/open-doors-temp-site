@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "archivist", limit: 255, default: "testy", null: false
     t.string "collection_name", limit: 255
     t.integer "imported", default: 0
-    t.integer "notImported", default: 0
+    t.integer "not_imported", default: 0
     t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
     t.index ["key"], name: "key_UNIQUE", unique: true, using: :btree
   end
@@ -33,8 +33,8 @@ ActiveRecord::Schema.define(version: 0) do
     t.string  "name",        default: "",    null: false
     t.string  "email",       default: "",    null: false
     t.boolean "imported",    default: false, null: false
-    t.boolean "doNotImport", default: false, null: false
-    t.boolean "todelete",    default: false
+    t.boolean "do_not_import", default: false, null: false
+    t.boolean "to_delete",    default: false
     t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
   end
 
@@ -54,17 +54,17 @@ ActiveRecord::Schema.define(version: 0) do
     t.string   "relationships"
     t.string   "url"
     t.boolean  "imported",                    default: false, null: false
-    t.boolean  "donotimport",                 default: false, null: false
-    t.string   "ao3url"
-    t.boolean  "brokenlink",                  default: false, null: false
-    t.string   "importnotes",   limit: 1024,  default: ""
+    t.boolean  "do_not_import",                 default: false, null: false
+    t.string   "ao3_url"
+    t.boolean  "broken_link",                  default: false, null: false
+    t.string   "import_notes",   limit: 1024,  default: ""
     t.index ["author_id"], name: "authorId", using: :btree
   end
 
   create_table "chapters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer   "position"
     t.string   "title",                     default: "", null: false
-    t.integer  "authorID",                  default: 0,  null: false
+    t.integer  "author_id",                  default: 0,  null: false
     t.text     "text",     limit: 16777215
     t.datetime "date"
     t.integer  "story_id",                  default: 0
@@ -90,9 +90,9 @@ ActiveRecord::Schema.define(version: 0) do
     t.string   "relationships"
     t.string   "url"
     t.boolean  "imported",                    default: false, null: false
-    t.boolean  "donotimport",                 default: false, null: false
-    t.string   "ao3url"
-    t.string   "importnotes",   limit: 1024,  default: ""
+    t.boolean  "do_not_import",                 default: false, null: false
+    t.string   "ao3_url"
+    t.string   "import_notes",   limit: 1024,  default: ""
     t.string   "coauthor_id",   limit: 45,    default: "0"
     t.index ["author_id"], name: "authorId", using: :btree
   end

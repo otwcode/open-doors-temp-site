@@ -12,38 +12,298 @@ CREATE TABLE IF NOT EXISTS `archive_configs` (
   `archivist` varchar(100) NOT NULL DEFAULT 'testy',
   `collection_name` varchar(255) DEFAULT NULL,
   `imported` int(11) DEFAULT '0',
-  `notImported` int(11) DEFAULT '0',
+  `not_imported` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `Key_UNIQUE` (`key`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 -- This will only insert the row the first time it is run
 INSERT IGNORE INTO `archive_configs`
-        (`id`,
-        `key`,
-        `name`,
-        `fandom`,
-        `stories_note`,
-        `bookmarks_note`,
-        `send_email`,
-        `post_preview`,
-        `items_per_page`,
-        `archivist`,
-        `collection_name`,
-        `imported`,
-        `notImported`)
-        VALUES
-        (1,
-        "{{ sitekey }}",
-        "{{ name }}",
-        "Testing",
-        "OD STORY NOTE",
-        "OD BOOKMARK NOTE",
-        0,
-        0,
-        30,
-        "testy",
-        "COLLECTION_NAME",
-        0,
-        0);
+  (`id`, `key`, `name`, `fandom`, `stories_note`,  `bookmarks_note`, `send_email`, `post_preview`,
+   `items_per_page`, `archivist`, `collection_name`, `imported`, `not_imported`)
+  VALUES
+  (1, "{{ sitekey }}", "{{ name }}", "Testing", "OD STORY NOTE", "OD BOOKMARK NOTE", 0, 0,
+   30, "testy", "COLLECTION_NAME", 0, 0);
 
+-- Insert test data if there is no existing data
+
+--
+-- Table structure for table `authors`
+--
+
+DROP TABLE IF EXISTS `authors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `authors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `email` varchar(255) NOT NULL DEFAULT '',
+  `imported` tinyint(1) NOT NULL DEFAULT '0',
+  `do_not_import` tinyint(1) NOT NULL DEFAULT '0',
+  `to_delete` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `authors`
+--
+
+LOCK TABLES `authors` WRITE;
+/*!40000 ALTER TABLE `authors` DISABLE KEYS */;
+INSERT INTO `authors` VALUES
+  (1,'Author Number 1','opendoors-author-1@ao3.org',0,0,0),
+  (2,'Author Number 2','opendoors-author-2@ao3.org',0,0,0),
+  (3,'_Author With Underscore','opendoors-author-3@ao3.org',0,0,0),
+  (4,'B Author 1','opendoors-author-4@ao3.org',0,0,0),
+  (5,'व्रुद्धि','opendoors-author-5@ao3.org',0,0,0),
+  (6,'C Author with a really long pseud that may be too long for the Archive','opendoors-author-6@ao3.org',0,0,0),
+  (7,'D Author','opendoors-author-7@ao3.org',0,0,0),
+  (8,'F Author (no E)','opendoors-author-8@ao3.org',0,0,0),
+  (9,'G Author','opendoors-author-9@ao3.org',0,0,0),
+  (10,'H Author','opendoors-author-10@ao3.org',0,0,0),
+  (11,'I Author','opendoors-author-11@ao3.org',0,0,0),
+  (12,'J Author','opendoors-author-12@ao3.org',0,0,0),
+  (13,'M Author','opendoors-author-13@ao3.org',0,0,0),
+  (14,'M Author 2','opendoors-author-14@ao3.org',0,0,0),
+  (15,'M Author 3','opendoors-author-15@ao3.org',0,0,0),
+  (16,'M Author 4','opendoors-author-16@ao3.org',0,0,0),
+  (17,'M Author 5','opendoors-author-17@ao3.org',0,0,0),
+  (18,'M Author 6','opendoors-author-18@ao3.org',0,0,0),
+  (19,'M Author 7','opendoors-author-19@ao3.org',0,0,0),
+  (20,'M Author 8','opendoors-author-20@ao3.org',0,0,0),
+  (21,'M Author 9','opendoors-author-21@ao3.org',0,0,0),
+  (22,'M Author 10','opendoors-author-22@ao3.org',0,0,0),
+  (23,'M Author 11','opendoors-author-23@ao3.org',0,0,0),
+  (24,'M Author 12','opendoors-author-24@ao3.org',0,0,0),
+  (25,'M Author 13','opendoors-author-25@ao3.org',0,0,0),
+  (26,'M Author 14','opendoors-author-26@ao3.org',0,0,0),
+  (27,'M Author 15','opendoors-author-27@ao3.org',0,0,0),
+  (28,'M Author 16','opendoors-author-28@ao3.org',0,0,0),
+  (29,'M Author 17','opendoors-author-29@ao3.org',0,0,0),
+  (30,'M Author 18','opendoors-author-30@ao3.org',0,0,0),
+  (31,'M Author 19','opendoors-author-31@ao3.org',0,0,0),
+  (32,'M Author 20','opendoors-author-32@ao3.org',0,0,0),
+  (33,'M Author 21','opendoors-author-33@ao3.org',0,0,0),
+  (34,'M Author 22','opendoors-author-34@ao3.org',0,0,0),
+  (35,'M Author 23','opendoors-author-35@ao3.org',0,0,0),
+  (36,'M Author 24','opendoors-author-36@ao3.org',0,0,0),
+  (37,'M Author 25','opendoors-author-37@ao3.org',0,0,0),
+  (38,'M Author 26','opendoors-author-38@ao3.org',0,0,0),
+  (39,'M Author 27','opendoors-author-39@ao3.org',0,0,0),
+  (40,'M Author 28','opendoors-author-40@ao3.org',0,0,0),
+  (41,'M Author 29','opendoors-author-41@ao3.org',0,0,0),
+  (42,'M Author 30','opendoors-author-42@ao3.org',0,0,0),
+  (43,'M Author 31','opendoors-author-43@ao3.org',0,0,0),
+  (44,'N Author','opendoors-author-44@ao3.org',0,0,0),
+  (45,'O Author','opendoors-author-45@ao3.org',0,0,0),
+  (46,'P Author','opendoors-author-46@ao3.org',0,0,0),
+  (47,'P Author','opendoors-author-47@ao3.org',0,0,0),
+  (48,'Q Author','opendoors-author-48@ao3.org',0,0,0),
+  (49,'Q Author With No Works','opendoors-author-49@ao3.org',0,0,0),
+  (50,'Z Author','opendoors-author-11@ao3.org',0,0,0);
+/*!40000 ALTER TABLE `authors` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `bookmarks`
+--
+
+DROP TABLE IF EXISTS `bookmarks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bookmarks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
+  `summary` text,
+  `notes` text,
+  `author_id` int(11) DEFAULT '0',
+  `rating` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
+  `date` date NOT NULL DEFAULT '0000-00-00',
+  `updated` datetime DEFAULT NULL,
+  `categories` varchar(45) DEFAULT NULL,
+  `tags` varchar(255) NOT NULL DEFAULT '',
+  `warnings` varchar(255) DEFAULT '',
+  `fandoms` varchar(255) DEFAULT NULL,
+  `characters` varchar(255) DEFAULT NULL,
+  `relationships` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `imported` tinyint(1) NOT NULL DEFAULT '0',
+  `do_not_import` tinyint(1) NOT NULL DEFAULT '0',
+  `ao3_url` varchar(255) DEFAULT NULL,
+  `broken_link` tinyint(1) NOT NULL DEFAULT '0',
+  `import_notes` varchar(1024) DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `authorId` (`author_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bookmarks`
+--
+
+LOCK TABLES `bookmarks` WRITE;
+/*!40000 ALTER TABLE `bookmarks` DISABLE KEYS */;
+INSERT INTO `bookmarks` VALUES
+  (1,'Bookmark 1','This is the bookmark summary','The author’s original notes',2,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://google.com',0,0,NULL,0,'Some notes on this import.'),
+  (2,'Bookmark 2','This is the bookmark summary','The author’s original notes',2,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://google.com',0,0,NULL,0,'Some notes on this import.'),
+  (3,'Bookmark 3','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://google.com',0,0,NULL,0,'Some notes on this import.')
+;/*!40000 ALTER TABLE `bookmarks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `chapters`
+--
+
+DROP TABLE IF EXISTS `chapters`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `chapters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `position` bigint(22) DEFAULT NULL,
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `authorID` int(11) NOT NULL DEFAULT '0',
+  `text` mediumtext,
+  `date` datetime DEFAULT NULL,
+  `story_id` int(11) DEFAULT '0',
+  `notes` text,
+  `url` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `storyid` (`story_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `chapters`
+--
+
+LOCK TABLES `chapters` WRITE;
+/*!40000 ALTER TABLE `chapters` DISABLE KEYS */;
+INSERT INTO `chapters` VALUES
+  (1,1,'Chapter One (Latinish)',1,'Lorem ipsum dolor sit amet, ex tale definiebas nam, vix elitr omnium ne. Ius ut platonem iudicabit consulatu. In dicat consetetur repudiandae mel. Amet iracundia concludaturque vim ne.\n\nAt pro augue consectetuer, ei iudico iudicabit sit, cum decore corpora te. Pri ad sumo quot, nam graece deserunt at, eu cum invenire tincidunt reprehendunt. Scaevola scriptorem eos at, aeque appareat nominati an pro, putant sadipscing ne nam. Paulo populo possit pro ne, vero solum nulla mea ex, graece legendos platonem pri ut.','2006-05-21 00:00:00',1,NULL,NULL),
+  (2,2,'Chapter Two (Arabic)',1,'أن حاول رجوعهم بعض. مشروط الأمريكي بعض عل, وقد ثم أسيا الخطّة الإنزال. ا ألمانيا غير كل, مع واتّجه الخاطفة لبلجيكا، ذات, تم حيث جنوب بالرّغم. نفس وجزر وإعلان هو. دار ثم أحكم المسرح, موالية بالسيطرة به، ثم.\n\nهامش والقرى الخارجية شيء لم, عن غير الجنود ا استبدال, وصغار الإحتفاظ تم دار. بلا تم بولندا، الثالث،, مئات وجهان ثم هذه. بـ لها بقعة سبتمبر, أواخر الساحلية جهة بل, الحرة كُلفة وانهاء أي لها. لكل وبعدما مشاركة والمعدات عن, كلا وشعار استبدال أم.\n','2007-01-01 00:00:00',1,'This is one is Arabic',NULL),
+  (3,0,'Another Chapter (Czechish)',2,'Lorem ipsům dolor šiť amet, qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim, ea ágam sále moďěratius mea, méa ne maluisšeť posidoníum. Čum brůťe persequéris cú, nam ěliťr timeám commodo ex. Alíi četéros salůtandi cu vis, quo no fierent pertiňáx, possé erant ómňiúm per át. Et cum přompta meňandri éfficiantuř.\n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus. Vím ňo pošsit forénsibus advérsařium, ex fiérent ómittam vim, vel éx harum quáeque. Corporá ělígendi peřcipitur ůt cum, ne ípsum digňissim aliquaňďo pěr. Viďe ridenš dočendi ad mel. Alťěra posidóníum incidériňť qůi eu, homéró vulputate disséntías ut šea, úšu ut veniám sanctus ěpicuřei.\n\nVel ěx sáépe detraxit šimilíque, áffeřt disčeré interěsšét ét víx, mentíťum scaevóla ét séa. Út měi ďicit láořeét nóstrum. Affěrt ďebitís súscipianťur quo ťé, eť quem ěrróríbús ěuripidíš qůi. Tě ušů nůllám maiořum, in děleňit legímůs thěophrastus vím, animal perséčuti vim id. Nostro qúalisqůe vulputate vim áť, fúisset iňvěňiré thěophřaštus eam eu. Nam út dicat cómmódo.\n\nVís no elit veřear volupťaťúm. Vél lucilíuš děličata uť, áliquip elěctram sčribentur vél ad. Solěať dičuňt ad qúi. Perféčťo ůllámcorpér duo at, ňo quo putant reformídans. Ne vel enim aeqůe ďeťerruisset.\n\nQuo utamur čoňsůlatů reprěhenduňt ei. Nó tamqůam iuvaret dolořes vím. Et půrto omňesque fabellas has, has ei fuissět perséqueris, ňo eroš vero paulo mea. Paulo invěnirě hěňdrěrít né quí, cum et essěnť ófféndit concluďáturqúé. Ad quo illum voluptatibús.\n\nVim id putent veřítůs gloriaťur. Has ne solum ďicít perpeťůá. Quo ea diám denique, pro vide obliquě impěrďíeť eu. Facéř ěloqueňtíam vél ei, vix in íďqué audirě hendrerit. Ius nóvum ťaňťaš ín.\n\nAň usu impedit réfěrřenťuř, pri reque coňgůe máíéstatiš éx. Id ánímal concluďaťuřqůé quo, eť mútat fabellás vim. Erudití priňcipes át qui, méi ať veréar laboréš. Ěripůit péteňtiúm éu věl, hás rátionibus posidonium ěi, ut přomptá áppetěre čum. Qúi cú postea labores, ex munere lúpťatum pro, choro vočibus něcešsitaťibůš ťe vix.\n\nVís no érat impedit acčúsam, id ponděrum cónsetětúř haš. Animal iisquě tempóribůs ea vel, mel at óffeňdit tiňčídunt, in lorém nobis cum. Has ět ďiciť imperdiět. Éu malorum discerě salútatús sea.\n\nDúo id regioňe ómnesqůe. Éam án ďelicáta čonstituto, přima puteňt pércípítur ei pri, án pro summo nécessítatibus. Pri ťractáťoš ďěseřuíssě án, ex nam řěqúé prompta. Ěi ťámqůam accúsam ďispútanďó cum, qúodsi alteřum cu eam. Mei ét suás eirmod evertitur.\n\nÁd eám minim facilisis iřácundia. Agam ťempor řefórmídanš te méi, id ullamčorpěr defiňitionem měl, aň éum latině assueveriť. Ea quališqué philosophia sea. Ád cibo effíciaňtur usu. Usú fášťídií viveňdum ěi. Dícat iuvaret iňtellegam ei per, čú iisqúe íúváret lucilius vix, íd haš nisl conštituto. Quo iudico períčula ut','2001-03-06 00:00:00',2,NULL,NULL),
+  (4,0,'Another Chapter',2,'Lorem ipsům dolor šiť amet, qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim, ea ágam sále moďěratius mea, méa ne maluisšeť posidoníum. Čum brůťe persequéris cú, nam ěliťr timeám commodo ex. Alíi četéros salůtandi cu vis, quo no fierent pertiňáx, possé erant ómňiúm per át. Et cum přompta meňandri éfficiantuř.\n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus. Vím ňo pošsit forénsibus advérsařium, ex fiérent ómittam vim, vel éx harum quáeque. Corporá ělígendi peřcipitur ůt cum, ne ípsum digňissim aliquaňďo pěr. Viďe ridenš dočendi ad mel. Alťěra posidóníum incidériňť qůi eu, homéró vulputate disséntías ut šea, úšu ut veniám sanctus ěpicuřei.\n\nVel ěx sáépe detraxit šimilíque, áffeřt disčeré interěsšét ét víx, mentíťum scaevóla ét séa. Út měi ďicit láořeét nóstrum. Affěrt ďebitís súscipianťur quo ťé, eť quem ěrróríbús ěuripidíš qůi. Tě ušů nůllám maiořum, in děleňit legímůs thěophrastus vím, animal perséčuti vim id. Nostro qúalisqůe vulputate vim áť, fúisset iňvěňiré thěophřaštus eam eu. Nam út dicat cómmódo.\n\nVís no elit veřear volupťaťúm. Vél lucilíuš děličata uť, áliquip elěctram sčribentur vél ad. Solěať dičuňt ad qúi. Perféčťo ůllámcorpér duo at, ňo quo putant reformídans. Ne vel enim aeqůe ďeťerruisset.\n\nQuo utamur čoňsůlatů reprěhenduňt ei. Nó tamqůam iuvaret dolořes vím. Et půrto omňesque fabellas has, has ei fuissět perséqueris, ňo eroš vero paulo mea. Paulo invěnirě hěňdrěrít né quí, cum et essěnť ófféndit concluďáturqúé. Ad quo illum voluptatibús.\n\nVim id putent veřítůs gloriaťur. Has ne solum ďicít perpeťůá. Quo ea diám denique, pro vide obliquě impěrďíeť eu. Facéř ěloqueňtíam vél ei, vix in íďqué audirě hendrerit. Ius nóvum ťaňťaš ín.\n\nAň usu impedit réfěrřenťuř, pri reque coňgůe máíéstatiš éx. Id ánímal concluďaťuřqůé quo, eť mútat fabellás vim. Erudití priňcipes át qui, méi ať veréar laboréš. Ěripůit péteňtiúm éu věl, hás rátionibus posidonium ěi, ut přomptá áppetěre čum. Qúi cú postea labores, ex munere lúpťatum pro, choro vočibus něcešsitaťibůš ťe vix.\n\nVís no érat impedit acčúsam, id ponděrum cónsetětúř haš. Animal iisquě tempóribůs ea vel, mel at óffeňdit tiňčídunt, in lorém nobis cum. Has ět ďiciť imperdiět. Éu malorum discerě salútatús sea.\n\nDúo id regioňe ómnesqůe. Éam án ďelicáta čonstituto, přima puteňt pércípítur ei pri, án pro summo nécessítatibus. Pri ťractáťoš ďěseřuíssě án, ex nam řěqúé prompta. Ěi ťámqůam accúsam ďispútanďó cum, qúodsi alteřum cu eam. Mei ét suás eirmod evertitur.\n\nÁd eám minim facilisis iřácundia. Agam ťempor řefórmídanš te méi, id ullamčorpěr defiňitionem měl, aň éum latině assueveriť. Ea quališqué philosophia sea. Ád cibo effíciaňtur usu. Usú fášťídií viveňdum ěi. Dícat iuvaret iňtellegam ei per, čú iisqúe íúváret lucilius vix, íd haš nisl conštituto. Quo iudico períčula ut','2001-03-06 00:00:00',3,NULL,NULL),
+  (5,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. Čum tiňáx, possé erant ómňiúm per át. Et cum přompta meňandri éfficiantuř.\n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus. Vím ňo pošsit forénsibus advérsařium, ex fiérent ómittam vim, vel éx harum quáeque. Corporá ělígendi peřcipitur ůt cum, ne ípsum digňissim aliquaňďo pěr. Viďe ridenš dočendi ad mel. Alťěra posidóníum incidériňť qůi eu, homéró vulputate disséntías ut šea, úšu ut veniám sanctus ěpicuřei.\n\nVel ěx sáépe detraxit šimilíque, áffeřt disčeré interěsšét ét víx, mentíťum scaevóla ét séa. Út měi ďicit láořeét nóstrum. Nam út dicat cómmódo.\n\nVís no elit veřear volupťaťúm. Vél lucilíuš děličata uť, áliquip elěctram sčribentur vél ad. Solěať dičuňt ad qúi. Perféčťo ůllámcorpér duo at, ňo quo putant reformídans. Ne vel enim aeqůe ďeťerruisset.\n\nQuo utamur čoňsůlatů reprěhenduňt ei. Nó tamqůam iuvaret dolořes vím. Et půrto omňesque fabellas has, has ei fuissět perséquerisn\nVim id putent veřítůs gloriaťur. Has ne solum ďicít perpeťůá.','2011-03-06 00:00:00',4,NULL,NULL),
+  (6,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. Čum tiňáx, possé erant ómňiúm per át. Et cum přompta meňandri éfficiantuř.\n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus. Vím ňo pošsit forénsibus advérsařium, ex fiérent ómittam vim, vel éx harum quáeque. Corporá ělígendi peřcipitur ůt cum, ne ípsum digňissim aliquaňďo pěr. Viďe ridenš dočendi ad mel. Alťěra posidóníum incidériňť qůi eu, homéró vulputate disséntías ut šea, úšu ut veniám sanctus ěpicuřei.\n\nVel ěx sáépe detraxit šimilíque, áffeřt disčeré interěsšét ét víx, mentíťum scaevóla ét séa. Út měi ďicit láořeét nóstrum. Nam út dicat cómmódo.\n\nVís no elit veřear volupťaťúm. Quo utamur čoňsůlatů reprěhenduňt ei. Nó tamqůam iuvaret dolořes vím. Et půrto omňesque fabellas has, has ei fuissět perséquerisn\nVim id putent veřítůs gloriaťur. Has ne solum ďicít perpeťůá.','2011-03-06 00:00:00',4,NULL,NULL),
+  (7,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. Čum tiňáx, possé erant ómňiúm per át. Et cum přompta meňandri éfficiantuř.\n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus. Vím ňo pošsit forénsibus advérsařium, ex fiérent ómittam vim, vel éx harum quáeque. Corporá ělígendi peřcipitur ůt cum, ne ípsum digňissim aliquaňďo pěr. Viďe ridenš dočendi ad mel. Alťěra posidóníum incidériňť qůi eu, homéró vulputate disséntías ut šea, úšu ut veniám sanctus ěpicuřei.\n\nfúisset iňvěňiré thěophřaštus eam eu. Nam út dicat cómmódo.\n\nVís no elit veřear volupťaťúm. Vél lucilíuš děličata \nVim id solum ďicít perpeťůá.','2011-03-06 00:00:00',4,NULL,NULL),
+  (8,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',4,NULL,NULL),
+  (9,0,'EMPTY Chapter',2,'','2011-03-06 00:00:00',4,NULL,NULL),
+  (10,2,'وشعار استبدال (Arabic)',1,'أن حاول رجوعهم بعض. مشروط الأمريكي بعض عل, وقد ثم أسيا الخطّة الإنزال. ا ألمانيا غير كل, مع واتّجه الخاطفة لبلجيكا، ذات, تم حيث جنوب بالرّغم. نفس وجزر وإعلان هو. دار ثم أحكم المسرح, موالية بالسيطرة به، ثم.\n\nهامش والقرى الخارجية شيء لم, عن غير اأي لها. لكل وبعدما مشاركة والمعدات عن, كلا ','2007-01-01 00:00:00',1,'This is one is Arabic',NULL),
+  (11,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',5,NULL,NULL),
+  (12,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',6,NULL,NULL),
+  (13,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',7,NULL,NULL),
+  (14,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',8,NULL,NULL),
+  (15,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',9,NULL,NULL),
+  (16,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',10,NULL,NULL),
+  (17,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',11,NULL,NULL),
+  (18,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',12,NULL,NULL),
+  (19,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',13,NULL,NULL),
+  (20,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',14,NULL,NULL),
+  (21,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',15,NULL,NULL),
+  (22,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',16,NULL,NULL),
+  (23,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',17,NULL,NULL),
+  (24,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',18,NULL,NULL),
+  (25,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',19,NULL,NULL),
+  (26,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',20,NULL,NULL),
+  (27,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',21,NULL,NULL),
+  (28,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',22,NULL,NULL),
+  (29,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',23,NULL,NULL),
+  (30,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',24,NULL,NULL),
+  (31,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',25,NULL,NULL),
+  (32,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',26,NULL,NULL),
+  (33,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',27,NULL,NULL),
+  (34,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',28,NULL,NULL),
+  (35,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',29,NULL,NULL),
+  (36,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',30,NULL,NULL),
+  (37,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',31,NULL,NULL),
+  (38,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',32,NULL,NULL),
+  (39,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',33,NULL,NULL),
+  (40,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',34,NULL,NULL),
+  (41,0,'Another Chapter',2,'”qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim,” ea ágam sále moďěratius mea. \n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus.','2011-03-06 00:00:00',35,NULL,NULL),
+  (60,0,'Another Chapter (Czechish)',2,'Lorem ipsům dolor šiť amet, qůodsí iřiuře děšeruissé ěx ňec, eňim movet vim no. Nusquam phílóšophiá et vim, ea ágam sále moďěratius mea, méa ne maluisšeť posidoníum. Čum brůťe persequéris cú, nam ěliťr timeám commodo ex. Alíi četéros salůtandi cu vis, quo no fierent pertiňáx, possé erant ómňiúm per át. Et cum přompta meňandri éfficiantuř.\n\nSed ei gřaéci aliquam cotídiequé, his cu salutandi vitúperátoríbus. Vím ňo pošsit forénsibus advérsařium, ex fiérent ómittam vim, vel éx harum quáeque. Corporá ělígendi peřcipitur ůt cum, ne ípsum digňissim aliquaňďo pěr. Viďe ridenš dočendi ad mel. Alťěra posidóníum incidériňť qůi eu, homéró vulputate disséntías ut šea, úšu ut veniám sanctus ěpicuřei.\n\nVel ěx sáépe detraxit šimilíque, áffeřt disčeré interěsšét ét víx, mentíťum scaevóla ét séa. Út měi ďicit láořeét nóstrum. Affěrt ďebitís súscipianťur quo ťé, eť quem ěrróríbús ěuripidíš qůi. Tě ušů nůllám maiořum, in děleňit legímůs thěophrastus vím, animal perséčuti vim id. Nostro qúalisqůe vulputate vim áť, fúisset iňvěňiré thěophřaštus eam eu. Nam út dicat cómmódo.\n\nVís no elit veřear volupťaťúm. Vél lucilíuš děličata uť, áliquip elěctram sčribentur vél ad. Solěať dičuňt ad qúi. Perféčťo ůllámcorpér duo at, ňo quo putant reformídans. Ne vel enim aeqůe ďeťerruisset.\n\nQuo utamur čoňsůlatů reprěhenduňt ei. Nó tamqůam iuvaret dolořes vím. Et půrto omňesque fabellas has, has ei fuissět perséqueris, ňo eroš vero paulo mea. Paulo invěnirě hěňdrěrít né quí, cum et essěnť ófféndit concluďáturqúé. Ad quo illum voluptatibús.\n\nVim id putent veřítůs gloriaťur. Has ne solum ďicít perpeťůá. Quo ea diám denique, pro vide obliquě impěrďíeť eu. Facéř ěloqueňtíam vél ei, vix in íďqué audirě hendrerit. Ius nóvum ťaňťaš ín.\n\nAň usu impedit réfěrřenťuř, pri reque coňgůe máíéstatiš éx. Id ánímal concluďaťuřqůé quo, eť mútat fabellás vim. Erudití priňcipes át qui, méi ať veréar laboréš. Ěripůit péteňtiúm éu věl, hás rátionibus posidonium ěi, ut přomptá áppetěre čum. Qúi cú postea labores, ex munere lúpťatum pro, choro vočibus něcešsitaťibůš ťe vix.\n\nVís no érat impedit acčúsam, id ponděrum cónsetětúř haš. Animal iisquě tempóribůs ea vel, mel at óffeňdit tiňčídunt, in lorém nobis cum. Has ět ďiciť imperdiět. Éu malorum discerě salútatús sea.\n\nDúo id regioňe ómnesqůe. Éam án ďelicáta čonstituto, přima puteňt pércípítur ei pri, án pro summo nécessítatibus. Pri ťractáťoš ďěseřuíssě án, ex nam řěqúé prompta. Ěi ťámqůam accúsam ďispútanďó cum, qúodsi alteřum cu eam. Mei ét suás eirmod evertitur.\n\nÁd eám minim facilisis iřácundia. Agam ťempor řefórmídanš te méi, id ullamčorpěr defiňitionem měl, aň éum latině assueveriť. Ea quališqué philosophia sea. Ád cibo effíciaňtur usu. Usú fášťídií viveňdum ěi. Dícat iuvaret iňtellegam ei per, čú iisqúe íúváret lucilius vix, íd haš nisl conštituto. Quo iudico períčula ut','2001-03-06 00:00:00',2,NULL,NULL);
+/*!40000 ALTER TABLE `chapters` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `stories`
+--
+
+DROP TABLE IF EXISTS `stories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `stories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `summary` text,
+  `notes` text,
+  `author_id` int(11) DEFAULT '0',
+  `rating` varchar(255) NOT NULL DEFAULT '',
+  `date` datetime DEFAULT NULL,
+  `updated` datetime DEFAULT NULL,
+  `categories` varchar(45) DEFAULT NULL,
+  `tags` varchar(255) NOT NULL DEFAULT '',
+  `warnings` varchar(255) DEFAULT '',
+  `fandoms` varchar(255) DEFAULT NULL,
+  `characters` varchar(255) DEFAULT NULL,
+  `relationships` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `imported` tinyint(1) NOT NULL DEFAULT '0',
+  `do_not_import` tinyint(1) NOT NULL DEFAULT '0',
+  `ao3_url` varchar(255) DEFAULT NULL,
+  `import_notes` varchar(1024) DEFAULT '',
+  `coauthor_id` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `authorId` (`author_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `stories`
+--
+
+LOCK TABLES `stories` WRITE;
+/*!40000 ALTER TABLE `stories` DISABLE KEYS */;
+INSERT INTO `stories` VALUES
+  (1,'First Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne, àéqué molèstiae defînïebas eos cu. No nèç éxèrci ancillae scripserït. Eûm ëu âtqùï summô vèrterém, èx vérô dùis veritûs vêl, çù mèa clità nusqùam. Minïm option no éùm, ôblïque promptà constituam ut cum, cû tritânï detraxït antïopam quî.\n\nEa detraçtô vérterem éam, nihil désérùnt vis ùt, quî minïm qùaéstïo assentior âd. Est éx dolor fastidïi. No séà vocîbus senserit similique, në vïs lêgèndos petêntïùm splëndidé. Vèri învidunt mœderatius in prî. Sêa quàndo përpetuà perséçuti àd.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'2017-06-02 Note 1 - lots of import notes with line breaks in between them<br/> 2017-06-03 Note 2<br/> 2017-06-04 Note 3<br/> 2017-06-05 Note 4<br/> 2017-06-06 Note 5<br/> 2017-06-07 Note 6<br/> 2017-06-08 Note 7<br/> 2017-06-09 Note 8<br/>',0),
+  (2,'This has a co-author','Eu pér vérear indoçtum lïbéravissè, vèl ènïm âtomorûm pertinaçia ne. Librïs dêlêniti salùtàtus qûï eû. Cibo nomînavi cônsulâtû sea eu. Eï pri elitr sçripsérît.','Some notes',2,'Teen And Up Audiences','2003-12-25 00:00:00','2004-09-15 00:00:00','Gen','','','Testing',NULL,NULL,NULL,0,0,NULL,'',1),
+  (3,'Hindi Script मेंभटृ','मेंभटृ व्रुद्धि सिद्धांत करता। देते वास्तविक विश्वव्यापि अधिक करता। यधपि क्षमता उपयोगकर्ता कराना सदस्य अनुकूल ब्रौशर प्रतिबध उनको अधिकार पुर्णता व्याख्यान करते प्राण समजते गटको अंतर्गत निर्माण अपनि विवरन तकनिकल विभाजनक्षमता विकेन्द्रियकरण कीने विवरन उपेक्ष सुविधा अपने पहोच। परस्पर व्यवहार कार्यसिधान्तो दौरान प्रदान करके(विशेष पुष्टिकर्ता ७हल मेमत बनाकर ब्रौशर वेबजाल अधिकांश वर्ष समस्याओ सम्पर्क समजते बारे समजते एसलिये प्राधिकरन अथवा नवंबर कार्यलय प्रतिबध','मेंभटृ',3,'Mature','2017-01-02 00:00:00','2017-03-25 00:00:00',NULL,'','',NULL,NULL,NULL,NULL,0,0,NULL,'Note 1 - lots of import notes with line breaks in between them<br/> Note 2<br/> Note 3<br/> Note 4<br/> Note 5<br/> Note 6<br/> Note 7<br/> Note 8<br/>',0),
+  (4,'“Mac Curly Quotes”','Some “curly quotes” and a curly ‘ apostrophe','This story has a “note”',1,'Explicit','2014-03-02 00:00:00','2014-04-21 00:00:00','Gen','Testing','Chose Not To Warn','Testing','Test 1, Test 2','Test 1/Test 2',NULL,0,0,NULL,'',0),
+  (5,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (6,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','','Romance','','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (7,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (8,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','M/M','Slash, Romance',null,'Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (9,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2017-05-09 00:00:00','2017-06-26 00:00:00','F/M, M/M','Slash, Romance','Rape/Non-Con','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (10,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (11,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (12,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (13,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (14,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (15,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (16,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (17,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (18,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (19,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (20,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (21,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (22,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (23,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (24,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (25,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','F/M, M/M','Slash, Romance','Underage','Testing',NULL,NULL,NULL,0,0,NULL,'',0),
+  (26,'A Story','Lœrem ïpsum dolor sit amet, eos vidê definitionëm ne.',NULL,1,'General','2015-05-09 00:00:00','2015-06-26 00:00:00','Gen','Slash, Romance','','Testing',NULL,NULL,NULL,0,0,NULL,'',0)
+ ;
+/*!40000 ALTER TABLE `stories` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
