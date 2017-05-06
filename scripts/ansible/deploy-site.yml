@@ -120,6 +120,7 @@
       login_user: "{{ mysql_user }}"
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
+    register: create_database
 
   - name: Load sample data into MySQL
     mysql_db:
@@ -129,3 +130,4 @@
       login_user: "{{ mysql_user }}"
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
+    when: create_database.changed
