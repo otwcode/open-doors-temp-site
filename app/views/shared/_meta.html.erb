@@ -93,13 +93,7 @@
         <ol>
           <% item.chapters.each do |chapter| %>
             <li>
-              <%= chapter.title %>
-              <% #= link_to chapter.title,
-                 # actionName: "Details",
-                 # controllerName: "Chapter",
-                 # routeValues: {id = chapter.ID},
-                 # htmlAttributes: new {}
-              %>
+              <%= link_to chapter.title, chapter_path(chapter.id) %>
             </li>
           <% end %>
         </ol>
