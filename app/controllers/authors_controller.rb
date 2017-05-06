@@ -59,16 +59,16 @@ class AuthorsController < ApplicationController
   def dni
     respond_to :json
     author = Author.find(params[:author_id])
-    author.doNotImport = !author.doNotImport
+    author.do_not_import = !author.do_not_import
     response = []
     if author.save
       response << { status: :ok,
-                    dni: author.doNotImport,
-                    messages: ["Successfully set author to #{author.doNotImport ? "NOT " : ""}allow importing"]}
+                    dni: author.do_not_import,
+                    messages: ["Successfully set author to #{author.do_not_import ? "NOT " : ""}allow importing"]}
     else
       response << { status: :error,
-                    dni: author.doNotImport,
-                    messages: ["Could not set author to #{!author.doNotImport ? "NOT " : ""}allow importing"]}
+                    dni: author.do_not_import,
+                    messages: ["Could not set author to #{!author.do_not_import ? "NOT " : ""}allow importing"]}
     end
     render json: response, content_type: 'text/json'
   end

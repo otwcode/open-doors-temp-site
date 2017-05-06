@@ -1,4 +1,4 @@
-sitekey: << unique id for the site used as database name and url path >>
+sitekey: << unique name for the site used as database name and url path >>
 name: << Site name (displayed on website) >>
 remote_user: << user on remote site >>
 remote_group: << user's group on remote site >>

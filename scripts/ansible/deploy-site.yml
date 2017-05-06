@@ -108,12 +108,20 @@
     args:
       chdir: "{{ deploy_path }}"
 
-  - name: Create site config MySQL script
+  - name: Copy MySQL script
     template:
       src: archive_config.sql.j2
       dest: "{{ deploy_path }}/archive_config.sql"
 
-  - name: Create site config in MySQL
+  - name: Create MySQL database
+    mysql_db:
+      name: "{{ sitekey }}"
+      state: present
+      login_user: "{{ mysql_user }}"
+      login_password: "{{ mysql_pw }}"
+      login_unix_socket: "{{ mysql_socket }}"
+
+  - name: Load sample data into MySQL
     mysql_db:
       name: "{{ sitekey }}"
       state: import
