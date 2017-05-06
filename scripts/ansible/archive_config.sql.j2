@@ -1,4 +1,6 @@
-USE {{ sitekey }};
+CREATE DATABASE IF NOT EXISTS `{{ sitekey }}`;
+
+USE `{{ sitekey }}`;
 CREATE TABLE IF NOT EXISTS `archive_configs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `key` varchar(45) NOT NULL,
