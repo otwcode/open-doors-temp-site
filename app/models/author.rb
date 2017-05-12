@@ -1,4 +1,7 @@
 class Author < ApplicationRecord
+  audited comment_required: true
+  has_associated_audits
+
   has_many :stories, (-> { order 'lower(title)' })
   has_many :bookmarks, (-> { order 'lower(title)' })
   default_scope { order 'lower(name)' }

@@ -3,11 +3,17 @@
 ## You can use CoffeeScript in this file: http://coffeescript.org/
 
 @debug = (data) ->
-  for k,v of data
-    console.log "#{k}, #{v}"
+  console.log JSON.stringify(data, null, 4)
+
+
+@clearAllMessages = (authorId) ->
+  console.log("clear all messages")
+  $("#author-" + authorId + ".message").empty()
 
 
 @divClass = (status) ->
+  console.log("\ndivClass")
+  debug(status)
   if status in ["ok", "created", "success"]
     divClass = "alert alert-info"
   else
@@ -15,16 +21,26 @@
 
 
 @writeItemToDiv = (type, status, itemId, message) ->
+  console.log("\ndivClass")
+  debug(status)
   messageDiv = $("#" + type + "-" + itemId + " .message")
   messageDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{message}</div>"
+  if status == "created" || status == "already_imported"
+    mainDiv = $("#" + type + "-" + itemId)
+    mainDiv.addClass("imported")
 
 
 @writeSummaryToDiv = (data, summaryTargetDiv, status) ->
-  summary = data["messages"]
-  summaryTargetDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{summary}</div>"
+  console.log "\nwriteSummaryToDiv"
+  debug(data)
+  if data && data["messages"]
+    summary = data["messages"]
+    summaryTargetDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{summary}</div>"
 
 
 @processImportResponse = (data) ->
+  console.log("\nprocessImportResponse")
+  debug(data)
   if data.hasOwnProperty("works")
     data["works"].forEach( (item, idx) ->
       writeItemToDiv("story", item["status"], item["original_id"], item["messages"].join("<br/>"))
@@ -41,8 +57,11 @@
   type = link.attr("data-type")
   authorId = link.attr("data-author")
   itemId = link.attr("data-item")
+  clearAllMessages(authorId)
   summaryDiv = $("#author-" + authorId + " .author.message")
   summaryDiv.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
+  itemDiv = $("#" + type + "-" + itemId + " .message")
+  itemDiv.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
 
   if buttonType in ["import", "mark", "dni"]
     $.ajax
@@ -50,6 +69,8 @@
       url: link[0]
       dataType: "json"
       success: (data, status, xhr) ->
+        console.log("data before write summaryDiv")
+        debug(data)
         writeSummaryToDiv(data[0], summaryDiv, status)
 
         authorArticle = $("#author-#{authorId}")
@@ -58,10 +79,10 @@
             processImportResponse(data[0], summaryDiv)
           when "dni"
             if data[0]["dni"] == true
-              authorArticle.addClass("donotimport")
+              authorArticle.addClass("do_not_import")
               link.text "Mark as ALLOW import"
             else
-              authorArticle.removeClass("donotimport")
+              authorArticle.removeClass("do_not_import")
               link.text "Mark as do NOT import"
           when "mark"
             if data[0]["mark"] == true

@@ -40,6 +40,8 @@ GEM
       tzinfo (~> 1.1)
     alphabetical_paginate (2.3.2)
     arel (7.1.4)
+    audited (4.4.1)
+      activerecord (>= 4.0, < 5.2)
     autoprefixer-rails (6.7.0)
       execjs
     babel-source (5.8.35)
@@ -204,6 +206,7 @@ PLATFORMS
 
 DEPENDENCIES
   alphabetical_paginate
+  audited (~> 4.4)
   bootstrap (~> 4.0.0.alpha6)
   coffee-rails (~> 4.2)
   factory_girl_rails
@@ -225,4 +228,4 @@ DEPENDENCIES
   will_paginate (~> 3.1.0)
 
 BUNDLED WITH
-   1.12.5
+   1.14.6
