@@ -65,6 +65,10 @@ ul.pagination > li.active > a {
   height: 16px;
 }
 
+.row.collapse.show {
+  display: flex;
+}
+
 /* Navbar */
 .navbar-toggler {
   padding-top: 10px;

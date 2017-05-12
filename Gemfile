@@ -23,6 +23,8 @@ gem 'alphabetical_paginate'
 gem 'faraday'
 gem 'faraday_middleware'
 
+gem "audited", "~> 4.4"
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets - needs a JavaScript runtime so let's skip it for a moment

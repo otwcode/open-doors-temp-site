@@ -1,6 +1,8 @@
 class Story < ApplicationRecord
+  audited comment_required: true, associated_with: :author
+
   belongs_to :author
-  has_one :coauthor, foreign_key: :id, class_name: "Author"
+  belongs_to :coauthor, foreign_key: :coauthor_id, class_name: "Author"
   has_many :chapters
 
   def coauthor?
