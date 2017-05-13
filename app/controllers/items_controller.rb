@@ -19,15 +19,16 @@ class ItemsController < ApplicationController
     id = params[:id]
     ao3_type = type == "story" ? "works" : "bookmarks"
 
-    if type == "story"
-      story = Story.find(id)
-      item = { works: [story_to_work(story)] }
-    else
-      bookmark = Bookmark.find(id)
-      item = { work: [bookmark_to_ao3(bookmark, @client.config.archivist)] }
-    end
+    item = find_item(id, type)
 
-    response = @client.import(item)
+    item_request =
+      if type == "story"
+        { works: [story_to_work(item)] }
+      else
+        { bookmarks: [bookmark_to_ao3(bookmark, @client.config.archivist)] }
+      end
+
+    response = @client.import(item_request)
 
     item_response = response[0][ao3_type][0]
     final_response = [{}] # Needs to be the same shape as the response for authors
@@ -36,5 +37,71 @@ class ItemsController < ApplicationController
     puts "item import: #{final_response.inspect}"
 
     render json: final_response, content_type: 'text/json'
+  end
+
+  def mark
+    respond_to :json
+    type = params[:type]
+    id = params[:id]
+
+    item = find_item(id, type)
+    author = item.author
+
+    imported_status = "set #{type} '#{item.title}' by #{author.name} to #{item.imported ? "" : "NOT "}imported."
+    item.update_attributes(imported: !item.imported, audit_comment: imported_status)
+
+    response = []
+    if item.save
+      response << { status: :ok,
+                    mark: item.imported,
+                    messages: ["Successfully #{imported_status}"] }
+    else
+      response << { status: :error,
+                    mark: item.imported,
+                    messages: ["Could not #{imported_status}"] }
+    end
+    if request.xhr?
+      render json: response, content_type: "text/json"
+    else
+      @api_response = response[0][:messages]
+    end
+  end
+
+  def dni
+    respond_to :json
+    type = params[:type]
+    id = params[:id]
+
+    item = find_item(id, type)
+    author = item.author
+
+    imported_status = "set #{type} '#{item.title}' by #{author.name} to #{item.do_not_import ? "NOT " : ""}allow importing."
+    item.update_attributes(imported: !item.do_not_import, audit_comment: imported_status)
+
+    response = []
+    if item.save
+      response << { status: :ok,
+                    mark: item.do_not_import,
+                    messages: ["Successfully #{imported_status}"] }
+    else
+      response << { status: :error,
+                    mark: item.do_not_import,
+                    messages: ["Could not #{imported_status}"] }
+    end
+    if request.xhr?
+      render json: response, content_type: "text/json"
+    else
+      @api_response = response[0][:messages]
+    end
+  end
+
+  protected
+
+  def find_item(id, type)
+    if type == "story"
+      Story.find(id)
+    else
+      Bookmark.find(id)
+    end
   end
 end

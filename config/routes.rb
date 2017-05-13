@@ -14,6 +14,8 @@ Rails.application.routes.draw do
 
     resources :chapters
 
-    post 'items/import/:type/:id' => 'items#import', as: :item_import
+    post "items/import/:type/:id" => "items#import", as: :item_import
+    post "items/mark/:type/:id" => "items#mark", as: :item_mark
+    post "items/dni/:type/:id" => "items#dni", as: :item_dni
   end
 end
