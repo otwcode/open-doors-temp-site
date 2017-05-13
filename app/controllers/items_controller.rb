@@ -48,18 +48,12 @@ class ItemsController < ApplicationController
     author = item.author
 
     imported_status = "set #{type} '#{item.title}' by #{author.name} to #{item.imported ? "" : "NOT "}imported."
-    item.update_attributes(imported: !item.imported, audit_comment: imported_status)
+    item.update_attributes!(imported: !item.imported, audit_comment: imported_status)
 
     response = []
-    if item.save
-      response << { status: :ok,
-                    mark: item.imported,
-                    messages: ["Successfully #{imported_status}"] }
-    else
-      response << { status: :error,
-                    mark: item.imported,
-                    messages: ["Could not #{imported_status}"] }
-    end
+    response << { status: :ok,
+                  mark: item.imported,
+                  messages: ["Successfully #{imported_status}"] }
     if request.xhr?
       render json: response, content_type: "text/json"
     else
@@ -76,18 +70,12 @@ class ItemsController < ApplicationController
     author = item.author
 
     imported_status = "set #{type} '#{item.title}' by #{author.name} to #{item.do_not_import ? "NOT " : ""}allow importing."
-    item.update_attributes(imported: !item.do_not_import, audit_comment: imported_status)
+    item.update_attributes!(do_not_import: !item.do_not_import, audit_comment: imported_status)
 
     response = []
-    if item.save
-      response << { status: :ok,
-                    mark: item.do_not_import,
-                    messages: ["Successfully #{imported_status}"] }
-    else
-      response << { status: :error,
-                    mark: item.do_not_import,
-                    messages: ["Could not #{imported_status}"] }
-    end
+    response << { status: :ok,
+                  dni: item.do_not_import,
+                  messages: ["Successfully #{imported_status}"] }
     if request.xhr?
       render json: response, content_type: "text/json"
     else

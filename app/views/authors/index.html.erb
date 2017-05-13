@@ -23,16 +23,16 @@
                           data: { method: :post, button: :import, author: author.id } %>
                 <!--, class: "btn btn-info" -->
             <% end %>
+            <!-- Mark as import - we don't think we need this anymore
             <span>&nbsp;</span>
-            <%= link_to (author.imported ? "Mark NOT imported" : "Mark as imported"), author_mark_path(author.id),
-                        id: "author-mark-#{author.id}", remote: true,
-                        data: { method: :post, button: :mark, author: author.id } %>
-            <!--, class: "btn btn-warning"-->
+            <% #= link_to (author.imported ? "Mark NOT imported" : "Mark as imported"), author_mark_path(author.id),
+               #         id: "author-mark-#{author.id}", remote: true,
+               #         data: { method: :post, button: :mark, author: author.id } %>
+            -->
             <span>&nbsp;</span>
              <%= link_to (author.do_not_import ? "Mark as ALLOW import" : "Mark as do NOT import"), author_dni_path(author.id),
                         id: "author-dni-#{author.id}", remote: true,
-                        data: { method: :post, button: :dni, author: author.id, confirm: "Are you sure this author should have no works imported?" } %>
-            <!-- , class: "btn btn-success" -->
+                        data: { method: :post, button: :dni, author: author.id } %>
           </div>
         </div>
         <div class="author message <%= @api_response %>">

@@ -20,7 +20,7 @@
     divClass = "alert alert-danger"
 
 
-@writeItemToDiv = (type, status, itemId, message) ->
+@writeItemToDiv = (type, status, itemId, message, url) ->
   console.log("\ndivClass")
   debug(status)
   messageDiv = $("#" + type + "-" + itemId + " .message")
@@ -28,6 +28,10 @@
   if status == "created" || status == "already_imported"
     mainDiv = $("#" + type + "-" + itemId)
     mainDiv.addClass("imported")
+    importButton = $("#import-#{type}-#{itemId}")
+    importButton.html "<a href=\"#{url}\" target=\"_blank\">#{url}</a>"
+    markButton = $("#item-mark-#{type}-#{itemId}")
+    markButton.text "Mark NOT imported"
 
 
 @writeSummaryToDiv = (data, summaryTargetDiv, status) ->
@@ -43,11 +47,11 @@
   debug(data)
   if data.hasOwnProperty("works")
     data["works"].forEach( (item, idx) ->
-      writeItemToDiv("story", item["status"], item["original_id"], item["messages"].join("<br/>"))
+      writeItemToDiv("story", item["status"], item["original_id"], item["messages"].join("<br/>"), item["url"])
     )
   if data.hasOwnProperty("bookmarks")
     data["bookmarks"].forEach( (item, idx) ->
-      writeItemToDiv("bookmark", item["status"], item["original_id"], item["messages"].join("<br/>"))
+      writeItemToDiv("bookmark", item["status"], item["original_id"], item["messages"].join("<br/>"), item["url"])
     )
 
 
@@ -58,6 +62,7 @@
   authorId = link.attr("data-author")
   itemId = link.attr("data-item")
   clearAllMessages(authorId)
+
   summaryDiv = $("#author-" + authorId + " .author.message")
   summaryDiv.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
   itemDiv = $("#" + type + "-" + itemId + " .message")
@@ -74,30 +79,40 @@
         writeSummaryToDiv(data[0], summaryDiv, status)
 
         authorArticle = $("#author-#{authorId}")
+        itemSection = $("##{type}-#{itemId}")
         switch buttonType
           when "import"
             processImportResponse(data[0], summaryDiv)
           when "dni"
             if data[0]["dni"] == true
               authorArticle.addClass("do_not_import")
+              itemSection.addClass("do_not_import")
               link.text "Mark as ALLOW import"
             else
               authorArticle.removeClass("do_not_import")
+              itemSection.removeClass("do_not_import")
               link.text "Mark as do NOT import"
-          when "mark"
+          when "mark" # Not currently enabled
             if data[0]["mark"] == true
               authorArticle.addClass("imported")
+              itemSection.addClass("imported")
               link.text "Mark as NOT imported"
               $("#author-#{authorId} a[data-button='import']").hide()
+              itemSection.find("a[data-button='import']").hide()
             else
               authorArticle.removeClass("imported")
+              itemSection.removeClass("imported")
               link.text "Mark as imported"
               $("#author-#{authorId} a[data-button='import']").show()
+              itemSection.find("a[data-button='import']").show()
           else
             alert "Unknown button"
+        itemDiv.html ""
+
       error: (data, status, error) ->
         message = "<p class=\"alert alert-danger\">An error occurred while processing the request: #{error}</p>"
         summaryDiv.html message
+        itemDiv.html message
         debug(data)
   else
     alert "Unknown button - something is broken!"
