@@ -6,14 +6,14 @@ module ApplicationHelper
     "#{type}-#{id}"
   end
 
-  def story_to_work(story)
+  def story_to_work(story, collection)
     Request::Work.new(
       story.title,
       story.author.name,
       story.author.email,
       (story.coauthor.nil? ? "" : story.coauthor.name),
       (story.coauthor.nil? ? "" : story.coauthor.email),
-      "",
+      collection,
       story.fandoms,
       story.warnings,
       story.characters,
@@ -28,7 +28,7 @@ module ApplicationHelper
     )
   end
 
-  def bookmark_to_ao3(bookmark, archivist)
+  def bookmark_to_ao3(bookmark, archivist, collection)
     Request::Bookmark.new(
         archivist,
         bookmark.id,
@@ -39,7 +39,7 @@ module ApplicationHelper
         bookmark.fandoms,
         bookmark.rating,
         bookmark.categories,
-        "",
+        collection,
         bookmark.notes,
         bookmark.tags,
         private: false,

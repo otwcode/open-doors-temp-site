@@ -23,9 +23,9 @@ class ItemsController < ApplicationController
 
     item_request =
       if type == "story"
-        { works: [story_to_work(item)] }
+        { works: [story_to_work(item, @client.config.collection)] }
       else
-        { bookmarks: [bookmark_to_ao3(bookmark, @client.config.archivist)] }
+        { bookmarks: [bookmark_to_ao3(bookmark, @client.config.archivist, @client.config.collection)] }
       end
 
     response = @client.import(item_request)
