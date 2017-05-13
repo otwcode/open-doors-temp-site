@@ -10,9 +10,9 @@
 <section class="item <%= css_class %>"
          id="<%= item_id %>">
 
-  <div class="row col-12">
+  <div class="row col-12 align-items-center" style="padding-right: 0px">
     <!-- Title and authors -->
-    <h4 class="col">
+    <h4 class="col col-md-5 col-sm">
       <span class="badge badge-info"><%= item.id %></span>
       <a href="<%= "#details-#{item_id}" %>" data-toggle="collapse">
         <% if (is_story || type == :coauthored_story) && item.chapters.size > 0 %>
@@ -40,12 +40,26 @@
       </a>
     </h4>
 
-    <!-- Buttons -->
-    <div class="col">
+    <!-- BUTTONS -->
+    <div class=" col-md-7 col-sm extra-space text-right" style="padding-top: 2px; padding-right: 0px;">
       <% if type != :coauthored_story %>
-        <%= link_to "Import", item_import_path(type, item.id),
-                    id: "item-import-#{item.id}", remote: true,
-                    data: {method: :post, button: :import, item: item.id, type: type, class: "btn btn-info"} %>
+        <!-- Import -->
+        <% if item.imported %>
+          <a href="<%= item.ao3_url %>" target="_blank"><%= item.ao3_url %></a>
+        <% else %>
+          <%= link_to "Import", item_import_path(type, item.id),
+                      id: "item-import-#{item_id}", remote: true,
+                      data: {method: :post, button: :import, item: item.id, type: type, class: "btn btn-info"} %>
+        <% end %>
+        <span>&nbsp;</span>
+        <%= link_to (item.imported ? "Mark NOT imported" : "Mark as imported"), item_mark_path(type, item.id),
+                    id: "item-mark-#{item_id}", remote: true,
+                    data: { method: :post, button: :mark, item: item.id, type: type } %>
+        <!--, class: "btn btn-warning"-->
+        <span>&nbsp;</span>
+        <%= link_to (item.do_not_import ? "Mark as ALLOW import" : "Mark as do NOT import"), item_dni_path(type, item.id),
+                    id: "item-dni-#{item_id}", remote: true,
+                    data: { method: :post, button: :dni, item: item.id, type: type, confirm: "Are you sure this #{type} should not be imported?" } %>
       <% end %>
     </div>
   </div>
@@ -54,38 +68,19 @@
 
   <!-- Blurb -->
   <div id="<%= "details-#{item_id}" %>" class="row col-12 collapse">
-    <div id="<%= "meta-#{item_id}" %>" class="col col-6">
-      [<%= item.rating %>]
-        <% if item.categories.present? %>
-          - <%= item.categories %>
-        <% end %>
-        <% if item.fandoms.present? %>
-          - <b>Fandoms:</b> <%= item.fandoms %>
-        <% end %>
-        <br/>
-
-        <% if item.date.present? %>
-          <b>Date:</b> <%= item.date %>
-          <!--@Model.Date.ToString("yyyy-MM-dd")-->
-          <% if is_story && item.updated.present? %>
-            - <b>Updated:</b> <%= item.updated %>
-            <!--ToString("yyyy-MM-dd")-->
-          <% end %>
-          <br/>
-        <% end %>
-
-        <% if item.warnings.present? %>
-          <b>Warnings:</b> <%= item.warnings %><br/>
-        <% end %>
-        <% if item.relationships.present? %>
-          <b>Relationships:</b> <%= item.relationships %><br/>
-        <% end %>
-        <% if item.characters.present? %>
-          <b>Characters:</b> <%= item.characters %><br/>
-        <% end %>
-        <% if item.tags.present? %>
-          <b>Tags:</b> <%= item.tags %><br/>
-        <% end %>
+    <div id="<%= "meta-#{item_id}" %>" class="col-lg-6 col-md-12">
+      <b>Rating:</b> <%= item.rating.present? ? item.rating : "None" %><br/>
+      <b>Warnings:</b> <%= item.warnings.present? ? item.warnings : "None" %><br/>
+      <b>Categories:</b> <%= item.categories.present? ? item.categories : "None" %><br/>
+      <b>Fandoms:</b> <%= item.fandoms.present? ? item.fandoms : "None" %><br/>
+      <b>Relationships:</b> <%= item.relationships.present? ? item.relationships : "None" %><br/>
+      <b>Characters:</b> <%= item.characters.present? ? item.characters : "None" %><br/>
+      <b>Tags:</b> <%= item.tags.present? ? item.tags : "None" %><br/>
+      <b>Date:</b> <%= item.date.present? ? item.date.to_date.to_s(:iso8601)   : "No date" %>
+      <% if is_story %>
+        - <b>Updated:</b> <%= item.updated.present? ? item.updated.to_date.to_s(:iso8601)   : "No update date set" %>
+      <% end %>
+      <br/>
 
       <b>Summary:</b> <%= item.summary.html_safe %><br/>
 
@@ -101,7 +96,7 @@
     </div><!-- end meta -->
 
     <!-- Audit -->
-    <div id="<%= "audit-#{item_id}" %>" class="col col-6">
+    <div id="<%= "audit-#{item_id}" %>" class="col-lg-6 col-md-12">
       <%= item.import_notes.html_safe %>
     </div>
   </div> <!-- end details -->

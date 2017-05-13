@@ -67,7 +67,11 @@ class AuthorsController < ApplicationController
                     mark: author.imported,
                     messages: ["Could not  #{imported_status}"] }
     end
-    render json: response, content_type: "text/json"
+    if request.xhr?
+      render json: response, content_type: "text/json"
+    else
+      @api_response = response[0][:messages]
+    end
   end
 
   def dni
@@ -85,6 +89,10 @@ class AuthorsController < ApplicationController
                     dni: author.do_not_import,
                     messages: ["Could not #{imported_status}"] }
     end
-    render json: response, content_type: "text/json"
+    if request.xhr?
+      render json: response, content_type: "text/json"
+    else
+      @api_response = response[0][:messages]
+    end
   end
 end

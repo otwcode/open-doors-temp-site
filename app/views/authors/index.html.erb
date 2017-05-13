@@ -16,7 +16,7 @@
               <%= author.name %>
             </h2>
           </div>
-          <div class="col-md-8 col-sm-9 extra-space">
+          <div class="col-md-8 col-sm-9 extra-space text-right">
             <% unless author.imported %>
               <%= link_to "Import Everything", author_import_path(author.id),
                           id: "author-import-#{author.id}", remote: true,
