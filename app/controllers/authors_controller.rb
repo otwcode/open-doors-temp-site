@@ -29,8 +29,8 @@ class AuthorsController < ApplicationController
     respond_to :json
     author = Author.find(params[:author_id])
 
-    works = author.stories.map { |s| story_to_work(s) }
-    bookmarks = author.bookmarks.map { |b| bookmark_to_ao3(b, @client.config.archivist) }
+    works = author.stories.map { |s| story_to_work(s, @client.config.collection) }
+    bookmarks = author.bookmarks.map { |b| bookmark_to_ao3(b, @client.config.archivist, @client.config.collection) }
 
     response = @client.import(works: works, bookmarks: bookmarks)
     works_responses = response[0]["works"]
