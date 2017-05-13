@@ -63,7 +63,8 @@
   <h1><%= APP_CONFIG[:name] %></h1>
 
   <div class="card">
-    <dl class="row card-block <%= @active_host %>">
+    <h2><a href="<%= "#site-config" %>" data-toggle="collapse">Site Config</a></h2>
+    <dl id="site-config" class="row card-block <%= @active_host %> collapse">
       <dt class="col-sm-2">Send emails:</dt>
       <dd class="col-sm-10"><%= @site_config.send_email %></dd>
 
