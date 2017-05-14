@@ -105,7 +105,12 @@ section {
 }
 
 .btn-dni {
-  @include button-variant(#fff, #de90a6, #de90a6);
+  @include button-variant(#fff, #cb8498, #de90a6);
+  text-decoration: none;
+}
+
+.btn-clear {
+  @include button-variant(#fff, #906b59, #78594a);
   text-decoration: none;
 }
 

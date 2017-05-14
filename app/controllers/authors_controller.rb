@@ -29,20 +29,33 @@ class AuthorsController < ApplicationController
     respond_to :json
     author = Author.find(params[:author_id])
 
-    works = author.stories.map { |s| story_to_work(s, @site_config.collection_name) }
-    bookmarks = author.bookmarks.map { |b| bookmark_to_ao3(b, @client.config.archivist, @site_config.collection_name) }
+    if author.do_not_import
+      response = [
+        {
+          status: :unprocessable_entity,
+          messages: [
+            "This author is set to do NOT import."
+          ],
+          works: [],
+          bookmarks: []
+        }
+      ]
+    else
+      works = author.stories.map { |s| story_to_work(s, @site_config.collection_name) }
+      bookmarks = author.bookmarks.map { |b| bookmark_to_ao3(b, @client.config.archivist, @site_config.collection_name) }
 
-    response = @client.import(works: works, bookmarks: bookmarks)
-    works_responses = response[0]["works"]
-    if works_responses.present?
-      works_responses.each do |work_response|
-        update_item(:story, work_response.symbolize_keys)
+      response = @client.import(works: works, bookmarks: bookmarks)
+      works_responses = response[0]["works"]
+      if works_responses.present?
+        works_responses.each do |work_response|
+          update_item(:story, work_response.symbolize_keys)
+        end
       end
-    end
-    bookmarks_responses = response[0]["bookmarks"]
-    if bookmarks_responses.present?
-      bookmarks_responses.each do |bookmark_response|
-        update_item(:bookmark, bookmark_response.symbolize_keys)
+      bookmarks_responses = response[0]["bookmarks"]
+      if bookmarks_responses.present?
+        bookmarks_responses.each do |bookmark_response|
+          update_item(:bookmark, bookmark_response.symbolize_keys)
+        end
       end
     end
     if request.xhr?
@@ -71,7 +84,7 @@ class AuthorsController < ApplicationController
   def dni
     respond_to :json
     author = Author.find(params[:author_id])
-    imported_status = "set author to #{author.do_not_import ? "NOT " : ""}allow importing."
+    imported_status = "set author to #{!author.do_not_import ? "NOT " : ""}allow importing."
     author.update_attributes!(do_not_import: !author.do_not_import, audit_comment: imported_status)
     response = []
     response << { status: :ok,
