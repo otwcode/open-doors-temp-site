@@ -65,8 +65,6 @@
 
   summaryDiv = $("#author-" + authorId + " .author.message")
   summaryDiv.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
-  itemDiv = $("#" + type + "-" + itemId + " .message")
-  itemDiv.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
 
   if buttonType in ["import", "mark", "dni"]
     $.ajax
@@ -82,17 +80,21 @@
         itemSection = $("##{type}-#{itemId}")
         switch buttonType
           when "import"
+            itemDiv = $("#" + type + "-" + itemId + " .message")
+            itemDiv.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
             processImportResponse(data[0], summaryDiv)
           when "dni"
             if data[0]["dni"] == true
               authorArticle.addClass("do_not_import")
               itemSection.addClass("do_not_import")
               link.text "Mark as ALLOW import"
+              authorArticle.find("a[data-button='import']").hide()
               itemSection.find("a[data-button='import']").hide()
             else
               authorArticle.removeClass("do_not_import")
               itemSection.removeClass("do_not_import")
               link.text "Mark as do NOT import"
+              authorArticle.find("a[data-button='import']").show()
               itemSection.find("a[data-button='import']").show()
           when "mark" # Not currently enabled
             if data[0]["mark"] == true

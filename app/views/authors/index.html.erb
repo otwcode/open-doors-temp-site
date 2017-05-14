@@ -20,8 +20,8 @@
             <% unless author.imported %>
               <%= link_to "Import Everything", author_import_path(author.id),
                           id: "author-import-#{author.id}", remote: true,
+                          class: "btn-sm btn-import", hidden: author.do_not_import,
                           data: { method: :post, button: :import, author: author.id } %>
-                <!--, class: "btn btn-info" -->
             <% end %>
             <!-- Mark as import - we don't think we need this anymore
             <span>&nbsp;</span>
@@ -31,8 +31,11 @@
             -->
             <span>&nbsp;</span>
              <%= link_to (author.do_not_import ? "Mark as ALLOW import" : "Mark as do NOT import"), author_dni_path(author.id),
-                        id: "author-dni-#{author.id}", remote: true,
-                        data: { method: :post, button: :dni, author: author.id } %>
+                         id: "author-dni-#{author.id}", remote: true,
+                         class: "btn-sm btn-dni", confirm: "Are you sure this author should not be imported?",
+                         data: { method: :post, button: :dni, author: author.id } %>
+            <span>&nbsp;</span>
+            <a href="#" onclick="javascript:clearAllMessages(<%= author.id %>)" class="btn-sm btn-clear">Clear messages</a>
           </div>
         </div>
         <div class="author message <%= @api_response %>">
