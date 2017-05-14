@@ -41,16 +41,20 @@
     </h4>
 
     <!-- BUTTONS -->
-    <div class=" col-md-7 col-sm extra-space text-right" style="padding-top: 2px; padding-right: 0px;">
+    <div class=" col-md-7 col-sm extra-space text-right" style="padding-right: 0px;">
       <% if type != :coauthored_story %>
         <!-- Import -->
         <span id="<%= "import-#{item_id}" %>">
           <% if item.imported %>
             <a href="<%= item.ao3_url %>" target="_blank"><%= item.ao3_url %></a>
           <% else %>
-            <%= link_to "Import", item_import_path(type, item.id),
-                        id: "item-import-#{item_id}", remote: true,
-                        data: {method: :post, button: :import, item: item.id, type: type, class: "btn btn-info"} %>
+              <%= link_to "Import", item_import_path(type, item.id),
+                          id: "item-import-#{item_id}", remote: true,
+                          class: "btn-sm btn-import", hidden: item.do_not_import,
+                          data: {
+                            method: :post, button: :import,
+                            item: item.id, type: type
+                          } %>
           <% end %>
         </span>
         <!-- Mark as import - we don't think we need this anymore
@@ -62,7 +66,8 @@
         <span>&nbsp;</span>
         <%= link_to (item.do_not_import ? "Mark as ALLOW import" : "Mark as do NOT import"), item_dni_path(type, item.id),
                     id: "item-dni-#{item_id}", remote: true,
-                    data: { method: :post, button: :dni, item: item.id, type: type, confirm: "Are you sure this #{type} should not be imported?" } %>
+                    class: "btn-sm btn-dni", confirm: "Are you sure this #{type} should not be imported?",
+                    data: { method: :post, button: :dni, item: item.id, type: type } %>
       <% end %>
     </div>
   </div>

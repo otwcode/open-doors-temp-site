@@ -50,22 +50,23 @@ module ApplicationHelper
   def update_item(type, response)
     puts "\nupdate_item: #{response.inspect}"
 
-    work = nil
+    item = nil
     if type == :story
-      work = Story.find_by_id(response[:original_id])
+      item = Story.find_by_id(response[:original_id])
     elsif type == :bookmark
-      work = Bookmark.find_by_id(response[:original_id])
+      item = Bookmark.find_by_id(response[:original_id])
     end
 
-    if (response[:status].in? ["ok", "created", "already_imported"]) && (work.ao3_url != response[:url])
+    if (response[:status].in? ["ok", "created", "already_imported"]) && (item.ao3_url != response[:url])
         response[:messages] << "Archive URL updated to #{response[:url]}."
-        work.update_attributes!(
+        item.update_attributes!(
           imported: true,
           ao3_url: response[:url],
           audit_comment: response[:messages].join(" ")
         )
     elsif response[:status] == "unprocessable_entity"
     end
+    response[:author_id] = item.author.id
     response
   end
 end # ApplicationHelper

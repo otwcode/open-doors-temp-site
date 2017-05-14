@@ -15,7 +15,6 @@ module OtwArchive
     def import(items_to_import = {})
       request_body = Request::ImportRequest.populate_from_config(
           @config,
-          "",
           items_to_import[:works],
           items_to_import[:bookmarks])
       responses = []

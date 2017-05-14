@@ -18,21 +18,45 @@ class ItemsController < ApplicationController
     type = params[:type]
     id = params[:id]
     ao3_type = type == "story" ? "works" : "bookmarks"
+    final_response = [{}] # Needs to be the same shape as the response for authors
 
     item = find_item(id, type)
 
-    item_request =
-      if type == "story"
-        { works: [story_to_work(item, @client.config.collection)] }
-      else
-        { bookmarks: [bookmark_to_ao3(bookmark, @client.config.archivist, @client.config.collection)] }
-      end
+    if !item.do_not_import && !item.author.do_not_import
+      item_request =
+        if type == "story"
+          {
+            works: [
+              story_to_work(item, @site_config.collection_name)
+            ]
+          }
+        else
+          {
+            bookmarks: [
+              bookmark_to_ao3(bookmark, @client.config.archivist, @site_config.collection_name)
+            ]
+          }
+        end
 
-    response = @client.import(item_request)
+      response = @client.import(item_request)
 
-    item_response = response[0][ao3_type][0]
-    final_response = [{}] # Needs to be the same shape as the response for authors
-    final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
+      item_response = response[0][ao3_type][0]
+      final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
+    else
+      final_response[0][ao3_type] = [
+        {
+          status: :unprocessable_entity,
+          original_id: item.id,
+          messages: [
+            if item.do_not_import
+              "This #{type} is set to 'do NOT import'."
+            elsif item.author.do_not_import
+              "The author of this #{type} is set to 'do NOT import'."
+            end
+          ]
+        }
+      ]
+    end
 
     puts "item import: #{final_response.inspect}"
 

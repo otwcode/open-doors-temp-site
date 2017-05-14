@@ -82,7 +82,7 @@ ul.pagination > li.active > a {
 article {
   padding: 5px;
   border: #95dafe solid 1px;
-  border-radius: 5px;
+  border-radius: 0.2rem;
   margin-bottom: 10px;
 }
 
@@ -90,10 +90,23 @@ section {
   margin-top: 10px;
   display: block;
   background-color: rgba(195, 241, 255, 0.2);
-  border-radius: 10px;
+  border-radius: 0.2rem;
   text-decoration: none;
   margin-left: 0px;
   margin-right: 5px;
+}
+
+.btn-sm:hover {
+  text-decoration: none;
+}
+.btn-import {
+  @include button-variant(#fff, #5bc0de, #5bc0de);
+  text-decoration: none;
+}
+
+.btn-dni {
+  @include button-variant(#fff, #de90a6, #de90a6);
+  text-decoration: none;
 }
 
 .imported {
@@ -103,12 +116,11 @@ section {
 
 .do_not_import {
   background-color: #f7d0cb;
-  border-radius: 10px;
   text-decoration: none;
   color: gray;
 }
 
-.broken_ink {
+.broken_link {
   background-color: #fbc680;
   border-radius: 10px;
   text-decoration: none;

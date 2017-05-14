@@ -12,6 +12,6 @@ class Author < ApplicationRecord
   validates_presence_of :name
 
   def coauthored_stories
-    Story.where(coauthor_id: self.id)
+    Story.where(coauthor_id: id)
   end
 end
