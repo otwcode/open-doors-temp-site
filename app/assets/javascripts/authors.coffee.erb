@@ -30,16 +30,16 @@
     mainDiv.addClass("imported")
     importButton = $("#import-#{type}-#{itemId}")
     importButton.html "<a href=\"#{url}\" target=\"_blank\">#{url}</a>"
-    markButton = $("#item-mark-#{type}-#{itemId}")
-    markButton.text "Mark NOT imported"
+#    markButton = $("#item-mark-#{type}-#{itemId}")
+#    markButton.text "Mark NOT imported"
 
 
-@writeSummaryToDiv = (data, summaryTargetDiv, status) ->
+@writeSummaryToDiv = (data, summaryTargetDiv, status, authorId) ->
   console.log "\nwriteSummaryToDiv"
   debug(data)
   if data && data["messages"]
     summary = data["messages"]
-    summaryTargetDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{summary}</div>"
+    summaryTargetDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">[#{authorId}] #{summary}</div>"
 
 
 @processImportResponse = (data) ->
@@ -76,7 +76,7 @@
       success: (data, status, xhr) ->
         console.log("data before write summaryDiv")
         debug(data)
-        writeSummaryToDiv(data[0], summaryDiv, status)
+        writeSummaryToDiv(data[0], summaryDiv, status, authorId)
 
         authorArticle = $("#author-#{authorId}")
         itemSection = $("##{type}-#{itemId}")
@@ -88,10 +88,12 @@
               authorArticle.addClass("do_not_import")
               itemSection.addClass("do_not_import")
               link.text "Mark as ALLOW import"
+              itemSection.find("a[data-button='import']").hide()
             else
               authorArticle.removeClass("do_not_import")
               itemSection.removeClass("do_not_import")
               link.text "Mark as do NOT import"
+              itemSection.find("a[data-button='import']").show()
           when "mark" # Not currently enabled
             if data[0]["mark"] == true
               authorArticle.addClass("imported")
@@ -107,7 +109,6 @@
               itemSection.find("a[data-button='import']").show()
           else
             alert "Unknown button"
-        itemDiv.html ""
 
       error: (data, status, error) ->
         message = "<p class=\"alert alert-danger\">An error occurred while processing the request: #{error}</p>"

@@ -29,8 +29,8 @@ class AuthorsController < ApplicationController
     respond_to :json
     author = Author.find(params[:author_id])
 
-    works = author.stories.map { |s| story_to_work(s, @client.config.collection) }
-    bookmarks = author.bookmarks.map { |b| bookmark_to_ao3(b, @client.config.archivist, @client.config.collection) }
+    works = author.stories.map { |s| story_to_work(s, @site_config.collection_name) }
+    bookmarks = author.bookmarks.map { |b| bookmark_to_ao3(b, @client.config.archivist, @site_config.collection_name) }
 
     response = @client.import(works: works, bookmarks: bookmarks)
     works_responses = response[0]["works"]
@@ -56,17 +56,11 @@ class AuthorsController < ApplicationController
     respond_to :json
     author = Author.find(params[:author_id])
     imported_status = "set author to #{author.imported ? "" : "NOT "}imported."
-    author.update_attributes(imported: !author.imported, audit_comment: imported_status)
+    author.update_attributes!(imported: !author.imported, audit_comment: imported_status)
     response = []
-    if author.save
-      response << { status: :ok,
-                    mark: author.imported,
-                    messages: ["Successfully #{imported_status}"] }
-    else
-      response << { status: :error,
-                    mark: author.imported,
-                    messages: ["Could not  #{imported_status}"] }
-    end
+    response << { status: :ok,
+                  mark: author.imported,
+                  messages: ["Successfully #{imported_status}"] }
     if request.xhr?
       render json: response, content_type: "text/json"
     else
@@ -78,17 +72,11 @@ class AuthorsController < ApplicationController
     respond_to :json
     author = Author.find(params[:author_id])
     imported_status = "set author to #{author.do_not_import ? "NOT " : ""}allow importing."
-    author.update_attributes(do_not_import: !author.do_not_import, audit_comment: imported_status)
+    author.update_attributes!(do_not_import: !author.do_not_import, audit_comment: imported_status)
     response = []
-    if author.save
-      response << { status: :ok,
-                    dni: author.do_not_import,
-                    messages: ["Successfully #{imported_status}"] }
-    else
-      response << { status: :error,
-                    dni: author.do_not_import,
-                    messages: ["Could not #{imported_status}"] }
-    end
+    response << { status: :ok,
+                  dni: author.do_not_import,
+                  messages: ["Successfully #{imported_status}"] }
     if request.xhr?
       render json: response, content_type: "text/json"
     else
