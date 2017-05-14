@@ -35,7 +35,10 @@
                          class: "btn-sm btn-dni", confirm: "Are you sure this author should not be imported?",
                          data: { method: :post, button: :dni, author: author.id } %>
             <span>&nbsp;</span>
-            <a href="#" onclick="javascript:clearAllMessages(<%= author.id %>)" class="btn-sm btn-clear">Clear messages</a>
+            <%= link_to "Clear messages", "#",
+                        id: "author-clear-#{author.id}", remote: true,
+                        class: "btn-sm btn-clear",
+                        data: { method: :post, button: :clear, author: author.id } %>
           </div>
         </div>
         <div class="author message <%= @api_response %>">

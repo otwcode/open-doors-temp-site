@@ -22,7 +22,7 @@ FactoryGirl.define do
       # evaluator, which stores all values from the factory, including transient
       # attributes; `create_list`'s second argument is the number of records to create
       after(:create) do |author, evaluator|
-        create_list(:story, evaluator.stories_count, author: author)
+        create_list(:story, evaluator.stories_count, author: author, audit_comment: "A story")
       end
     end
   end
