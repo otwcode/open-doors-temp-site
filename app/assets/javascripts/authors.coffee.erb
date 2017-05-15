@@ -61,27 +61,36 @@
   type = link.attr("data-type")
   authorId = link.attr("data-author")
   itemId = link.attr("data-item")
+
   clearAllMessages(authorId)
 
+  authorArticle = $("#author-#{authorId}")
+  itemSection = $("##{type}-#{itemId}")
   summaryDiv = $("#author-" + authorId + " .author.message")
 
   if buttonType in ["import", "mark", "dni"]
+    linkhtml = link.html()
+    link.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
+    link.prop("disabled", true)
+
     summaryDiv.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
     $.ajax
       type: "POST"
       url: link[0]
       dataType: "json"
+
       success: (data, status, xhr) ->
         console.log("data before write summaryDiv")
         debug(data)
+
+        # Reinstate button
+        link.html linkhtml
+        link.prop("disabled", false)
+
         writeSummaryToDiv(data[0], summaryDiv, status, authorId)
 
-        authorArticle = $("#author-#{authorId}")
-        itemSection = $("##{type}-#{itemId}")
         switch buttonType
           when "import"
-            itemDiv = $("#" + type + "-" + itemId + " .message")
-            itemDiv.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
             processImportResponse(data[0], summaryDiv)
           when "dni"
             if data[0]["dni"] == true
@@ -113,8 +122,12 @@
             alert "Unknown button"
 
       error: (data, status, error) ->
+        link.html linkhtml
+        link.prop("disabled", false)
+
         message = "<p class=\"alert alert-danger\">An error occurred while processing the request: #{error}</p>"
         summaryDiv.html message
+        itemDiv = itemSection.find(" .message")
         itemDiv.html message
         debug(data)
   else if buttonType in ["clear"]
