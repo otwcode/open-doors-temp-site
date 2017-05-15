@@ -132,8 +132,19 @@ section {
   color: #494949;
 }
 
+/* Layout */
 .audit {
   font-size: small;
   text-decoration: none;
   font-weight: normal;
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+
+  overflow: auto;
+  max-height: 400px;
+  -moz-transition: height ease 0.5s;
+  -o-transition: height ease 0.5s;
+  -webkit-transition: height ease 0.5s;
+  transition: height ease 0.5s;
 }
