@@ -34,7 +34,7 @@
         <% else %>
           <a href="<%= "#details-#{type}-#{item.id}" %>" data-toggle="collapse">(expand)</a>
         <% end %>
-        <% if item.import_notes.present? %>
+        <% if item.audits.present? %>
           <i class="fa fa-info-circle" aria-hidden="true"></i>
         <% end %>
       </a>
@@ -75,8 +75,8 @@
   <div class="w-100"></div>
 
   <!-- Blurb -->
-  <div id="<%= "details-#{item_id}" %>" class="row col-12 collapse">
-    <div id="<%= "meta-#{item_id}" %>" class="col-lg-6 col-md-12">
+  <div id="<%= "details-#{item_id}" %>" class="details row col-12 collapse">
+    <div id="<%= "meta-#{item_id}" %>" class="blurb col-lg-6 col-md-12">
       <b>Rating:</b> <%= item.rating.present? ? item.rating : "None" %><br/>
       <b>Warnings:</b> <%= item.warnings.present? ? item.warnings : "None" %><br/>
       <b>Categories:</b> <%= item.categories.present? ? item.categories : "None" %><br/>
@@ -104,8 +104,10 @@
     </div><!-- end meta -->
 
     <!-- Audit -->
-    <div id="<%= "audit-#{item_id}" %>" class="col-lg-6 col-md-12">
-      <%= item.import_notes.html_safe %>
+    <div id="<%= "audit-#{item_id}" %>" class="audit col-lg-6 col-md-12">
+      <% item.audits.each do |audit| %>
+        <%= audit.created_at %> - [<%= audit.remote_address %>] <%= audit.comment %><br/>
+      <% end %>
     </div>
   </div> <!-- end details -->
 
@@ -118,5 +120,4 @@
         </ul>
       <% end %>
     </div>
-
 </section>
