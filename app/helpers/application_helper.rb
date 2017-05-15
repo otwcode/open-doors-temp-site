@@ -70,7 +70,7 @@ module ApplicationHelper
         auditable_type: item.class.name,
         associated_id: item.author.id,
         associated_type: item.author.class.name,
-        comment: "#{response[:status].humanize}: #{response[:messages].join(' ')}"
+        comment: "#{response[:status].humanize}: #{response[:messages].join(' ')}".truncate(254)
       )
       audit.save!
     end
