@@ -58,13 +58,21 @@ module ApplicationHelper
     end
 
     if (response[:status].in? ["ok", "created", "already_imported"]) && (item.ao3_url != response[:url])
-        response[:messages] << "Archive URL updated to #{response[:url]}."
-        item.update_attributes!(
-          imported: true,
-          ao3_url: response[:url],
-          audit_comment: response[:messages].join(" ")
-        )
+      response[:messages] << "Archive URL updated to #{response[:url]}."
+      item.update_attributes!(
+        imported: true,
+        ao3_url: response[:url],
+        audit_comment: response[:messages].join(" ")
+      )
     elsif response[:status] == "unprocessable_entity"
+      audit = Audited::Audit.new(
+        auditable_id: item.id,
+        auditable_type: item.class.name,
+        associated_id: item.author.id,
+        associated_type: item.author.class.name,
+        comment: "#{response[:status].humanize}: #{response[:messages].join(' ')}"
+      )
+      audit.save!
     end
     response[:author_id] = item.author.id
     response
