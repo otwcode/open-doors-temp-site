@@ -20,6 +20,24 @@
     divClass = "alert alert-danger"
 
 
+@refreshAudit = (type, itemId) ->
+  if (type? && itemId?)
+    alert("Refresh audit for #{type} #{itemId}")
+    itemAudit = $("#audit-#{type}-#{itemId}")
+    $.ajax
+      type: "GET"
+      url: "items/audit/#{type}/#{itemId}"
+      dataType: "text"
+
+      success: (data, status, xhr) ->
+        console.log("Refresh audit success")
+        itemAudit.html data
+      error: (data, status, error) ->
+        console.log("Error: #{error}")
+      complete : (xhr, status) ->
+        console.log("complete")
+
+
 @writeItemToDiv = (type, status, itemId, message, url) ->
   console.log("\ndivClass")
   debug(status)
@@ -92,6 +110,8 @@
         switch buttonType
           when "import"
             processImportResponse(data[0], summaryDiv)
+            refreshAudit(type, itemId)
+
           when "dni"
             if data[0]["dni"] == true
               authorArticle.addClass("do_not_import")
@@ -105,6 +125,8 @@
               link.text "Mark as do NOT import"
               authorArticle.find("a[data-button='import']").show()
               itemSection.find("a[data-button='import']").show()
+            refreshAudit(type, itemId)
+
           when "mark" # Not currently enabled
             if data[0]["mark"] == true
               authorArticle.addClass("imported")
@@ -118,6 +140,8 @@
               link.text "Mark as imported"
               $("#author-#{authorId} a[data-button='import']").show()
               itemSection.find("a[data-button='import']").show()
+            refreshAudit(type, itemId)
+
           else
             alert "Unknown button"
 
@@ -130,13 +154,17 @@
         itemDiv = itemSection.find(" .message")
         itemDiv.html message
         debug(data)
-  else if buttonType in ["clear"]
+
+  else if buttonType in ["clear", "audit"]
     switch buttonType
       when "clear"
         clearAllMessages(authorId)
+      when "audit"
+        refreshAudit(type, id)
 
   else
     alert "Unknown button - something is broken!"
+
   event.preventDefault();
   false
 

@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   scope "/#{APP_CONFIG[:sitekey]}" do
-    root :to => 'authors#index'
+    root to: 'authors#index'
 
     resources :authors do
       post :import
@@ -17,5 +17,6 @@ Rails.application.routes.draw do
     post "items/import/:type/:id" => "items#import", as: :item_import
     post "items/mark/:type/:id" => "items#mark", as: :item_mark
     post "items/dni/:type/:id" => "items#dni", as: :item_dni
+    get "items/audit/:type/:id" => "items#audit", as: :item_audit
   end
 end

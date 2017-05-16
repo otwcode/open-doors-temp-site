@@ -39,6 +39,11 @@
                         id: "author-clear-#{author.id}", remote: true,
                         class: "btn-sm btn-clear",
                         data: { method: :post, button: :clear, author: author.id } %>
+            <!--<span>&nbsp;</span>-->
+            <!-- %= # link_to "Audit log", "#",
+                # id: "author-audit-#{author.id}", remote: true,
+                # class: "btn-sm btn-clear",
+                # data: { method: :get, button: :audit, author: author.id } % -->
           </div>
         </div>
         <div class="author message <%= @api_response %>">
