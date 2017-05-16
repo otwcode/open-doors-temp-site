@@ -22,7 +22,6 @@
 
 @refreshAudit = (type, itemId) ->
   if (type? && itemId?)
-    alert("Refresh audit for #{type} #{itemId}")
     itemAudit = $("#audit-#{type}-#{itemId}")
     $.ajax
       type: "GET"
@@ -65,10 +64,12 @@
   debug(data)
   if data.hasOwnProperty("works")
     data["works"].forEach( (item, idx) ->
+      refreshAudit("story", item["original_id"])
       writeItemToDiv("story", item["status"], item["original_id"], item["messages"].join("<br/>"), item["url"])
     )
   if data.hasOwnProperty("bookmarks")
     data["bookmarks"].forEach( (item, idx) ->
+      refreshAudit("bookmark", item["original_id"])
       writeItemToDiv("bookmark", item["status"], item["original_id"], item["messages"].join("<br/>"), item["url"])
     )
 
@@ -91,7 +92,6 @@
     link.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
     link.prop("disabled", true)
 
-    summaryDiv.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
     $.ajax
       type: "POST"
       url: link[0]
@@ -110,7 +110,6 @@
         switch buttonType
           when "import"
             processImportResponse(data[0], summaryDiv)
-            refreshAudit(type, itemId)
 
           when "dni"
             if data[0]["dni"] == true
