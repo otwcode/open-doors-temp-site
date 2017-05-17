@@ -34,9 +34,7 @@
         <% else %>
           <a href="<%= "#details-#{type}-#{item.id}" %>" data-toggle="collapse">(expand)</a>
         <% end %>
-        <% if item.audits.present? %>
-          <i class="fa fa-info-circle" aria-hidden="true"></i>
-        <% end %>
+        <i id="<%= "info-img-#{item_id}" %>" class="fa fa-info-circle" aria-hidden="true" hidden="<%= item.audits.present?%>"></i>
       </a>
     </h4>
 

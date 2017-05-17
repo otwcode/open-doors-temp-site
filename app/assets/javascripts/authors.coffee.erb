@@ -39,6 +39,7 @@
       success: (data, status, xhr) ->
         console.log("Refresh audit success")
         itemAudit.html data
+        $("#info-img-#{type}-#{itemId}").attr("hidden", false)
       error: (data, status, error) ->
         console.log("Error: #{error}")
       complete : (xhr, status) ->
