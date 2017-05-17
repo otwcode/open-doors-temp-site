@@ -114,7 +114,7 @@ class ItemsController < ApplicationController
 
     item = find_item(id, type)
 
-    audit = item.audits.map { |audit| "#{audit.created_at} - [#{audit.remote_address}] #{CGI::escapeHTML(audit.comment)}<br/>" }.join()
+    audit = item.audits.map { |audit| "#{audit.created_at} - [#{audit.remote_address}] #{CGI.escapeHTML(audit.comment)}<br/>" }.join()
 
     puts audit
     
