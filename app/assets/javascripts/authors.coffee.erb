@@ -23,9 +23,17 @@
 @refreshAudit = (type, itemId) ->
   if (type? && itemId?)
     itemAudit = $("#audit-#{type}-#{itemId}")
+    path = window.location.pathname
+    host = window.location.protocol + "//" + window.location.host
+
+    myRegexp = /(?:\/)(.*?)(?:\/|$)/g
+    match = myRegexp.exec(path)
+    sitename = match[1]
+    console.log(host)
+    console.log(match[1])
     $.ajax
       type: "GET"
-      url: "items/audit/#{type}/#{itemId}"
+      url: "#{host}/#{sitename}/items/audit/#{type}/#{itemId}"
       dataType: "text"
 
       success: (data, status, xhr) ->
@@ -123,7 +131,9 @@
               itemSection.removeClass("do_not_import")
               link.text "Mark as do NOT import"
               authorArticle.find("a[data-button='import']").show()
-              itemSection.find("a[data-button='import']").show()
+              itemImport = itemSection.find("a[data-button='import']")
+              itemImport.attr("hidden", false)
+              itemImport.show()
             refreshAudit(type, itemId)
 
           when "mark" # Not currently enabled
