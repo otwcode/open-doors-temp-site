@@ -56,10 +56,10 @@
           <% end %>
         <% end %>
 
-        <% if author.bookmarks.present? %>
-          <h3>Bookmarks</h3>
-          <% author.bookmarks.each do |bookmark| %>
-              <%= render partial: "/shared/meta", locals: { item: bookmark, type: :bookmark, author_view: true } %>
+        <% if author.story_links.present? %>
+          <h3>Story Links</h3>
+          <% author.story_links.each do |story_link| %>
+              <%= render partial: "/shared/meta", locals: {item: story_link, type: :bookmark, author_view: true } %>
           <% end %>
         <% end %>
 

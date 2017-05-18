@@ -33,7 +33,7 @@ class ItemsController < ApplicationController
         else
           {
             bookmarks: [
-              bookmark_to_ao3(bookmark, @client.config.archivist, @site_config.collection_name)
+              storylink_to_bookmark(item, @client.config.archivist, @site_config.collection_name)
             ]
           }
         end
@@ -43,6 +43,7 @@ class ItemsController < ApplicationController
       item_response = response[0][ao3_type][0]
       final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
     else
+
       final_response[0][ao3_type] = [
         {
           status: :unprocessable_entity,
@@ -127,7 +128,7 @@ class ItemsController < ApplicationController
     if type == "story"
       Story.find(id)
     else
-      Bookmark.find(id)
+      StoryLink.find(id)
     end
   end
 end

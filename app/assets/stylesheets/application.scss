@@ -96,6 +96,7 @@ section {
   margin-right: 5px;
 }
 
+/* Buttons */
 .btn-sm:hover {
   text-decoration: none;
 }
@@ -114,6 +115,7 @@ section {
   text-decoration: none;
 }
 
+/* Import statuses */
 .imported {
   background-color: lightgray;
   color: #484848;
@@ -140,11 +142,20 @@ section {
   margin-top: 5px;
   margin-bottom: 5px;
 
-
   overflow: auto;
   max-height: 400px;
   -moz-transition: height ease 0.5s;
   -o-transition: height ease 0.5s;
   -webkit-transition: height ease 0.5s;
   transition: height ease 0.5s;
+}
+
+.fa-info-circle {
+  color: rgb(2, 117, 216);
+
+  font-family: FontAwesome;
+  font-size: 14px;
+  height: 14px;
+  line-height: 14px;
+  width: 12px;
 }
