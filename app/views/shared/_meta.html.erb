@@ -34,7 +34,10 @@
         <% else %>
           <a href="<%= "#details-#{type}-#{item.id}" %>" data-toggle="collapse">(expand)</a>
         <% end %>
-        <i id="<%= "info-img-#{item_id}" %>" class="fa fa-info-circle" aria-hidden="true" hidden="<%= item.audits.present?%>"></i>
+        <i id="<%= "info-img-#{item_id}" %>"
+           class="fa fa-info-circle"
+           aria-hidden="true"
+           style="display: <%= item.audits.empty? ? "none" : "inline-block" %>"></i>
       </a>
     </h4>
 

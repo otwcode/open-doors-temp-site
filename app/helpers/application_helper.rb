@@ -28,22 +28,23 @@ module ApplicationHelper
     )
   end
 
-  def bookmark_to_ao3(bookmark, archivist, collection)
+  def storylink_to_bookmark(bookmark, archivist, collection)
+    puts bookmark.inspect
     Request::Bookmark.new(
-        archivist,
-        bookmark.id,
-        bookmark.url,
-        bookmark.author.name,
-        bookmark.title,
-        bookmark.summary,
-        bookmark.fandoms,
-        bookmark.rating,
-        bookmark.categories,
-        collection,
-        bookmark.notes,
-        bookmark.tags,
-        private: false,
-        rec: false
+      archivist,
+      bookmark.id,
+      bookmark.url,
+      bookmark.author.name,
+      bookmark.title,
+      bookmark.summary,
+      bookmark.fandoms,
+      bookmark.rating,
+      bookmark.categories,
+      collection,
+      bookmark.notes,
+      bookmark.tags,
+      false,
+      false
     )
   end
 
@@ -54,7 +55,7 @@ module ApplicationHelper
     if type == :story
       item = Story.find_by_id(response[:original_id])
     elsif type == :bookmark
-      item = Bookmark.find_by_id(response[:original_id])
+      item = StoryLink.find_by_id(response[:original_id])
     end
 
     if (response[:status].in? ["ok", "created", "already_imported"]) && (item.ao3_url != response[:url])
@@ -64,7 +65,7 @@ module ApplicationHelper
         ao3_url: response[:url],
         audit_comment: response[:messages].join(" ")
       )
-    elsif response[:status] == "unprocessable_entity"
+    elsif response[:status].in? ["unprocessable_entity", "bad_request"]
       audit = Audited::Audit.new(
         auditable_id: item.id,
         auditable_type: item.class.name,

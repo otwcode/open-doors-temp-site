@@ -42,7 +42,7 @@ class AuthorsController < ApplicationController
       ]
     else
       works = author.stories.map { |s| story_to_work(s, @site_config.collection_name) }
-      bookmarks = author.bookmarks.map { |b| bookmark_to_ao3(b, @client.config.archivist, @site_config.collection_name) }
+      bookmarks = author.story_links.map { |b| storylink_to_bookmark(b, @client.config.archivist, @site_config.collection_name) }
 
       response = @client.import(works: works, bookmarks: bookmarks)
       works_responses = response[0]["works"]
@@ -51,7 +51,7 @@ class AuthorsController < ApplicationController
           update_item(:story, work_response.symbolize_keys)
         end
       end
-      bookmarks_responses = response[0]["bookmarks"]
+      bookmarks_responses = response[1]["bookmarks"]
       if bookmarks_responses.present?
         bookmarks_responses.each do |bookmark_response|
           update_item(:bookmark, bookmark_response.symbolize_keys)

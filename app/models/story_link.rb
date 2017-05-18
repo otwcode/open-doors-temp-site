@@ -1,4 +1,4 @@
-class Bookmark < ApplicationRecord
+class StoryLink < ApplicationRecord
   belongs_to :author
   audited comment_required: true, associated_with: :author
 

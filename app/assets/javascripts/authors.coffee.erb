@@ -12,7 +12,6 @@
 
 
 @divClass = (status) ->
-  console.log("\ndivClass")
   debug(status)
   if status in ["ok", "created", "success"]
     divClass = "alert alert-info"
@@ -39,7 +38,7 @@
       success: (data, status, xhr) ->
         console.log("Refresh audit success")
         itemAudit.html data
-        $("#info-img-#{type}-#{itemId}").attr("hidden", false)
+        $("#info-img-#{type}-#{itemId}").show()
       error: (data, status, error) ->
         console.log("Error: #{error}")
       complete : (xhr, status) ->
@@ -47,8 +46,8 @@
 
 
 @writeItemToDiv = (type, status, itemId, message, url) ->
-  console.log("\ndivClass")
-  debug(status)
+  console.log("write item to div")
+  debug("#{status} - #{type}")
   messageDiv = $("#" + type + "-" + itemId + " .message")
   messageDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{message}</div>"
   if status == "created" || status == "already_imported"
@@ -63,21 +62,25 @@
 @writeSummaryToDiv = (data, summaryTargetDiv, status, authorId) ->
   console.log "\nwriteSummaryToDiv"
   debug(data)
-  if data && data["messages"]
-    summary = data["messages"]
-    summaryTargetDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">[#{authorId}] #{summary}</div>"
+  summary = []
+  if data[0] && data[0]["messages"]
+    summary.push(data[0]["messages"])
+  if data[1] && data[1]["messages"]
+    summary.push(data[1]["messages"])
+  if summary.length > 0
+    summaryTargetDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{summary.join("<br/>")}</div>"
 
 
 @processImportResponse = (data) ->
   console.log("\nprocessImportResponse")
   debug(data)
-  if data.hasOwnProperty("works")
-    data["works"].forEach( (item, idx) ->
+  if data[0].hasOwnProperty("works")
+    data[0]["works"].forEach( (item, idx) ->
       refreshAudit("story", item["original_id"])
       writeItemToDiv("story", item["status"], item["original_id"], item["messages"].join("<br/>"), item["url"])
     )
-  if data.hasOwnProperty("bookmarks")
-    data["bookmarks"].forEach( (item, idx) ->
+  if data[1].hasOwnProperty("bookmarks")
+    data[1]["bookmarks"].forEach( (item, idx) ->
       refreshAudit("bookmark", item["original_id"])
       writeItemToDiv("bookmark", item["status"], item["original_id"], item["messages"].join("<br/>"), item["url"])
     )
@@ -114,11 +117,11 @@
         link.html linkhtml
         link.prop("disabled", false)
 
-        writeSummaryToDiv(data[0], summaryDiv, status, authorId)
+        writeSummaryToDiv(data, summaryDiv, status, authorId)
 
         switch buttonType
           when "import"
-            processImportResponse(data[0], summaryDiv)
+            processImportResponse(data, summaryDiv)
 
           when "dni"
             if data[0]["dni"] == true
