@@ -79,7 +79,13 @@
       refreshAudit("story", item["original_id"])
       writeItemToDiv("story", item["status"], item["original_id"], item["messages"].join("<br/>"), item["url"])
     )
-  if data[1].hasOwnProperty("bookmarks")
+  # Bookmarks might be in 0 if it's an individual import, or in 1 if it's an author import
+  if data[0].hasOwnProperty("bookmarks")
+    data[0]["bookmarks"].forEach( (item, idx) ->
+      refreshAudit("bookmark", item["original_id"])
+      writeItemToDiv("bookmark", item["status"], item["original_id"], item["messages"].join("<br/>"), item["url"])
+    )
+  if data[1] && data[1].hasOwnProperty("bookmarks")
     data[1]["bookmarks"].forEach( (item, idx) ->
       refreshAudit("bookmark", item["original_id"])
       writeItemToDiv("bookmark", item["status"], item["original_id"], item["messages"].join("<br/>"), item["url"])
