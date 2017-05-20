@@ -33,8 +33,7 @@ INSERT IGNORE INTO `archive_configs`
 -- Table structure for table `audits`
 --
 
-DROP TABLE IF EXISTS `audits`;
-CREATE TABLE `audits` (
+CREATE TABLE IF NOT EXISTS `audits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `auditable_id` int(11) DEFAULT NULL,
   `auditable_type` varchar(255) DEFAULT NULL,
@@ -63,10 +62,9 @@ CREATE TABLE `audits` (
 -- Table structure for table `authors`
 --
 
-DROP TABLE IF EXISTS `authors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `authors` (
+CREATE TABLE IF NOT EXISTS `authors` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `email` varchar(255) NOT NULL DEFAULT '',
@@ -142,10 +140,9 @@ UNLOCK TABLES;
 -- Table structure for table `bookmarks`
 --
 
-DROP TABLE IF EXISTS `bookmarks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `bookmarks` (
+CREATE TABLE IF NOT EXISTS `story_links` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
   `summary` text,
@@ -173,26 +170,29 @@ CREATE TABLE `bookmarks` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `bookmarks`
+-- Dumping data for table `story_links`
 --
 
-LOCK TABLES `bookmarks` WRITE;
-/*!40000 ALTER TABLE `bookmarks` DISABLE KEYS */;
-INSERT IGNORE INTO `bookmarks` VALUES
-  (1,'Bookmark 1','This is the bookmark summary','The author’s original notes',2,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://google.com',0,0,NULL,0,'Some notes on this import.'),
-  (2,'Bookmark 2','This is the bookmark summary','The author’s original notes',2,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://google.com',0,0,NULL,0,'Some notes on this import.'),
-  (3,'Bookmark 3','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://google.com',0,0,NULL,0,'Some notes on this import.')
-;/*!40000 ALTER TABLE `bookmarks` ENABLE KEYS */;
+LOCK TABLES `story_links` WRITE;
+/*!40000 ALTER TABLE `story_links` DISABLE KEYS */;
+INSERT IGNORE INTO `story_links` VALUES
+  (1,'Bookmark 1','This is the bookmark summary','The author’s original notes',2,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp179.htm',0,0,NULL,0,'Some notes on this import.'),
+  (2,'Bookmark 2','This is the bookmark summary','The author’s original notes',2,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp101.htm',0,0,NULL,0,'Some notes on this import.'),
+  (3,'Bookmark 3','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp102.htm',0,0,NULL,0,'Some notes on this import.'),
+  (4,'Bookmark 4','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp103.htm',0,0,NULL,0,'Some notes on this import.'),
+  (5,'Bookmark 5','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp104.htm',0,0,NULL,0,'Some notes on this import.'),
+  (6,'Bookmark 6','This is the bookmark summary','The author’s original notes',4,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp105.htm',0,0,NULL,0,'Some notes on this import.'),
+  (7,'Bookmark 7','This is the bookmark summary','The author’s original notes',4,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp106.htm',0,0,NULL,0,'Some notes on this import.')
+;/*!40000 ALTER TABLE `story_links` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
 -- Table structure for table `chapters`
 --
 
-DROP TABLE IF EXISTS `chapters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `chapters` (
+CREATE TABLE IF NOT EXISTS `chapters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `position` bigint(22) DEFAULT NULL,
   `title` varchar(255) NOT NULL DEFAULT '',
@@ -282,10 +282,9 @@ UNLOCK TABLES;
 -- Table structure for table `stories`
 --
 
-DROP TABLE IF EXISTS `stories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `stories` (
+CREATE TABLE IF NOT EXISTS `stories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL DEFAULT '',
   `summary` text,

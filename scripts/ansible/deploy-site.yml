@@ -130,4 +130,4 @@
       login_user: "{{ mysql_user }}"
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
-    when: create_database.changed
+    when: create_database
