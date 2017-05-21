@@ -40,6 +40,8 @@ module ApplicationHelper
       bookmark.fandoms,
       bookmark.rating,
       bookmark.categories,
+      bookmark.relationships,
+      bookmark.characters,
       collection,
       bookmark.notes,
       bookmark.tags,
