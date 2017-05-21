@@ -64,7 +64,7 @@ module ApplicationHelper
       response[:messages] << "Archive URL updated to #{response[:url]}."
       item.update_attributes!(
         imported: true,
-        ao3_url: response[:url],
+        ao3_url: response[:archive_url],
         audit_comment: response[:messages].join(" ")
       )
     elsif response[:status].in? ["unprocessable_entity", "bad_request"]

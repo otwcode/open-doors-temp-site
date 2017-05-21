@@ -9,6 +9,12 @@
     puma_line: "{{ sitekey }},{{ remote_user }}"
 
   tasks:
+  - name: Stop website if it's already running
+    command: ./stop.sh
+    args:
+      chdir: "{{ deploy_path }}"
+    ignore_errors: yes
+
   - name: Delete directory if it exists to start with a clean copy
     file:
       path: "{{ deploy_path }}"
