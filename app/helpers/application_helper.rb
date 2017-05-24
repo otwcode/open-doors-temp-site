@@ -60,13 +60,17 @@ module ApplicationHelper
       item = StoryLink.find_by_id(response[:original_id])
     end
 
-    if (response[:status].in? ["ok", "created", "already_imported"]) && (item.ao3_url != response[:url])
-      response[:messages] << "Archive URL updated to #{response[:url]}."
-      item.update_attributes!(
-        imported: true,
-        ao3_url: response[:archive_url],
-        audit_comment: response[:messages].join(" ")
-      )
+    if (response[:status].in? ["ok", "created", "already_imported"])
+      if item.ao3_url != response[:archive_url]
+        response[:messages] << "Archive URL updated to #{response[:archive_url]}."
+        item.update_attributes!(
+          imported: true,
+          ao3_url: response[:archive_url],
+          audit_comment: response[:messages].join(" ")
+        )
+      else
+        response[:messages] << "Item is already imported at #{response[:archive_url]}."
+      end
     elsif response[:status].in? ["unprocessable_entity", "bad_request"]
       audit = Audited::Audit.new(
         auditable_id: item.id,
