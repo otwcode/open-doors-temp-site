@@ -60,8 +60,8 @@ module ApplicationHelper
       item = StoryLink.find_by_id(response[:original_id])
     end
 
-    if (response[:status].in? ["ok", "created", "already_imported"])
-      if item.ao3_url != response[:archive_url]
+    if response[:status].in? ["ok", "created", "already_imported"]
+      if item.ao3_url != response[:archive_url] || (item.ao3_url == response[:archive_url] && !item.imported)
         response[:messages] << "Archive URL updated to #{response[:archive_url]}."
         item.update_attributes!(
           imported: true,
