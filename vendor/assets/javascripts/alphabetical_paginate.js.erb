@@ -10,12 +10,14 @@ $(function() {
   var handlers = navbar.data ? navbar.data('events') : jQuery._data(navbar[0], 'events');
 
   if (!handlers || -1 !== $.inArray(onNavbarClick, handlers.click) || -1 !== $.inArray(bindImport, handlers.click)) {
-    $(document).on("click", ".pagination.alpha a", onNavbarClick);
-    $(document).on("click", "a[data-button]", bindImport);
-    if (hasHistory){
-      // bind the popstate
-      bindPopState(location.href);
-    }
+    console.log("No handlers");
+
+      $(document).on("click", ".pagination.alpha a", onNavbarClick);
+      $(document).on("click", "a[data-button]", bindImport);
+      if (hasHistory){
+        // bind the popstate
+        bindPopState(location.href);
+      }
   }
 
   function onNavbarClick(e) {
@@ -55,6 +57,7 @@ $(function() {
       var diff = newUrl.replace(initialUrl, '');
       // skip initial popstate
       // skip anchor links (used for JS links)
+      console.log(" DIFF " + diff)
       if (diff !== '' && diff !== '#') {
         loadPage(newUrl, diff);
       }
@@ -62,8 +65,10 @@ $(function() {
   }
 
   function loadPage(url, diff) {
+    console.log("loadpage DIFF " + diff.length)
     if (diff.length > 10) {
       // Probably a different page, reload the whole page
+      console.log("need to reload");
       window.location.href = url;
     } else {
       $(".pagination.alpha").html(img);
