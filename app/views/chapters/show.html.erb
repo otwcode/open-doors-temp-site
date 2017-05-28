@@ -14,8 +14,11 @@
 <% content_for :title, story.title + " - Chapter #{@chapter.position}" %>
 
 <!-- Body Content -->
-<h2><%= story.title %></h2>
-<h3><%= @chapter.title %></h3>
+<h2>
+  <span class="badge badge-info"><%= story.id %></span>
+  <%= story.title %> <small>by <%= story.author.name %><%= story.coauthor? ? " and #{story.coauthor}" : "" %></small>
+</h2>
+<h3><span class="badge badge-info"><%= @chapter.id %></span> <%= @chapter.title %></h3>
 
 <b>Title:</b> <%= story.title %>
 
@@ -66,3 +69,7 @@
   <% end %>
   <%= raw @chapter.text %>
 </div>
+
+<footer>
+  a footer
+</footer>

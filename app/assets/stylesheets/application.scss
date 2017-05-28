@@ -20,20 +20,22 @@
   font-size: 14px;
 }
 
-h2 .badge {
-  font-size: 12px;
+.badge {
   vertical-align: middle;
 }
 
-h4 .badge {
+h2 .badge {
   font-size: 10px;
-  vertical-align: middle;
+  margin-top: -0.5em;
+}
+
+h3 .badge, h4 .badge {
+  font-size: 8px;
 }
 
 .pagination {
   display: inline-flex;
-  margin: 0 auto;
-  margin-top: 1rem;
+  margin: 1rem auto 0;
 }
 
 ul.pagination > li {
@@ -152,10 +154,17 @@ section {
 
 .fa-info-circle {
   color: rgb(2, 117, 216);
-
   font-family: FontAwesome;
   font-size: 14px;
   height: 14px;
   line-height: 14px;
   width: 12px;
+}
+
+footer {
+  background-color: #0275d8;
+  margin-top: 20px;
+  width: 100vw;
+  margin-left: calc(-50vw + 50% + 5px);
+  padding: 10px;
 }
