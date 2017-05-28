@@ -15,7 +15,7 @@ class AuthorsController < ApplicationController
   end
 
   def index
-    letter_authors, @letters = Author.with_stories_or_bookmarks
+    letter_authors, @letters = Author.with_stories_or_story_links
                                      .alpha_paginate(params[:letter],
                                                      bootstrap3: true,
                                                      include_all: false,
