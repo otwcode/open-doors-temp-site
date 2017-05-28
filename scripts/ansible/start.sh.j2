@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 echo "Starting {{ sitekey }}"
 ./stop.sh
-/sbin/start-stop-daemon --verbose --start --name opendoors-{{ sitekey }} \
+/sbin/start-stop-daemon --verbose --start --name {{ sitekey }} \
     --chdir {{ remote_path }}/{{ sitekey }} \
     --chuid {{ remote_user }} \
     --background \

@@ -15,6 +15,16 @@
       chdir: "{{ deploy_path }}"
     ignore_errors: yes
 
+  - name: Read previous PID if present
+    slurp:
+      src: "{{ deploy_path }}/runtime/pids/puma.pid"
+    register: previous_pid_file
+    ignore_errors: yes
+
+  - name: Kill PID if running
+    action: shell kill -9 {{ previous_pid_file['content'] | b64decode }}
+    ignore_errors: yes
+
   - name: Delete directory if it exists to start with a clean copy
     file:
       path: "{{ deploy_path }}"
