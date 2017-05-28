@@ -6,7 +6,7 @@
     if tag
       "<dt class=\"col-sm-2\">#{tag_name}:</dt> <dd class=\"col-sm-10\">#{tag}</dd>"
     else
-      "<dt class=\"col-sm-2\">No #{tag_name}:</dt> <dd class=\"col-sm-10\">-</dd>"
+      "<dt class=\"col-sm-2\">No #{tag_name.downcase}</dt> <dd class=\"col-sm-10\">-</dd>"
     end
   end
 %>
@@ -14,11 +14,12 @@
 <% content_for :title, story.title + " - Chapter #{@chapter.position}" %>
 
 <!-- Body Content -->
-<h2><%= @chapter.title %></h2>
+<h2><%= story.title %></h2>
+<h3><%= @chapter.title %></h3>
+
+<b>Title:</b> <%= story.title %>
 
 <dl class="row bg-faded">
-
-    <dt class="col-sm-2">Title:</dt> <dd class="col-sm-10"><%= story.title %></dd>
 
   <% if is_first_chapter && @config.present? %>
     <dt class="col-sm-2">Note:</dt><br />
@@ -40,17 +41,18 @@
   <%= raw tag_html("Characters", story.characters) %>
   <%= raw tag_html("Tags", story.tags) %>
 
-  <% if is_first_chapter && story.date.present? %>
-    <!--// DON'T INDENT - THIS GETS SCRAPED-->
-    <dt class="col-sm-2">Date:</dt> <dd class="col-sm-10"><%= story.date.to_s(:iso_date) %></dd>
-  <% end %>
-  <% if story.updated.present? %>
-    <dt class="col-sm-2">Updated:</dt> <dd class="col-sm-10"><%= story.updated.to_s(:iso_date) %></dd>
-  <% end %>
+  <!--// DON'T INDENT <dd> start tag - THIS *ALWAYS* GETS SCRAPED-->
+  <!-- First chapter in single chapter work or non-first in multichapter -> updated date -->
+  <dt class="col-sm-2">Date:</dt> <dd class="col-sm-10"><%=
+  if (is_first_chapter && story.chapters.size == 1) || (!is_first_chapter && story.chapters.size > 1)
+    (story.updated || story.date || datetime.now).to_s(:iso_date)
+  elsif is_first_chapter && story.chapters.size > 1
+    (story.date || story.updated || datetime.now).to_s(:iso_date)
+  end
+  %></dd>
 
   <dt class="col-sm-2">Chapter Title:</dt> <dd class="col-sm-10"><%= @chapter.title %></dd>
-
-    <dt class="col-sm-2">Chapter Number:</dt> <dd class="col-sm-10"><%= @chapter.position %></dd>
+  <dt class="col-sm-2">Chapter Number:</dt> <dd class="col-sm-10"><%= @chapter.position %></dd>
 
   <% if @chapter.date.present? %>
     <dt class="col-sm-2">Chapter posted</dt> <dd class="col-sm-10"><%= @chapter.date.to_s(:iso_date) %></dd>
