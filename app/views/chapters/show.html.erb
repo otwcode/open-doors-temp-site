@@ -1,66 +1,65 @@
-<% content_for :title, @chapter.story.title + " - Chapter #{@chapter.position}" %>
-
 <%
   is_first_chapter = @chapter.position <= 1
+  story = @chapter.story
+
+  def tag_html(tag_name, tag)
+    if tag
+      "<dt class=\"col-sm-2\">#{tag_name}:</dt> <dd class=\"col-sm-10\">#{tag}</dd>"
+    else
+      "<dt class=\"col-sm-2\">No #{tag_name}:</dt> <dd class=\"col-sm-10\">-</dd>"
+    end
+  end
 %>
 
+<% content_for :title, story.title + " - Chapter #{@chapter.position}" %>
 
 <!-- Body Content -->
 <h2><%= @chapter.title %></h2>
 
-<fieldset>
+<dl class="row bg-faded">
 
-  <div class="form-group">
-    <label for="property.PropertyName" style="width: 150px">Title:</label> <%= @chapter.story.title %>
-  </div>
+    <dt class="col-sm-2">Title:</dt> <dd class="col-sm-10"><%= story.title %></dd>
 
   <% if is_first_chapter && @config.present? %>
-    <div class="form-group">
-    <label for="note" style="width: 150px">Note:</label><br />
-    <div style="border: 1px silver solid;">
+    <dt class="col-sm-2">Note:</dt><br />
+    <dd style="border: 1px silver solid;">
       <%= @config.ODNote %>
-      <% if @chapter.story.notes %>
-        <br /><br /><span>Author's notes:</span> <%= @chapter.story.notes %>
+      <% if story.notes %>
+        <br /><br /><span>Author's notes:</span> <%= story.notes %>
       <% end %>
-    </div>
-  </div>
+    </dd>
   <% end %>
 
-  <div class="form-group">
-    <label for="storySummary" style="width: 150px">Summary:</label>
-    <%= raw @chapter.story.summary %>
-  </div>
+  <dt class="col-sm-2">Summary:</dt> <dd class="col-sm-10"><%= raw story.summary %></dd>
 
-  <div class="form-group">
-    <% if is_first_chapter && @chapter.story.date.present? ||
-      (!is_first_chapter && @chapter.story.date.present? && !@chapter.story.updated.present?) %>
+  <%= raw tag_html("Rating", story.rating) %>
+  <%= raw tag_html("Warnings", story.warnings) %>
+  <%= raw tag_html("Categories", story.categories) %>
+  <%= raw tag_html("Fandoms", story.fandoms) %>
+  <%= raw tag_html("Relationships", story.relationships) %>
+  <%= raw tag_html("Characters", story.characters) %>
+  <%= raw tag_html("Tags", story.tags) %>
+
+  <% if is_first_chapter && story.date.present? %>
     <!--// DON'T INDENT - THIS GETS SCRAPED-->
-      <label for="date" style="width: 150px">Date:</label> <%= @chapter.story.date.to_s(:iso_date) %>
-    <% elsif @chapter.story.updated.present? %>
-      <label for="updated" style="width: 150px">Date:</label> <%= @chapter.story.updated.to_s(:iso_date) %>
-    <% end %>
-  </div>
+    <dt class="col-sm-2">Date:</dt> <dd class="col-sm-10"><%= story.date.to_s(:iso_date) %></dd>
+  <% end %>
+  <% if story.updated.present? %>
+    <dt class="col-sm-2">Updated:</dt> <dd class="col-sm-10"><%= story.updated.to_s(:iso_date) %></dd>
+  <% end %>
 
-  <div class="form-group">
-    <label for="property.PropertyName" style="width: 150px">Chapter Title:</label> <%= @chapter.title %>
-  </div>
+  <dt class="col-sm-2">Chapter Title:</dt> <dd class="col-sm-10"><%= @chapter.title %></dd>
 
-  <div class="form-group">
-    <label for="position" style="width: 150px">Chapter Number:</label> <%= @chapter.position %>
-  </div>
+    <dt class="col-sm-2">Chapter Number:</dt> <dd class="col-sm-10"><%= @chapter.position %></dd>
 
   <% if @chapter.date.present? %>
-    <div class="form-group">
-      <label for="posted" style="width: 150px">Chapter posted</label> <%= @chapter.date.to_s(:date) %>
-    </div>
+    <dt class="col-sm-2">Chapter posted</dt> <dd class="col-sm-10"><%= @chapter.date.to_s(:iso_date) %></dd>
   <% end %>
-</fieldset>
+</dl>
 
 <div class="chapter-content" style="white-space: pre-line">
   <% if @chapter.notes.present? %>
-   <div class="form-group">
-    <label for="property.PropertyName" style="width: 150px">Author's notes:</label> <%= raw @chapter.notes %>
-  </div>
+    <dt class="col-sm-2">Author's notes:</dt> <dd class="col-sm-10"><%= raw @chapter.notes %></dd>
   <hr />
   <% end %>
   <%= raw @chapter.text %>

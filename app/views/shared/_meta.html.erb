@@ -78,14 +78,14 @@
   <!-- Blurb -->
   <div id="<%= "details-#{item_id}" %>" class="details row col-12 collapse">
     <div id="<%= "meta-#{item_id}" %>" class="blurb col-lg-6 col-md-12">
-      <b>Rating:</b> <%= item.rating.present? ? item.rating : "None" %><br/>
-      <b>Warnings:</b> <%= item.warnings.present? ? item.warnings : "None" %><br/>
-      <b>Categories:</b> <%= item.categories.present? ? item.categories : "None" %><br/>
-      <b>Fandoms:</b> <%= item.fandoms.present? ? item.fandoms : "None" %><br/>
-      <b>Relationships:</b> <%= item.relationships.present? ? item.relationships : "None" %><br/>
-      <b>Characters:</b> <%= item.characters.present? ? item.characters : "None" %><br/>
-      <b>Tags:</b> <%= item.tags.present? ? item.tags : "None" %><br/>
-      <b>Date:</b> <%= item.date.present? ? item.date.to_date.to_s(:iso8601)   : "No date" %>
+      <b>Rating:</b>        <%= item.rating || "None" %><br/>
+      <b>Warnings:</b>      <%= item.warnings || "None" %><br/>
+      <b>Categories:</b>    <%= item.categories || "None" %><br/>
+      <b>Fandoms:</b>       <%= item.fandoms || "None" %><br/>
+      <b>Relationships:</b> <%= item.relationships || "None" %><br/>
+      <b>Characters:</b>    <%= item.characters || "None" %><br/>
+      <b>Tags:</b>          <%= item.tags || "None" %><br/>
+      <b>Date:</b>          <%= item.date.present? ? item.date.to_date.to_s(:iso8601) : "No date" %>
       <% if is_story %>
         - <b>Updated:</b> <%= item.updated.present? ? item.updated.to_date.to_s(:iso8601)   : "No update date set" %>
       <% end %>
