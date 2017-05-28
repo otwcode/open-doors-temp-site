@@ -51,7 +51,12 @@ class AuthorsController < ApplicationController
           update_item(:story, work_response.symbolize_keys)
         end
       end
-      bookmarks_responses = response[1]["bookmarks"]
+
+      bookmarks_responses = if response[1]
+                              response[1]["bookmarks"]
+                            else
+                              response[0]["bookmarks"]
+                            end
       if bookmarks_responses.present?
         bookmarks_responses.each do |bookmark_response|
           update_item(:bookmark, bookmark_response.symbolize_keys)
