@@ -70,7 +70,9 @@
 
 <div class="chapter-content" style="white-space: pre-line">
   <% if @chapter.notes.present? %>
-    <dt class="col-sm-2">Author's notes:</dt> <dd class="col-sm-10"><%= raw @chapter.notes %></dd>
+    <div class="form-group">
+      <label class="col-sm-2">Author's notes:</label> <%= raw @chapter.notes %>
+    </div>
   <hr />
   <% end %>
   <%= raw @chapter.text %>
