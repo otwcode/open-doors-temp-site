@@ -9,14 +9,16 @@ Rails.application.routes.draw do
     resources :authors do
       post :import
       post :mark
+      post :check
       post :dni
     end
 
     resources :chapters
 
-    post "items/import/:type/:id" => "items#import", as: :item_import
-    post "items/mark/:type/:id" => "items#mark", as: :item_mark
-    post "items/dni/:type/:id" => "items#dni", as: :item_dni
-    get "items/audit/:type/:id" => "items#audit", as: :item_audit
+    post "items/import/:type/:id" => "items#import",  as: :item_import
+    post "items/mark/:type/:id"   => "items#mark",    as: :item_mark
+    post "items/check/:type/:id"  => "items#check",   as: :item_check
+    post "items/dni/:type/:id"    => "items#dni",     as: :item_dni
+    get  "items/audit/:type/:id"  => "items#audit",   as: :item_audit
   end
 end

@@ -65,6 +65,11 @@
            #         data: { method: :post, button: :mark, item: item.id, type: type } %>
         -->
         <span>&nbsp;</span>
+        <%= link_to "Check if imported", item_check_path(type, item.id),
+                    id: "item-check-#{item_id}", remote: true,
+                    class: "btn-sm btn-check",
+                    data: { method: :post, button: :check, item: item.id, type: type } %>
+        <span>&nbsp;</span>
         <%= link_to (item.do_not_import ? "Mark as ALLOW import" : "Mark as do NOT import"), item_dni_path(type, item.id),
                     id: "item-dni-#{item_id}", remote: true,
                     class: "btn-sm btn-dni", confirm: "Are you sure this #{type} should not be imported?",

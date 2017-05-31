@@ -16,11 +16,6 @@ server {
   	proxy_set_header   Connection "";
   	proxy_http_version 1.1;
 
-    # Match up any subpath with a corresponding puma socket
-    location ~^\/([^\/]*)(\/.*)? {
-      proxy_pass http://unix:/home/opendoors_web/www/$1/runtime/sockets/puma.sock;
-    }
-
 	location / {
 		# First attempt to serve request as file, then
 		# as directory, then fall back to displaying a 404.
@@ -28,6 +23,11 @@ server {
 		# Uncomment to enable naxsi on this location
 		# include /etc/nginx/naxsi.rules
 	}
+
+  # Match up any subpath with a corresponding puma socket
+  location ~^\/([^\/]*)(\/.*)? {
+    proxy_pass http://unix:/home/opendoors_web/www/$1/runtime/sockets/puma.sock;
+  }
 
 	location /doc/ {
 		alias /usr/share/doc/;

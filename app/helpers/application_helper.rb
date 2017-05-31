@@ -6,50 +6,6 @@ module ApplicationHelper
     "#{type}-#{id}"
   end
 
-  def story_to_work(story, collection)
-    Request::Work.new(
-      story.title,
-      story.author.name,
-      story.author.email,
-      (story.coauthor.nil? ? "" : story.coauthor.name),
-      (story.coauthor.nil? ? "" : story.coauthor.email),
-      collection,
-      story.fandoms,
-      story.warnings,
-      story.characters,
-      story.rating,
-      story.relationships,
-      story.categories,
-      story.tags,
-      story.notes,
-      story.id,
-      story.summary,
-      story.chapters.map { |c| url_for(c) }
-    )
-  end
-
-  def storylink_to_bookmark(bookmark, archivist, collection)
-    puts bookmark.inspect
-    Request::Bookmark.new(
-      archivist,
-      bookmark.id,
-      bookmark.url,
-      bookmark.author.name,
-      bookmark.title,
-      bookmark.summary,
-      bookmark.fandoms,
-      bookmark.rating,
-      bookmark.categories,
-      bookmark.relationships,
-      bookmark.characters,
-      collection,
-      bookmark.notes,
-      bookmark.tags,
-      false,
-      false
-    )
-  end
-
   def update_item(type, response)
     puts "\nupdate_item: #{response.inspect}"
 
@@ -60,7 +16,7 @@ module ApplicationHelper
       item = StoryLink.find_by_id(response[:original_id])
     end
 
-    if response[:status].in? ["ok", "created", "already_imported"]
+    if response[:status].in? ["ok", "created", "already_imported", "found"]
       if item.ao3_url != response[:archive_url] || (item.ao3_url == response[:archive_url] && !item.imported)
         response[:messages] << "Archive URL updated to #{response[:archive_url]}."
         item.update_attributes!(
@@ -70,6 +26,17 @@ module ApplicationHelper
         )
       else
         response[:messages] << "Item is already imported at #{response[:archive_url]}."
+      end
+    elsif response[:status].in? ["not_found"]
+      if item.imported || item.ao3_url.present?
+        response[:messages] << "Item has been deleted or host has changed."
+        item.update_attributes!(
+          imported: false,
+          ao3_url: nil,
+          audit_comment: response[:messages].join(" ")
+        )
+      else
+        response[:messages] << "Item is already marked as not imported."
       end
     elsif response[:status].in? ["unprocessable_entity", "bad_request"]
       audit = Audited::Audit.new(

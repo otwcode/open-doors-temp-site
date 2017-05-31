@@ -30,10 +30,15 @@
                #         data: { method: :post, button: :mark, author: author.id } %>
             -->
             <span>&nbsp;</span>
-             <%= link_to (author.do_not_import ? "Mark as ALLOW import" : "Mark as do NOT import"), author_dni_path(author.id),
-                         id: "author-dni-#{author.id}", remote: true,
-                         class: "btn-sm btn-dni", confirm: "Are you sure this author should not be imported?",
-                         data: { method: :post, button: :dni, author: author.id } %>
+            <%= link_to "Check imports", author_check_path(author.id),
+                        id: "author-check-#{author.id}", remote: true,
+                        class: "btn-sm btn-check",
+                        data: { method: :post, button: :check, author: author.id } %>
+            <span>&nbsp;</span>
+            <%= link_to (author.do_not_import ? "Mark as ALLOW import" : "Mark as do NOT import"), author_dni_path(author.id),
+                        id: "author-dni-#{author.id}", remote: true,
+                        class: "btn-sm btn-dni", confirm: "Are you sure this author should not be imported?",
+                        data: { method: :post, button: :dni, author: author.id } %>
             <span>&nbsp;</span>
             <%= link_to "Clear messages", "#",
                         id: "author-clear-#{author.id}", remote: true,

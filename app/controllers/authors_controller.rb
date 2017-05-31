@@ -41,8 +41,8 @@ class AuthorsController < ApplicationController
         }
       ]
     else
-      works = author.stories.map { |s| story_to_work(s, @site_config.collection_name) }
-      bookmarks = author.story_links.map { |b| storylink_to_bookmark(b, @client.config.archivist, @site_config.collection_name) }
+      works, bookmarks =
+        author.works_and_bookmarks(@client.config.archivist, @site_config.collection_name, request.host_with_port)
 
       response = @client.import(works: works, bookmarks: bookmarks)
       works_responses = response[0]["works"]
@@ -70,6 +70,7 @@ class AuthorsController < ApplicationController
     end
   end
 
+  # Mark as imported (not currently in use)
   def mark
     respond_to :json
     author = Author.find(params[:author_id])
@@ -79,6 +80,42 @@ class AuthorsController < ApplicationController
     response << { status: :ok,
                   mark: author.imported,
                   messages: ["Successfully #{imported_status}"] }
+    if request.xhr?
+      render json: response, content_type: "text/json"
+    else
+      @api_response = response[0][:messages]
+    end
+  end
+
+  def check
+    respond_to :json
+    Rails.logger.info("Check author")
+    author = Author.find(params[:author_id])
+    imported_status = "checked status of author items."
+
+    works, bookmarks =
+      author.works_and_bookmarks(@client.config.archivist, @site_config.collection_name, request.host_with_port)
+
+    response = @client.check(works: works, bookmarks: bookmarks)
+
+    works_responses = response[0]["works"]
+    if works_responses.present?
+      works_responses.each do |work_response|
+        update_item(:story, work_response.symbolize_keys)
+      end
+    end
+
+    bookmarks_responses = if response[1]
+                            response[1]["bookmarks"]
+                          else
+                            response[0]["bookmarks"]
+                          end
+    if bookmarks_responses.present?
+      bookmarks_responses.each do |bookmark_response|
+        update_item(:bookmark, bookmark_response.symbolize_keys)
+      end
+    end
+
     if request.xhr?
       render json: response, content_type: "text/json"
     else
