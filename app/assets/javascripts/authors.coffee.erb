@@ -13,7 +13,7 @@
 
 @divClass = (status) ->
   debug(status)
-  if status in ["ok", "created", "success"]
+  if status in ["ok", "created", "success", "found"]
     divClass = "alert alert-info"
   else
     divClass = "alert alert-danger"
@@ -50,13 +50,20 @@
   debug("#{status} - #{type}")
   messageDiv = $("#" + type + "-" + itemId + " .message")
   messageDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{message}</div>"
-  if status == "created" || status == "already_imported"
-    mainDiv = $("#" + type + "-" + itemId)
+  mainDiv = $("#" + type + "-" + itemId)
+
+  if status in ["created", "already_imported", "found"]
+    console.log("found")
     mainDiv.addClass("imported")
     importButton = $("#import-#{type}-#{itemId}")
     importButton.html "<a href=\"#{url}\" target=\"_blank\">#{url}</a>"
 #    markButton = $("#item-mark-#{type}-#{itemId}")
 #    markButton.text "Mark NOT imported"
+  if status in ["bad_request", "not_found"]
+    console.log("not found")
+    mainDiv.removeClass("imported")
+    importButton = $("#import-#{type}-#{itemId}")
+    importButton.html "<a id=\"item-import-#{type}-#{itemId}\" class=\"btn-sm btn-import\" data-method=\"post\" data-button=\"import\" data-item=\"#{itemId}\" data-type=\"#{type}\" data-remote=\"true\" href=\"/opendoorstempsite/items/import/#{type}/#{itemId}\">Import</a>"
 
 
 @writeSummaryToDiv = (data, summaryTargetDiv, status, authorId) ->
@@ -73,7 +80,7 @@
 
 @processImportResponse = (data) ->
   console.log("\nprocessImportResponse")
-  debug(data)
+  debug(data[0]["works"])
   if data[0].hasOwnProperty("works")
     data[0]["works"].forEach( (item, idx) ->
       refreshAudit("story", item["original_id"])
@@ -82,11 +89,13 @@
   # Bookmarks might be in 0 if it's an individual import, or in 1 if it's an author import
   if data[0].hasOwnProperty("bookmarks")
     data[0]["bookmarks"].forEach( (item, idx) ->
+      debug(item)
       refreshAudit("bookmark", item["original_id"])
       writeItemToDiv("bookmark", item["status"], item["original_id"], item["messages"].join("<br/>"), item["archive_url"])
     )
   if data[1] && data[1].hasOwnProperty("bookmarks")
     data[1]["bookmarks"].forEach( (item, idx) ->
+      debug(item)
       refreshAudit("bookmark", item["original_id"])
       writeItemToDiv("bookmark", item["status"], item["original_id"], item["messages"].join("<br/>"), item["archive_url"])
     )
@@ -105,7 +114,7 @@
   itemSection = $("##{type}-#{itemId}")
   summaryDiv = $("#author-" + authorId + " .author.message")
 
-  if buttonType in ["import", "mark", "dni"]
+  if buttonType in ["import", "mark", "dni", "check"]
     linkhtml = link.html()
     link.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
     link.prop("disabled", true)
@@ -127,6 +136,9 @@
 
         switch buttonType
           when "import"
+            processImportResponse(data, summaryDiv)
+
+          when "check"
             processImportResponse(data, summaryDiv)
 
           when "dni"

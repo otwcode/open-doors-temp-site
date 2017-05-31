@@ -27,13 +27,13 @@ class ItemsController < ApplicationController
         if type == "story"
           {
             works: [
-              story_to_work(item, @site_config.collection_name)
+              item.to_work(@site_config.collection_name, request.host_with_port)
             ]
           }
         else
           {
             bookmarks: [
-              storylink_to_bookmark(item, @client.config.archivist, @site_config.collection_name)
+              item.to_bookmark(@client.config.archivist, @site_config.collection_name)
             ]
           }
         end
@@ -108,6 +108,40 @@ class ItemsController < ApplicationController
     else
       @api_response = response[0][:messages]
     end
+  end
+
+  def check
+    respond_to :json
+    type = params[:type]
+    id = params[:id]
+    ao3_type = type == "story" ? "works" : "bookmarks"
+    final_response = [{}] # Needs to be the same shape as the response for authors
+
+    item = find_item(id, type)
+
+    item_request =
+      if type == "story"
+        {
+          works: [
+            item.to_work(@site_config.collection_name, request.host_with_port)
+          ]
+        }
+      else
+        {
+          bookmarks: [
+            item.to_bookmark(@client.config.archivist, @site_config.collection_name)
+          ]
+        }
+      end
+
+    response = @client.check(item_request)
+
+    Rails.logger.info("response: #{response}")
+
+    item_response = response[0][ao3_type][0]
+    final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
+
+    render json: final_response, content_type: 'text/json'
   end
 
   def audit

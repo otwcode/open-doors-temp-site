@@ -1,6 +1,10 @@
 module OtwArchive
   module Request
+    # noinspection RubyTooManyInstanceVariablesInspection
     class Work
+      attr_reader :id, :chapter_urls
+
+      # @param [String] title
       def initialize(title, external_author_name, external_author_email, external_coauthor_name, external_coauthor_email,
                      collection_names, fandoms, warnings, characters, rating, relationships, categories, additional_tags, notes,
                      id, summary, chapter_urls)

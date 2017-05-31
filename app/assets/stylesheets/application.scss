@@ -107,8 +107,13 @@ section {
   text-decoration: none;
 }
 
+.btn-check {
+  @include button-variant(#fff, #67956c, #67956c);
+  text-decoration: none;
+}
+
 .btn-dni {
-  @include button-variant(#fff, #cb8498, #de90a6);
+  @include button-variant(#fff, #cb8498, #cb8498);
   text-decoration: none;
 }
 
