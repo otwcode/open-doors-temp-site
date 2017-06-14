@@ -29,7 +29,7 @@ module ApplicationHelper
       end
     elsif response[:status].in? ["not_found"]
       if item.imported || item.ao3_url.present?
-        response[:messages] << "Item has been deleted or host has changed."
+        response[:messages] << "Item has been deleted or target site has changed."
         item.update_attributes!(
           imported: false,
           ao3_url: nil,
