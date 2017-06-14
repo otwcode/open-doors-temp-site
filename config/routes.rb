@@ -15,6 +15,17 @@ Rails.application.routes.draw do
 
     resources :chapters
 
+    resources :archive_config
+
+    # Authentication
+    get "signup" => "users#new",        as: :signup
+    post "users" => "users#create",     as: :create_user
+
+    get "login"  => "sessions#new"
+    post "login" => "sessions#create"
+    get "logout" => "sessions#destroy"
+
+    # AJAX end points
     post "items/import/:type/:id" => "items#import",  as: :item_import
     post "items/mark/:type/:id"   => "items#mark",    as: :item_mark
     post "items/check/:type/:id"  => "items#check",   as: :item_check

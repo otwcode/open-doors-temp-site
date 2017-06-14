@@ -1,0 +1,28 @@
+# options available at https://github.com/bbatsov/rubocop/blob/master/config/default.yml
+
+AllCops:
+  TargetRubyVersion: 2.2
+
+# stop checking quotation marks
+Style/StringLiterals:
+  Enabled: false
+
+# stop checking line length
+Metrics/LineLength:
+  Enabled: false
+  
+# stop checking for trailing whitespace
+Style/TrailingWhitespace:
+  Enabled: false
+  
+# stop checking for ambiguous regexp literal
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
+
+# stop checking for `&&` vs `and` as this causes bugs in controller actions in some circumstances
+Style/AndOr:
+  Enabled: false
+
+# Set desired method length
+Style/MethodLength:
+  Max: 30
