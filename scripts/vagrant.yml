@@ -1,0 +1,147 @@
+---
+- name: Provision new web server for Open Doors sites
+  hosts: all
+  user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: no
+
+  pre_tasks:
+    - name: Update apt-get
+      raw: sudo apt-get update
+
+    - name: Install Python 2 for Ansible < 2.3
+      raw: sudo apt-get -y install python-simplejson
+
+    - name: "Create a secondary, non-root user"
+      user:
+        name: "{{ remote_user }}"
+        password: "{{ remote_pw_hash }}"
+        group: www-data
+
+    - name: Add remote authorized key to allow future passwordless logins
+      authorized_key:
+        user: "{{ remote_user }}"
+        key: "{{ lookup('file', local_ssh_path) }}"
+
+    - name: Add normal user to sudoers
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: "{{ remote_user }} ALL"
+        line: "{{ remote_user }} ALL=(ALL) ALL"
+        state: present
+
+    - action: setup
+
+  tasks:
+# ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+  - name: Set the timezone for the server to UTC
+    timezone:
+      name: UTC
+
+  - name: Set up the unique hostname
+    hostname: name={{ remote_hostname }}
+
+  - name: Add the server's domain to the hosts file
+    lineinfile:
+      dest: /etc/hosts
+      regexp: ".*opendoors$"
+      line: "127.0.0.1 opendoors {{ remote_hostname }}"
+      state: present
+
+#  - name: Add the server's domain to the hosts file
+#    lineinfile:
+#      dest: /etc/hosts
+#      regexp: ".*{{ item }}$"
+#      line: "{{ hostvars[item].ansible_default_ipv4.address }} {{ LOCAL_FQDN_NAME }} {{ LOCAL_HOSTNAME }}"
+#      state: present
+#    when: hostvars[item].ansible_default_ipv4.address is defined
+#    with_items: "{{ groups['linode'] }}"
+
+  - name: Install apps
+    apt:
+      name: "{{item}}"
+      state: installed
+    with_items:
+      - build-essential
+      - g++
+      - gcc
+      - git
+      - libmysqlclient-dev
+      - make
+      - mysql-server
+      - nginx
+      - python
+      - python-mysqldb
+      - ruby
+      - ruby-dev
+      - zlib1g-dev
+
+  - name: Symlink exists for Ruby 2.0
+    file: src=/usr/bin/ruby dest=/usr/local/bin/ruby state=link
+
+  - name: Symlink exists for Ruby Gems 2.0
+    file: src=/usr/bin/gem dest=/usr/local/bin/gem state=link
+
+  - name: Normal user can install gems
+    file:
+      path: /var/lib/gems/2.3.0
+      owner: "{{ remote_user }}"
+      group: "{{ remote_group }}"
+      state: directory
+
+  - name: Install global gems
+    gem:
+      name: "{{ item }}"
+      state: latest
+      user_install: false
+    with_items:
+      - bundler
+      - nokogiri
+      - unicorn
+
+  - name: Install Rails 5.1
+    gem:
+      name: rails
+      version: 5.1
+      state: present
+      user_install: false
+
+  - name: Turn on Nginx and MySQL and set them to run on boot
+    service: name={{ item }} state=started enabled=yes
+    with_items:
+      - nginx
+      - mysql
+
+  # MySQL
+  - name: Create the Open Doors database
+    mysql_db:
+      name: opendoors
+      state: present
+
+  - name: Create a new user for connections
+    mysql_user:
+      name: "{{ mysql_user }}"
+      password: "{{ mysql_pw }}"
+      priv: "*.*:ALL"
+      state: present
+
+  # Nginx
+  - name: Copy Nginx config
+    template:
+      src: "{{ playbook_dir }}/provision/nginx/sites-available/opendoors-sites.j2"
+      dest: "/etc/nginx/sites-available/{{ remote_hostname }}"
+
+  - name: Symlink from sites-enabled Nginx config
+    file:
+      src: "/etc/nginx/sites-available/{{ remote_hostname }}"
+      dest: "/etc/nginx/sites-enabled/{{ remote_hostname }}"
+      state: link
+
+  # Permissions
+  - name: Chown /var/www
+    file:
+      dest: /var/www
+      group: www-data
+      mode: g+rw
+      recurse: yes

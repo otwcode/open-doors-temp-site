@@ -1,0 +1,39 @@
+require 'yaml'
+
+# Get specific configuration for this app and its location
+APP_CONFIG = YAML.load_file("config/config.yml")
+app_dir = File.expand_path("../..", __FILE__)
+shared_dir = "/var/www/#{APP_CONFIG[:sitekey]}"
+
+working_directory app_dir
+
+# Set unicorn options
+worker_processes 2
+preload_app true
+timeout 30
+
+# Path for the Unicorn socket
+listen "#{shared_dir}/runtime/sockets/unicorn.sock", backlog: 64
+
+# Set path for logging
+stderr_path "#{shared_dir}/log/unicorn.stderr.log"
+stdout_path "#{shared_dir}/log/unicorn.stdout.log"
+
+# Set proccess id path
+pid "#{shared_dir}/runtime/pids/unicorn.pid"
+
+require "active_record"
+before_fork do |_server, _worker|
+  # other settings
+  if defined?(ActiveRecord::Base)
+    ActiveRecord::Base.connection.disconnect! rescue ActiveRecord::ConnectionNotEstablished
+  end
+end
+
+after_fork do |_server, _worker|
+  # other settings
+  if defined?(ActiveRecord::Base)
+    ActiveRecord::Base.establish_connection(YAML.load_file("#{app_dir}/config/database.yml")[rails_env])
+  end
+end
+
