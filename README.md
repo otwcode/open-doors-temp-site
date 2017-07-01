@@ -17,7 +17,7 @@ used to create those sites.
 
 # Running it locally
 Requirements:
-- Ruby 2.2.5 (this will be kept in sync with the version used by the `otwarchive` project)
+- Ruby 2.3
 - MySQL 5.7
 - Bundler
 
@@ -30,7 +30,7 @@ $ bundle install
 $ bin/rails server
 ``` 
 
-In your browser, navigate to http://localhost:3010 to view the temp site.
+In your browser, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
 
 # Deployment
 Before you proceed, you will need to install Ansible (https://www.ansible.com/).
@@ -53,3 +53,12 @@ anyway - make sure it has a valid `production` section)
 $ cd scripts/ansible
 $ ansible-playbook deploy-site.yml -i hosts --extra-vars "@variables.yml"
 ```
+
+# Vagrant deployment
+To test the Ansible provisioning and deployment using Vagrant, navigate to the root of the project and then type:
+
+```bash
+$ vagrant up
+```
+
+The same provisioning script used to set up the remote server will be used to provision a local Vagrant image on Ubuntu 16.04.

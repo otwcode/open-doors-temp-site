@@ -55,9 +55,13 @@ group :development do
 end
 
 group :test do
-  gem 'capybara'
-  gem 'factory_girl_rails'
-  gem 'rails-controller-testing'
-  gem 'rspec-rails'
-  gem 'selenium-webdriver'
+  gem "capybara"
+  gem "factory_girl_rails"
+  gem "rails-controller-testing"
+  gem "rspec-rails"
+  gem "selenium-webdriver"
+end
+
+group :production do
+  gem "unicorn"
 end

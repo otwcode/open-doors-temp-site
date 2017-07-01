@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `story_links` (
   `notes` text,
   `author_id` int(11) DEFAULT '0',
   `rating` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
-  `date` date NOT NULL DEFAULT '0000-00-00',
+  `date` date DEFAULT NULL,
   `updated` datetime DEFAULT NULL,
   `categories` varchar(45) DEFAULT NULL,
   `tags` varchar(255) NOT NULL DEFAULT '',
