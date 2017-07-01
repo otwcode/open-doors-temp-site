@@ -6,7 +6,7 @@ module OtwArchive
   class HttpClient
     include Faraday
 
-    API_PATH = "api/v1"
+    API_PATH = "api/v2"
 
     def initialize(host_url, token, api_path = API_PATH)
       base_uri = "#{host_url}/#{api_path}"

@@ -96,7 +96,7 @@ class AuthorsController < ApplicationController
     works, bookmarks =
       author.works_and_bookmarks(@client.config.archivist, @site_config.collection_name, request.host_with_port)
 
-    response = @client.check(works: works, bookmarks: bookmarks)
+    response = @client.search(works: works, bookmarks: bookmarks)
 
     works_responses = response[0]["works"]
     if works_responses.present?

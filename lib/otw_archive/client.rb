@@ -41,7 +41,7 @@ module OtwArchive
       responses
     end
 
-    def check(items_to_check = {})
+    def search(items_to_check = {})
       responses = []
       items_to_check.symbolize_keys.each do |type, items|
         next if items.blank?
