@@ -134,7 +134,7 @@ class ItemsController < ApplicationController
         }
       end
 
-    response = @client.check(item_request)
+    response = @client.search(item_request)
 
     Rails.logger.info("response: #{response}")
 
