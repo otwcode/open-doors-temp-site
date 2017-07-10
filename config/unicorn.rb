@@ -1,8 +1,8 @@
 require 'yaml'
 
 # Get specific configuration for this app and its location
-APP_CONFIG = YAML.load_file("config/config.yml")
 app_dir = File.expand_path("../..", __FILE__)
+APP_CONFIG = YAML.load_file("#{app_dir}/config/config.yml")
 shared_dir = "/var/www/#{APP_CONFIG[:sitekey]}"
 
 working_directory app_dir
@@ -33,7 +33,7 @@ end
 after_fork do |_server, _worker|
   # other settings
   if defined?(ActiveRecord::Base)
-    ActiveRecord::Base.establish_connection(YAML.load_file("#{app_dir}/config/database.yml")[rails_env])
+    ActiveRecord::Base.establish_connection
   end
 end
 

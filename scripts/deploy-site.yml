@@ -10,12 +10,6 @@
     puma_line: "{{ sitekey }},{{ remote_user }}"
 
   tasks:
-#  - name: Stop website if it's already running
-#    command: ./stop.sh
-#    args:
-#      chdir: "{{ deploy_path }}"
-#    ignore_errors: yes
-
   - name: Create Bundler directory
     file:
       path: "{{ remote_path }}/bundler/{{ repo_version }}"
@@ -65,39 +59,15 @@
      src: "{{ playbook_dir }}/ansible/config.yml.j2"
      dest: "{{ deploy_path }}/config/config.yml"
 
+  - name: Create database config file
+    template:
+     src: "{{ playbook_dir }}/ansible/database.yml.j2"
+     dest: "{{ deploy_path }}/config/database.yml"
+
   - name: Copy secrets
     copy:
       src: "{{ playbook_dir }}/../config/secrets.yml"
       dest: "{{ deploy_path }}/config/secrets.yml"
-
-
-  # Copy puma.conf
-#  - name: Check if puma.conf already has the line '{{ puma_line }}'
-#    replace:
-#      dest: /etc/puma.conf
-#      replace: "-{{ puma_line }}-"
-#      regexp: "{{ puma_line }}$"
-#      backup: yes
-#    become: yes
-#    register: site_already_registered
-#
-#  - name: Register site in puma.conf if it is new
-#    lineinfile:
-#     state: present
-#     dest: /etc/puma.conf
-#     line: '{{ puma_line }}'
-#     insertafter: EOF
-#    become: yes
-#    when: site_already_registered.changed == false
-#
-#  - name: Fix line if regex above replaced it
-#    replace:
-#      dest: /etc/puma.conf
-#      replace: "{{ puma_line }}"
-#      regexp: "-{{ puma_line }}-$"
-#      backup: yes
-#    become: yes
-#    when: site_already_registered.changed
 
   # Create folders
   - name: Create log, pid and socket folders for Unicorn #Puma
@@ -111,19 +81,6 @@
       - runtime/sockets
       - runtime/pids
 
-  # Copy start and stop script, install and start
-#  - name: Create startup script
-#    template:
-#      src: "{{ playbook_dir }}/ansible/start.sh.j2"
-#      dest: "{{ deploy_path }}/start.sh"
-#      mode: "u=rwx,g=rw,o=rw"
-#
-#  - name: Create stop script
-#    template:
-#      src: stop.sh.j2
-#      dest: "{{ deploy_path }}/stop.sh"
-#      mode: "u=rwx,g=rw,o=rw"
-
   - name: Update bundle
     command: bundle update
     args:
@@ -133,11 +90,6 @@
     command: bundle install --deployment --path={{ remote_path }}/bundle/{{ repo_version }}
     args:
       chdir: "{{ deploy_path }}"
-
-#  - name: Start website
-#    command: ./start.sh
-#    args:
-#      chdir: "{{ deploy_path }}"
 
   - name: Copy MySQL script
     template:
@@ -162,3 +114,17 @@
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
     when: create_database
+
+# TBD start unicorn on boot
+
+
+  - name: Start website with unicorn
+    command: RAILS_ENV=production bundle exec unicorn -D -c {{ deploy_path }}/config/unicorn.rb
+    args:
+      chdir: "{{ deploy_path }}"
+
+  - name: Restart Nginx
+    service:
+      name: nginx
+      state: restarted
+      enabled: yes

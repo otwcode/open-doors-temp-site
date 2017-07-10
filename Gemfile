@@ -7,32 +7,32 @@ end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.1'
+gem "rails", "~> 5.0.1"
 # Use mysql as the database for Active Record
-gem 'mysql2', '>= 0.3.18', '< 0.5'
+gem "mysql2", ">= 0.3.18", "< 0.5"
 # Use Puma as the app server
-gem 'puma', '~> 3.0'
+gem "puma", "~> 3.0"
 
 # Front-end
-gem 'bootstrap', '~> 4.0.0.alpha6'
+gem "bootstrap", "~> 4.0.0.alpha6"
 
-gem 'will_paginate', '~> 3.1.0'
-gem 'alphabetical_paginate'
+gem "will_paginate", "~> 3.1.0"
+gem "alphabetical_paginate"
 
 # Back-end
-gem 'faraday'
-gem 'faraday_middleware'
+gem "faraday"
+gem "faraday_middleware"
 
 gem "audited", "~> 4.4"
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem "sass-rails", "~> 5.0"
 # Use Uglifier as compressor for JavaScript assets - needs a JavaScript runtime so let's skip it for a moment
 # gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
+gem "coffee-rails", "~> 4.2"
 # See https://github.com/rails/execjs#readme for more supported runtimes
-gem 'therubyracer', platforms: :ruby
+gem "therubyracer", platforms: :ruby
 
 # Use react as the JavaScript library
 # gem 'react-rails'
