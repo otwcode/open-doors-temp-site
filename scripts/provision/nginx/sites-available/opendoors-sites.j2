@@ -21,9 +21,9 @@ server {
     try_files $uri $uri/ /index.html;
   }
 
-  # Match up any subpath with a corresponding puma socket
+  # Match up any subpath with a corresponding Unicorn socket
   location ~^\/([^\/]*)(\/.*)? {
-    proxy_pass http://unix:/var/www/$1/runtime/sockets/puma.sock;
+    proxy_pass http://unix:/var/www/$1/runtime/sockets/unicorn.sock;
   }
 
   location /doc/ {

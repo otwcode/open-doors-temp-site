@@ -1,8 +1,0 @@
-#!/bin/bash
-# Start the Rails app for the specified temp site (used by the start and stop scripts)
-
-app=/home/opendoors_web/www/$1; config=$app/config/puma.rb; log=$app/log/puma.log;
-echo "run-puma $app"
-echo "run-puma $config"
-echo "run-puma $log"
-cd $app && exec bundle exec puma -C $config 2>&1 >> $log
