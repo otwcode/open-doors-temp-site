@@ -1,0 +1,18 @@
+sitekey: << unique name for the site used as database name and url path >>
+name: << Site name (displayed on website) >>
+
+repo_version: << Github branch, hash, tag, or HEAD to use as source for deployed site >>
+
+remote_user: << user on remote site >>
+remote_group: << user's group on remote site >>
+remote_path: << remote path to root folder for websites >>
+
+mysql_user: << MySQL user on the remote host >>
+mysql_pw: << password for the MySQL user on the remote host >>
+mysql_socket: << path to MySQL socket on the remote host >>
+
+# Needed for PROVISIONING only
+remote_hostname: << hostname for the remote server (added to hosts file) >>
+remote_pw: << not used - just convenient for reference >>
+remote_pw_hash: << hash of user password >>
+local_ssh_path: << path to the public key to add to authorised keys on the server >>

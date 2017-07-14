@@ -40,7 +40,7 @@ Before you proceed, you will need to install Ansible (https://www.ansible.com/).
 [otw]
 [[SERVER_NAME]] ansible_ssh_user=[[SERVER_USER]]
 ```
-Where `SERVER_NAME` and `SERVER_USER` are the server and user provided by Systems. 
+Where `SERVER_NAME` and `SERVER_USER` are the server DNS host and ssh user for the web server. 
 
 1. Make a copy of `variables.yml.example` as `variables.yml` and fill it in with the details 
 of the site you're creating.
@@ -55,10 +55,27 @@ $ ansible-playbook deploy-site.yml -i hosts --extra-vars "@variables.yml"
 ```
 
 # Vagrant deployment
-To test the Ansible provisioning and deployment using Vagrant, navigate to the root of the project and then type:
+To test the Ansible provisioning and deployment using Vagrant:
+
+1. Make a copy of `variables.yml.example` as `variables.yml` and fill it in with the details 
+   of the site you're creating.
+   
+1.  navigate to the root of the project and then type:
 
 ```bash
 $ vagrant up
 ```
 
+1. Navigate to http://localhost:8080/<site name> to view the deployed site.
+
 The same provisioning script used to set up the remote server will be used to provision a local Vagrant image on Ubuntu 16.04.
+(Note that this deploys a production environment which isn't suitable for development)
+
+# Server provisioning
+To set up a new server from scratch on Ubuntu 16, including fresh installations of Nginx, MySQL and Rails, run the 
+`provision-server.yml` playbook, using a populated `variables.yml`:
+
+```bash
+$ cd scripts/ansible
+$ ansible-playbook provision-server.yml -i hosts --extra-vars "@variables.yml"
+```

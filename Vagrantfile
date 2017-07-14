@@ -20,13 +20,13 @@ Vagrant.configure(2) do |config|
   # Provision using Ansible
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "scripts/vagrant.yml"
-    ansible.extra_vars = "scripts/branch-variables.yml"
+    ansible.extra_vars = "scripts/variables.yml"
   end
 
   # Deploy using Ansible
   config.vm.provision :ansible do |ansible|
     ansible.playbook = "scripts/deploy-site.yml"
-    ansible.extra_vars = "scripts/branch-variables.yml"
+    ansible.extra_vars = "scripts/variables.yml"
   end
 
 end
