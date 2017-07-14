@@ -56,7 +56,7 @@
 #      line: "{{ hostvars[item].ansible_default_ipv4.address }} {{ LOCAL_FQDN_NAME }} {{ LOCAL_HOSTNAME }}"
 #      state: present
 #    when: hostvars[item].ansible_default_ipv4.address is defined
-#    with_items: "{{ groups['linode'] }}"
+#    with_items: "{{ groups['remote'] }}"
 
   - name: Install apps
     apt:
