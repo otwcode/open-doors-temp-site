@@ -7,7 +7,7 @@
   vars:
     repo: https://github.com/otwcode/open-doors-temp-site.git
     deploy_path: "{{ remote_path }}/{{ sitekey }}"
-    puma_line: "{{ sitekey }},{{ remote_user }}"
+    unicorn_script: unicorn_{{ sitekey }}
 
   tasks:
   - name: Create Bundler directory
@@ -17,14 +17,10 @@
       group: "{{ remote_group }}"
       state: directory
 
-  - name: Read previous PID if present
-    slurp:
-      src: "{{ deploy_path }}/runtime/pids/unicorn.pid"
-    register: previous_pid_file
-    ignore_errors: yes
-
-  - name: Kill PID if running
-    action: shell kill -9 {{ previous_pid_file['content'] | b64decode }}
+  - name: Stop app if already running
+    service:
+      name: "{{ unicorn_script }}"
+      status: stopped
     ignore_errors: yes
 
   - name: Delete app directory if it exists to start with a clean copy
@@ -69,18 +65,7 @@
       src: "{{ playbook_dir }}/../config/secrets.yml"
       dest: "{{ deploy_path }}/config/secrets.yml"
 
-  # Create folders
-  - name: Create log, pid and socket folders for Unicorn #Puma
-    file:
-      dest: "{{ deploy_path }}/{{ item }}"
-      owner: "{{ remote_user }}"
-      group: "{{ remote_group }}"
-      state: directory
-    with_items:
-      - log
-      - runtime/sockets
-      - runtime/pids
-
+  # Install
   - name: Update bundle
     command: bundle update
     args:
@@ -115,13 +100,33 @@
       login_unix_socket: "{{ mysql_socket }}"
     when: create_database
 
-# TBD start unicorn on boot
+  # Create folders
+  - name: Create log, pid and socket folders for Unicorn
+    file:
+      dest: "{{ deploy_path }}/{{ item }}"
+      owner: "{{ remote_user }}"
+      group: "{{ remote_group }}"
+      state: directory
+    with_items:
+      - log
+      - runtime/sockets
+      - runtime/pids
 
+  - name: Create Unicorn script
+    template:
+      src: "{{ playbook_dir }}/ansible/unicorn_app.j2"
+      dest: "/etc/init.d/unicorn_{{ sitekey }}"
+      mode: 0755
 
-  - name: Start website with unicorn
-    command: RAILS_ENV=production bundle exec unicorn -D -c {{ deploy_path }}/config/unicorn.rb
-    args:
-      chdir: "{{ deploy_path }}"
+  - name: Register service
+    command: update-rc.d unicorn_{{ sitekey }} defaults
+    ignore_errors: yes
+
+  - name: Start Unicorn app
+    service:
+      name: unicorn_{{ sitekey }}
+      state: started
+      enabled: yes
 
   - name: Restart Nginx
     service:
