@@ -50,8 +50,8 @@ anyway - make sure it has a valid `production` section)
 
 1. Run 
 ```bash
-$ cd scripts/ansible
-$ ansible-playbook deploy-site.yml -i hosts --extra-vars "@variables.yml"
+$ cd <root of this repo>
+$ ansible-playbook scripts/deploy-site.yml -i hosts --extra-vars "@scripts/variables.yml"
 ```
 
 # Vagrant deployment
@@ -63,6 +63,7 @@ To test the Ansible provisioning and deployment using Vagrant:
 1.  navigate to the root of the project and then type:
 
 ```bash
+$ cd <root of this repo>
 $ vagrant up
 ```
 
@@ -71,11 +72,17 @@ $ vagrant up
 The same provisioning script used to set up the remote server will be used to provision a local Vagrant image on Ubuntu 16.04.
 (Note that this deploys a production environment which isn't suitable for development)
 
+To deploy a site manually:
+ 
+```bash
+$ ansible-playbook scripts/deploy-site.yml -u ubuntu -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory --extra-vars "@scripts/variables.yml"
+```
+
 # Server provisioning
 To set up a new server from scratch on Ubuntu 16, including fresh installations of Nginx, MySQL and Rails, run the 
 `provision-server.yml` playbook, using a populated `variables.yml`:
 
 ```bash
-$ cd scripts/ansible
-$ ansible-playbook provision-server.yml -i hosts --extra-vars "@variables.yml"
+$ cd <root of this repo>
+$ ansible-playbook scripts/provision-server.yml -i hosts --extra-vars "@scripts/variables.yml"
 ```
