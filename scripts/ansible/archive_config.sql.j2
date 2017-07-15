@@ -375,3 +375,21 @@ INSERT IGNORE INTO `stories` VALUES
  ;
 /*!40000 ALTER TABLE `stories` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+create table {{ sitekey }}.users
+(
+  id int auto_increment
+    primary key,
+  name varchar(255) null,
+  email varchar(255) null,
+  password_digest varchar(255) null,
+  created_at datetime not null,
+  updated_at datetime not null
+)
+;
+
+
+
+INSERT INTO {{ sitekey }}.users (name, email, password_digest, created_at, updated_at)
+VALUES ('Open Doors', 'opendoors@tranformativeworks.org', '{{ mysql_password_digest }}', '2017-06-20 19:58:18', '2017-06-20 19:58:18');
