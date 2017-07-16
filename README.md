@@ -51,7 +51,7 @@ anyway - make sure it has a valid `production` section)
 1. Run 
 ```bash
 $ cd <root of this repo>
-$ ansible-playbook scripts/deploy-site.yml -i hosts --extra-vars "@scripts/variables.yml"
+$ ansible-playbook scripts/deploy-site.yml -i scripts/hosts --extra-vars "@scripts/variables.yml"
 ```
 
 # Vagrant deployment
@@ -84,5 +84,5 @@ To set up a new server from scratch on Ubuntu 16, including fresh installations 
 
 ```bash
 $ cd <root of this repo>
-$ ansible-playbook scripts/provision-server.yml -i hosts --extra-vars "@scripts/variables.yml"
+$ ansible-playbook scripts/provision-server.yml -i scripts/hosts --extra-vars "@scripts/variables.yml"
 ```
