@@ -1,7 +1,7 @@
 ---
 - name: Provision new web server for Open Doors sites
   hosts: all
-  user: vagrant
+  user: root
   become: yes
   become_method: sudo
   gather_facts: no

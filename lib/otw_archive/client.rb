@@ -25,7 +25,7 @@ module OtwArchive
 
         items_to_import.symbolize_keys.each do |type, items|
           next if items.blank?
-          resp = @http.post_request("#{type.to_s}/import", request_body)
+          resp = @http.post_request("#{type.to_s}", request_body)
           Rails.logger.info "\nRESP: #{resp.inspect}"
           responses << resp
         end
