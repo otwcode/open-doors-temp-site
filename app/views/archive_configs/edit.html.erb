@@ -1,0 +1,60 @@
+<h1>Editing Archive Config</h1>
+
+<%= form_for(@archive_config) do |f| %>
+  <% if @archive_config.errors.any? %>
+    <div id="alert alert-danger error_explanation">
+      <h2><%= pluralize(@archive_config.errors.count, "error") %> prohibited this archive config from being saved:</h2>
+
+      <ul>
+        <% @archive_config.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field form-group">
+    <%= f.label :name %>
+    <%= f.text_field :name, class: "form-control" %>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :fandom %>
+    <%= f.text_field :fandom, class: "form-control" %>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :stories_note %>
+    <%= f.text_area :stories_note, class: "form-control" %>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :bookmarks_note %>
+    <%= f.text_area :bookmarks_note, class: "form-control" %>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :send_email %>
+    <%= f.check_box :send_email %>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :post_preview %>
+    <%= f.check_box :post_preview %>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :archivist %>
+    <%= f.text_field :archivist, class: "form-control" %>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :collection_name %>
+    <%= f.text_field :collection_name, class: "form-control" %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Update archive config", class: "btn btn-primary" %>
+    <%= link_to "Back to archive config", @archive_config, class: "btn btn-info" %>
+  </div>
+<% end %>
