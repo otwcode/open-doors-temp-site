@@ -10,11 +10,8 @@ CREATE TABLE IF NOT EXISTS `archive_configs` (
   `bookmarks_note` text,
   `send_email` tinyint(1) NOT NULL DEFAULT '0',
   `post_preview` tinyint(1) NOT NULL DEFAULT '0',
-  `items_per_page` int(11) NOT NULL DEFAULT '30',
   `archivist` varchar(100) NOT NULL DEFAULT 'testy',
   `collection_name` varchar(255) DEFAULT NULL,
-  `imported` int(11) DEFAULT '0',
-  `not_imported` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `Key_UNIQUE` (`key`)
@@ -22,12 +19,10 @@ CREATE TABLE IF NOT EXISTS `archive_configs` (
 -- This will only insert the row the first time it is run
 INSERT IGNORE INTO `archive_configs`
   (`id`, `key`, `name`, `fandom`, `stories_note`,  `bookmarks_note`, `send_email`, `post_preview`,
-   `items_per_page`, `archivist`, `collection_name`, `imported`, `not_imported`)
+   `archivist`, `collection_name`)
   VALUES
   (1, "{{ sitekey }}", "{{ name }}", "Testing", "OD STORY NOTE", "OD BOOKMARK NOTE", 0, 0,
-   30, "testy", "COLLECTION_NAME", 0, 0);
-
--- Insert test data if there is no existing data
+   "testy", "COLLECTION_NAME");
 
 --
 -- Table structure for table `audits`
@@ -376,7 +371,6 @@ INSERT IGNORE INTO `stories` VALUES
 /*!40000 ALTER TABLE `stories` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
 create table {{ sitekey }}.users
 (
   id int auto_increment
@@ -386,10 +380,7 @@ create table {{ sitekey }}.users
   password_digest varchar(255) null,
   created_at datetime not null,
   updated_at datetime not null
-)
-;
-
-
+);
 
 INSERT INTO {{ sitekey }}.users (name, email, password_digest, created_at, updated_at)
 VALUES ('Open Doors', 'opendoors@tranformativeworks.org', '{{ mysql_password_digest }}', '2017-06-20 19:58:18', '2017-06-20 19:58:18');

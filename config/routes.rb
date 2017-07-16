@@ -15,7 +15,8 @@ Rails.application.routes.draw do
 
     resources :chapters
 
-    resources :archive_config, path: :config
+    resource :archive_configs, path: :config
+    resources :archive_configs, path: :config, only: [:edit, :show]
 
     # Authentication
     get "signup" => "users#new",        as: :signup
