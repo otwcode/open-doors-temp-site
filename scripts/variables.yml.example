@@ -12,9 +12,8 @@ mysql_pw: << password for the MySQL user on the remote host >>
 mysql_socket: << path to MySQL socket on the remote host >>
 
 # Site user
-site_user_password_plain: << Open Doors user password for the site >>
-site_user_password_digest: << digest of above password for insertion into the MySQL database >>
-
+opendoors_site_user_email: << Open Doors user email for the site >>
+opendoors_site_user_pw: << Open Doors user password for the site >>
 
 # Needed for PROVISIONING only
 remote_hostname: << hostname for the remote server (added to hosts file) >>

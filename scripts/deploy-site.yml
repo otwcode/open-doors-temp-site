@@ -100,6 +100,13 @@
       login_unix_socket: "{{ mysql_socket }}"
     when: create_database
 
+  - name: Create Open Doors user for the site
+    command: bundle exec rake users:create_user["Open Doors","{{ opendoors_site_user_email }}","{{ opendoors_site_user_pw }}"]
+    args:
+      chdir: "{{ deploy_path }}"
+    environment:
+      RAILS_ENV: production
+
   # Create folders
   - name: Create log, pid and socket folders for Unicorn
     file:

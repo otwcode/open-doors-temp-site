@@ -381,9 +381,3 @@ CREATE TABLE IF NOT EXISTS `users`
   updated_at datetime not null
 );
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT IGNORE INTO `users` (name, email, password_digest, created_at, updated_at)
-VALUES ('Open Doors', 'opendoors@tranformativeworks.org', '{{ site_user_password_digest }}', '2017-06-20 19:58:18', '2017-06-20 19:58:18');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
