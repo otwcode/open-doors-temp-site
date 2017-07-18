@@ -3,9 +3,9 @@ class ApplicationController < ActionController::Base
 
   before_action :load_config
   def load_config
-    @active_host = Rails.application.secrets[:ao3api][:active]
-    @site_config = ArchiveConfig.site_config
-    @api_config = Rails.application.secrets[:ao3api][@active_host.to_sym]
+    @active_host ||= Rails.application.secrets[:ao3api][:active]
+    @site_config ||= ArchiveConfig.site_config
+    @api_config ||= Rails.application.secrets[:ao3api][@active_host.to_sym]
   end
 
   def current_user
@@ -14,6 +14,6 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def authorize
-    redirect_to 'login' unless current_user
+    redirect_to :login unless current_user
   end
 end
