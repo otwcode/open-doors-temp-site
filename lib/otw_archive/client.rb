@@ -54,7 +54,7 @@ module OtwArchive
 
         begin
           @http ||= HttpClient.new(@config.archive_host, @config.token)
-          resp = @http.post_request("#{type.to_s}/find", request_body)
+          resp = @http.post_request("#{type.to_s}/search", request_body)
 
           responses << resp
         rescue StandardError => e
