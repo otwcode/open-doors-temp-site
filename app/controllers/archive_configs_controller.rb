@@ -1,5 +1,5 @@
 class ArchiveConfigsController < ApplicationController
-  before_action :set_archive_config, only: [:show, :edit, :update, :destroy]
+  before_action :authorize
 
   # GET /archive_configs/1
   def show
@@ -11,19 +11,14 @@ class ArchiveConfigsController < ApplicationController
 
   # PATCH/PUT /archive_configs/1
   def update
-    if @archive_config.update(archive_config_params)
-      redirect_to @archive_config, notice: 'Archive config was successfully updated.'
+    if @site_config.update(archive_config_params)
+      redirect_to @site_config, notice: 'Archive config was successfully updated.'
     else
       render :edit
     end
   end
 
   private
-
-  # Use callbacks to share common setup or constraints between actions.
-  def set_archive_config
-    @archive_config = @site_config
-  end
 
   # Only allow a trusted parameter "white list" through.
   def archive_config_params
