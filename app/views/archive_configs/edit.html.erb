@@ -1,12 +1,12 @@
 <h1>Edit archive config</h1>
 
-<%= form_for(@site_config) do |f| %>
-  <% if @site_config.errors.any? %>
+<%= form_for(@archive_config) do |f| %>
+  <% if @archive_config.errors.any? %>
     <div id="alert alert-danger error_explanation">
       <h2><%= pluralize(@archive_config.errors.count, "error") %> prohibited this archive config from being saved:</h2>
 
       <ul>
-        <% @site_config.errors.full_messages.each do |message| %>
+        <% @archive_config.errors.full_messages.each do |message| %>
           <li><%= message %></li>
         <% end %>
       </ul>
@@ -55,6 +55,6 @@
 
   <div class="actions">
     <%= f.submit "Update archive config", class: "btn btn-primary" %>
-    <%= link_to "Back to archive config", @site_config, class: "btn btn-info" %>
+    <%= link_to "Back to archive config", @archive_config, class: "btn btn-info" %>
   </div>
 <% end %>

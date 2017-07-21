@@ -61,7 +61,7 @@
           <span class="navbar-text" style="padding: .5rem">Signed in as <strong><%= current_user.name %></strong></span>
         </li>
         <li class="nav-item">
-          <%= link_to "Config", archive_config_path(@site_config), class: "nav-link" %>
+          <%= link_to "Config", archive_config_path(@archive_config), class: "nav-link" %>
         </li>
         <li class="nav-item">
           <%= link_to "Log out", logout_path, class: "nav-link" %>
@@ -85,11 +85,11 @@
   <div class="card">
     <div class="card-block">
       <p class="card-text">
-        Importing to <a href="<%= "http://#{@api_config[:url]}/collections/#{@site_config.collection_name}" %>" target="_blank">
-          <%= "http://#{@api_config[:url]}/collections/#{@site_config.collection_name}" %>
-        </a> as <strong><%= @site_config.archivist %></strong>.
-        Sending emails is <strong><%= @site_config.send_email ? "ON" : "OFF" %></strong> and
-        posting as drafts is <strong><%= @site_config.post_preview ? "ON" : "OFF" %></strong>
+        Importing to <a href="<%= "http://#{@api_config[:url]}/collections/#{@archive_config.collection_name}" %>" target="_blank">
+          <%= "http://#{@api_config[:url]}/collections/#{@archive_config.collection_name}" %>
+        </a> as <strong><%= @archive_config.archivist %></strong>.
+        Sending emails is <strong><%= @archive_config.send_email ? "ON" : "OFF" %></strong> and
+        posting as drafts is <strong><%= @archive_config.post_preview ? "ON" : "OFF" %></strong>
       </p>
     </div>
   </div>

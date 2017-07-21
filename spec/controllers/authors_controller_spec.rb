@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe AuthorsController, type: :controller do
   let!(:author1) { create(:author_with_stories, audit_comment: "Test") }

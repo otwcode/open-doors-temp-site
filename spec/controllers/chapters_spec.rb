@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe ChaptersController do
   it 'should show a single chapter' do

@@ -11,8 +11,8 @@ class ArchiveConfigsController < ApplicationController
 
   # PATCH/PUT /archive_configs/1
   def update
-    if @site_config.update(archive_config_params)
-      redirect_to @site_config, notice: 'Archive config was successfully updated.'
+    if @archive_config.update(archive_config_params)
+      redirect_to @archive_config, notice: 'Archive config was successfully updated.'
     else
       render :edit
     end
