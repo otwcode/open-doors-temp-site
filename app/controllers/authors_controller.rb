@@ -42,7 +42,7 @@ class AuthorsController < ApplicationController
       ]
     else
       works, bookmarks =
-        author.works_and_bookmarks(@client.config.archivist, @site_config.collection_name, request.host_with_port)
+        author.works_and_bookmarks(@client.config.archivist, @archive_config.collection_name, request.host_with_port)
 
       response = @client.import(works: works, bookmarks: bookmarks)
       works_responses = response[0]["works"]
@@ -94,7 +94,7 @@ class AuthorsController < ApplicationController
     imported_status = "checked status of author items."
 
     works, bookmarks =
-      author.works_and_bookmarks(@client.config.archivist, @site_config.collection_name, request.host_with_port)
+      author.works_and_bookmarks(@client.config.archivist, @archive_config.collection_name, request.host_with_port)
 
     response = @client.search(works: works, bookmarks: bookmarks)
 

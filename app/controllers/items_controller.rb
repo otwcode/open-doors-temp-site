@@ -27,13 +27,13 @@ class ItemsController < ApplicationController
         if type == "story"
           {
             works: [
-              item.to_work(@site_config.collection_name, request.host_with_port)
+              item.to_work(@archive_config.collection_name, request.host_with_port)
             ]
           }
         else
           {
             bookmarks: [
-              item.to_bookmark(@client.config.archivist, @site_config.collection_name)
+              item.to_bookmark(@client.config.archivist, @archive_config.collection_name)
             ]
           }
         end
@@ -123,13 +123,13 @@ class ItemsController < ApplicationController
       if type == "story"
         {
           works: [
-            item.to_work(@site_config.collection_name, request.host_with_port)
+            item.to_work(@archive_config.collection_name, request.host_with_port)
           ]
         }
       else
         {
           bookmarks: [
-            item.to_bookmark(@client.config.archivist, @site_config.collection_name)
+            item.to_bookmark(@client.config.archivist, @archive_config.collection_name)
           ]
         }
       end

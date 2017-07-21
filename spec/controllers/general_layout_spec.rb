@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe AuthorsController, type: :controller do
   render_views
@@ -7,7 +7,7 @@ describe AuthorsController, type: :controller do
     create(:archive_config)
 
     # warning, these values are read from config/config.yml - this will not work on a deployed site
-    @config = ArchiveConfig.site_config
+    @config = ArchiveConfig.archive_config
   end
 
   context 'displays the header information' do
@@ -18,23 +18,19 @@ describe AuthorsController, type: :controller do
     end
 
     it "displays the send emails status" do
-      expect(response.body).to include("Send emails:")
+      expect(response.body).to include("Sending emails is")
     end
 
     it "displays the post as preview status" do
-      expect(response.body).to include("Post works as drafts:")
+      expect(response.body).to include("posting as drafts is")
     end
 
     it "displays the collection" do
-      expect(response.body).to include("Collection:")
+      expect(response.body).to include("Importing to ")
     end
 
     it "displays the archivist" do
-      expect(response.body).to include("Archivist:")
-    end
-
-    it "displays the archive server" do
-      expect(response.body).to include("Archive server:")
+      expect(response.body).to include(" as ")
     end
   end
 

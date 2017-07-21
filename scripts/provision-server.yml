@@ -31,6 +31,9 @@
         line: "{{ remote_user }} ALL=(ALL) NOPASSWD: ALL"
         state: present
 
+    - name: Enable Bash as shell for normal user
+      command: sudo chsh -s /bin/bash {{ remote_user }}
+
     - action: setup
 
   tasks:
@@ -48,15 +51,6 @@
       regexp: ".*opendoors$"
       line: "127.0.0.1 opendoors {{ remote_hostname }}"
       state: present
-
-#  - name: Add the server's domain to the hosts file
-#    lineinfile:
-#      dest: /etc/hosts
-#      regexp: ".*{{ item }}$"
-#      line: "{{ hostvars[item].ansible_default_ipv4.address }} {{ LOCAL_FQDN_NAME }} {{ LOCAL_HOSTNAME }}"
-#      state: present
-#    when: hostvars[item].ansible_default_ipv4.address is defined
-#    with_items: "{{ groups['remote'] }}"
 
   - name: Install apps
     apt:
