@@ -15,7 +15,7 @@
 </p>
 
 <p>
-  <strong>Fandom:</strong>
+  <strong>Default fandom:</strong>
   <%= @archive_config.fandom %>
 </p>
 
@@ -40,11 +40,6 @@
 </p>
 
 <p>
-  <strong>Items per page:</strong>
-  <%= @archive_config.items_per_page %>
-</p>
-
-<p>
   <strong>Archivist:</strong>
   <%= @archive_config.archivist %>
 </p>
@@ -52,16 +47,6 @@
 <p>
   <strong>Collection name:</strong>
   <%= @archive_config.collection_name %>
-</p>
-
-<p>
-  <strong>Imported:</strong>
-  <%= @archive_config.imported %>
-</p>
-
-<p>
-  <strong>Not imported:</strong>
-  <%= @archive_config.not_imported %>
 </p>
 
 <%= link_to 'Edit', edit_archive_config_path(@archive_config), class: "btn btn-primary" %>
