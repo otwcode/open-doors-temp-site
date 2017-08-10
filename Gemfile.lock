@@ -104,7 +104,7 @@ GEM
     nio4r (1.2.1)
     nokogiri (1.7.0.1)
       mini_portile2 (~> 2.1.0)
-    puma (3.6.2)
+    puma (3.9.1)
     rack (2.0.1)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -223,7 +223,7 @@ DEPENDENCIES
   faraday
   faraday_middleware
   mysql2 (>= 0.3.18, < 0.5)
-  puma (~> 3.0)
+  puma (~> 3.8)
   rails (~> 5.0.1)
   rails-controller-testing
   rspec-rails
@@ -238,4 +238,4 @@ DEPENDENCIES
   will_paginate (~> 3.1.0)
 
 BUNDLED WITH
-   1.14.6
+   1.15.3
