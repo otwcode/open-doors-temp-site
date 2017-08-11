@@ -216,7 +216,7 @@ DEPENDENCIES
   alphabetical_paginate
   audited (~> 4.4)
   bcrypt (~> 3.1.7)
-  bootstrap (~> 4.0.0.alpha6)
+  bootstrap (= 4.0.0.alpha6)
   capybara
   coffee-rails (~> 4.2)
   factory_girl_rails

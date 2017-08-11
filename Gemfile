@@ -14,7 +14,7 @@ gem "mysql2", ">= 0.3.18", "< 0.5"
 gem "puma", "~> 3.8"
 
 # Front-end
-gem "bootstrap", "~> 4.0.0.alpha6"
+gem "bootstrap", "4.0.0.alpha6"
 
 gem "will_paginate", "~> 3.1.0"
 gem "alphabetical_paginate"
