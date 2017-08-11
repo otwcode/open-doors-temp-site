@@ -10,7 +10,7 @@ describe AuthorsController, type: :controller do
     @config = ArchiveConfig.archive_config
   end
 
-  context 'displays the header information' do
+  context "displays the header information" do
     let(:response) { get :index }
 
     it "displays the site name" do

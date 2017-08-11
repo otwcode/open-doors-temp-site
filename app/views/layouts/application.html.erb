@@ -61,7 +61,17 @@
           <span class="navbar-text" style="padding: .5rem">Signed in as <strong><%= current_user.name %></strong></span>
         </li>
         <li class="nav-item">
-          <%= link_to "Config", archive_config_path(@archive_config), class: "nav-link" %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle <%= "active" if params[:controller] == "stats" || params[:controller] == "archive_config" %>" href=""
+               id="navbarDropdownAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Admin
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+              <%= link_to "Stats", stats_path, class: "dropdown-item" %>
+              <%= link_to "Config", archive_config_path(@archive_config), class: "dropdown-item" %>
+            </div>
+          </li>
+
         </li>
         <li class="nav-item">
           <%= link_to "Log out", logout_path, class: "nav-link" %>

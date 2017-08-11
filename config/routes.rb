@@ -15,9 +15,6 @@ Rails.application.routes.draw do
 
     resources :chapters
 
-    resource :archive_configs, path: :config
-    resources :archive_configs, path: :config, only: [:edit, :show, :update]
-
     # Authentication
     get "signup" => "users#new",        as: :signup
     post "users" => "users#create",     as: :create_user
@@ -32,5 +29,11 @@ Rails.application.routes.draw do
     post "items/check/:type/:id"  => "items#check",   as: :item_check
     post "items/dni/:type/:id"    => "items#dni",     as: :item_dni
     get  "items/audit/:type/:id"  => "items#audit",   as: :item_audit
+
+    # Admin features
+    resource :archive_configs, path: :config
+    resources :archive_configs, path: :config, only: [:edit, :show, :update]
+
+    get "stats" => "stats#show"
   end
 end

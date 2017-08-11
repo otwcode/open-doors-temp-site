@@ -12,7 +12,12 @@ class Author < ApplicationRecord
   validates_presence_of :name
 
   def all_imported?
-    (stories.present? && stories.all?(&:imported)) && (story_links.present? && story_links.all?(&:imported))
+    stories_not_imported = stories.present? && stories.none?(&:to_be_imported)
+    story_links_not_imported = story_links.present? && story_links.none?(&:to_be_imported)
+
+    (stories_not_imported && story_links_not_imported) ||
+      (stories_not_imported && story_links.blank?) ||
+        (stories.blank? & story_links_not_imported)
   end
 
   def coauthored_stories

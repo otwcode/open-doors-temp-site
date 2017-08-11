@@ -9,6 +9,10 @@ class StoryLink < ApplicationRecord
     false
   end
 
+  def to_be_imported
+    !self.imported && !self.do_not_import
+  end
+
   def to_bookmark(archivist, collection)
     Request::Bookmark.new(
       archivist,

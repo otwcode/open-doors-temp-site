@@ -13,6 +13,10 @@ class Story < ApplicationRecord
     coauthor.present?
   end
 
+  def to_be_imported
+    !self.imported && !self.do_not_import
+  end
+
   def to_work(collection, host)
     Request::Work.new(
       title,
