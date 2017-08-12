@@ -26,7 +26,16 @@ class StatsController < ApplicationController
     grouped_authors = authors.group_by { |author| author.name.downcase.first }
     all_imported = {}
     grouped_authors.each do |letter, group|
-      all_imported[letter.to_sym] = group.all? { |a| a.all_imported? }
+      is_imported = group.all? { |a| a.all_imported? }
+      if letter =~ /[0-9a-zA-Z]/
+        all_imported[letter] = is_imported
+      else
+        if all_imported["*"].nil?
+          all_imported["*"] = is_imported
+        else
+          all_imported["*"] = all_imported["*"] && is_imported
+        end
+      end
     end
     imported_letters, not_imported_letters = all_imported.partition { |_, v| v }
 

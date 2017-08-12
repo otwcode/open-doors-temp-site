@@ -17,7 +17,8 @@ class Author < ApplicationRecord
 
     (stories_not_imported && story_links_not_imported) ||
       (stories_not_imported && story_links.blank?) ||
-        (stories.blank? & story_links_not_imported)
+        (stories.blank? & story_links_not_imported) ||
+        self.imported || self.do_not_import
   end
 
   def coauthored_stories
