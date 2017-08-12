@@ -20,12 +20,20 @@
       <p class="card-text"><b>Total author groups:</b> <%= @stats.letters.all %></p>
       <p class="card-text"><b>Imported groups:</b> <%= @stats.letters.imported.size %><br/>
         <% @stats.letters.imported.each do |letter, _| %>
-          <%= link_to letter, authors_path(letter: letter.to_s) %>
+            <% if letter =~ /[0-9a-zA-Z]/ %>
+                <%= link_to letter, authors_path(letter: letter.to_s) %>
+            <% else %>
+                <%= link_to letter, authors_path(letter: "*") %>
+            <% end %>
         <% end %>
       </p>
       <p class="card-text"><b>Still to import:</b> <%= @stats.letters.not_imported.size %><br/>
         <% @stats.letters.not_imported.each do |letter, _| %>
-            <%= link_to letter, authors_path(letter: letter.to_s) %>
+            <% if letter =~ /[0-9a-zA-Z]/ %>
+              <%= link_to letter, authors_path(letter: letter.to_s) %>
+            <% else %>
+              <%= link_to letter, authors_path(letter: "*") %>
+            <% end %>
         <% end %>
       </p>
     </div>
