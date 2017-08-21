@@ -5,7 +5,6 @@ class StatsController < ApplicationController
     @stats = gather_stats
   end
 
-  protected
   def author_stats(authors)
     authors_imported, authors_not_imported, authors_dni = Array.new(3) { [] }
     authors.each do |a|
@@ -61,11 +60,11 @@ class StatsController < ApplicationController
     )
   end
 
-  def gather_stats
-    authors = Author.with_stories_or_story_links
+  def gather_stats(authors = nil, stories = nil, story_links = nil)
+    authors ||= Author.with_stories_or_story_links
 
-    stories = Story.all.to_a
-    story_links = StoryLink.all.to_a
+    stories ||= Story.all.to_a
+    story_links ||= StoryLink.all.to_a
 
     @stats = OpenStruct.new(
       authors: author_stats(authors),
