@@ -1,6 +1,5 @@
 server {
   root /var/www;
-  index index.html index.htm;
 
   # Make site accessible from http://localhost/
   server_name localhost {{ remote_hostname }};
@@ -15,11 +14,11 @@ server {
   proxy_http_version 1.1;
 
   location = / {
-    alias /var/www/;
+    proxy_pass http://unix:/var/www/rootsite/runtime/sockets/unicorn.sock;;
   }
 
   # Match up any subpath with a corresponding Unicorn socket
   location ~^\/(?<site>[^\/]+)(\/.*)? {
-    proxy_pass http://unix:/var/www/$site/runtime/sockets/unicorn.sock;
+    proxy_pass http://unix:/var/www/sites/$site/runtime/sockets/unicorn.sock;
   }
 }

@@ -12,7 +12,7 @@
   tasks:
   - name: Create Bundler directory
     file:
-      path: "{{ remote_path }}/bundler/{{ repo_version }}"
+      path: "{{ remote_path }}/../bundler/{{ repo_version }}"
       owner: "{{ remote_user }}"
       group: "{{ remote_group }}"
       state: directory
@@ -72,7 +72,7 @@
       chdir: "{{ deploy_path }}"
 
   - name: Install bundle
-    command: bundle install --deployment --path={{ remote_path }}/bundle/{{ repo_version }}
+    command: bundle install --deployment --path={{ remote_path }}/../bundler/{{ repo_version }}
     args:
       chdir: "{{ deploy_path }}"
 
