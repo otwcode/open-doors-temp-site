@@ -37,7 +37,6 @@
     - action: setup
 
   tasks:
-# ln -sf /usr/share/zoneinfo/UTC /etc/localtime
   - name: Set the timezone for the server to UTC
     timezone:
       name: UTC
@@ -139,3 +138,10 @@
       group: www-data
       mode: g+rw
       recurse: yes
+
+  - name: Copy static files
+    copy:
+      scr: "{{ item }}"
+      dest: /var/www
+    with_fileglob:
+      - "{{ playbook_dir }}/provision/var/www/**/*"
