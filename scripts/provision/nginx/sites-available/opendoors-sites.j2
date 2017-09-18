@@ -13,6 +13,17 @@ server {
   proxy_set_header   Connection "";
   proxy_http_version 1.1;
 
+  error_page 403 404 500 502 503 504 =404 /error.html;
+
+  location = /robots.txt {
+    add_header Content-Type text/plain;
+    return 200 "User-agent: *\nDisallow: /\n";
+  }
+
+  location = /error.html {
+    internal;
+  }
+
   location = / {
     proxy_pass http://unix:/var/www/rootsite/runtime/sockets/unicorn.sock;;
   }
