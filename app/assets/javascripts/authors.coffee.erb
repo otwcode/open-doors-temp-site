@@ -11,6 +11,7 @@
   $("#author-" + authorId + " .message").empty()
 
 
+# HTML helpers
 @divClass = (status) ->
   debug(status)
   if status in ["ok", "created", "success", "found"]
@@ -18,7 +19,25 @@
   else
     divClass = "alert alert-danger"
 
+@alertHTML = (status, message) ->
+  "<div class=\"#{divClass(status)}\" role=\"alert\">#{message}</div>"
 
+@ao3linkHTML = (url) ->
+  "<a href=\"#{url}\" target=\"_blank\">#{url}</a>"
+
+@importButtonHTML = (type, itemId) ->
+  "<a id=\"item-import-#{type}-#{itemId}\" class=\"btn-sm btn-import\" data-method=\"post\" data-button=\"import\" data-item=\"#{itemId}\" data-type=\"#{type}\" data-remote=\"true\" href=\"/items/import/#{type}/#{itemId}\">Import</a>"
+
+@disableButton = (button) ->
+  button.addClass("progress-bar-striped progress-bar-animated")
+  button.prop("disabled", true)
+
+@enableButton = (button) ->
+  button.removeClass("progress-bar-striped progress-bar-animated")
+  button.prop("disabled", false)
+
+
+# Functions that get stuff done
 @refreshAudit = (type, itemId) ->
   if (type? && itemId?)
     itemAudit = $("#audit-#{type}-#{itemId}")
@@ -28,42 +47,35 @@
     myRegexp = /(?:\/)(.*?)(?:\/|$)/g
     match = myRegexp.exec(path)
     sitename = match[1]
-    console.log(host)
-    console.log(match[1])
     $.ajax
       type: "GET"
       url: "#{host}/#{sitename}/items/audit/#{type}/#{itemId}"
       dataType: "text"
 
       success: (data, status, xhr) ->
-        console.log("Refresh audit success")
         itemAudit.html data
         $("#info-img-#{type}-#{itemId}").show()
       error: (data, status, error) ->
-        console.log("Error: #{error}")
+        console.log("Refresh audit error: #{error}")
       complete : (xhr, status) ->
-        console.log("complete")
+        console.log("Refresh audit complete")
 
 
 @writeItemToDiv = (type, status, itemId, message, url) ->
-  console.log("write item to div")
-  debug("#{status} - #{type}")
   messageDiv = $("#" + type + "-" + itemId + " .message")
-  messageDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{message}</div>"
+  messageDiv.html alertHTML(status, message)
   mainDiv = $("#" + type + "-" + itemId)
 
   if status in ["created", "already_imported", "found"]
     console.log("found")
     mainDiv.addClass("imported")
     importButton = $("#import-#{type}-#{itemId}")
-    importButton.html "<a href=\"#{url}\" target=\"_blank\">#{url}</a>"
-#    markButton = $("#item-mark-#{type}-#{itemId}")
-#    markButton.text "Mark NOT imported"
+    importButton.html ao3linkHTML(url)
   if status in ["bad_request", "not_found"]
     console.log("not found")
     mainDiv.removeClass("imported")
     importButton = $("#import-#{type}-#{itemId}")
-    importButton.html "<a id=\"item-import-#{type}-#{itemId}\" class=\"btn-sm btn-import\" data-method=\"post\" data-button=\"import\" data-item=\"#{itemId}\" data-type=\"#{type}\" data-remote=\"true\" href=\"/opendoorstempsite/items/import/#{type}/#{itemId}\">Import</a>"
+    importButton.html @importButtonHTML(type, itemId)
 
 
 @writeSummaryToDiv = (data, summaryTargetDiv, status, authorId) ->
@@ -75,7 +87,7 @@
   if data[1] && data[1]["messages"]
     summary.push(data[1]["messages"])
   if summary.length > 0
-    summaryTargetDiv.html "<div class=\"#{divClass(status)}\" role=\"alert\">#{summary.join("<br/>")}</div>"
+    summaryTargetDiv.html alertHTML(status, summary.join("<br/>"))
 
 
 @processImportResponse = (data) ->
@@ -102,37 +114,35 @@
 
 
 @bindImport = (event) ->
-  link = $(event.target)
-  buttonType = link.attr("data-button")
-  type = link.attr("data-type")
-  authorId = link.attr("data-author")
-  itemId = link.attr("data-item")
+  button = $(event.target)
+  buttonType = button.attr("data-button")
+  type = button.attr("data-type")
+  authorId = button.attr("data-author")
+  itemId = button.attr("data-item")
 
   clearAllMessages(authorId)
 
   authorArticle = $("#author-#{authorId}")
+  authorItems = authorArticle.find("#items-#{authorId}")
   itemSection = $("##{type}-#{itemId}")
   summaryDiv = $("#author-" + authorId + " .author.message")
 
   if buttonType in ["import", "mark", "dni", "check"]
-    linkhtml = link.html()
-    link.html "<img src='<%= asset_path('aloader.gif') %>' class='loading'/>"
-    link.prop("disabled", true)
+    disableButton(button)
+    disableButton(authorArticle)
 
     $.ajax
       type: "POST"
-      url: link[0]
+      url: button[0]
       dataType: "json"
 
       success: (data, status, xhr) ->
-        console.log("data before write summaryDiv")
-        debug(data)
-
-        # Reinstate button
-        link.html linkhtml
-        link.prop("disabled", false)
-
+        enableButton(button)
+        enableButton(authorArticle)
         writeSummaryToDiv(data, summaryDiv, status, authorId)
+        if data[0]["author_imported"]
+          authorItems.removeClass("expanded")
+          authorItems.addClass("collapse")
 
         switch buttonType
           when "import"
@@ -145,13 +155,13 @@
             if data[0]["dni"] == true
               authorArticle.addClass("do_not_import")
               itemSection.addClass("do_not_import")
-              link.text "Mark as ALLOW import"
+              button.text "Mark as ALLOW import"
               authorArticle.find("a[data-button='import']").hide()
               itemSection.find("a[data-button='import']").hide()
             else
               authorArticle.removeClass("do_not_import")
               itemSection.removeClass("do_not_import")
-              link.text "Mark as do NOT import"
+              button.text "Mark as do NOT import"
               authorArticle.find("a[data-button='import']").show()
               itemImport = itemSection.find("a[data-button='import']")
               itemImport.attr("hidden", false)
@@ -162,13 +172,13 @@
             if data[0]["mark"] == true
               authorArticle.addClass("imported")
               itemSection.addClass("imported")
-              link.text "Mark as NOT imported"
+              button.text "Mark as NOT imported"
               $("#author-#{authorId} a[data-button='import']").hide()
               itemSection.find("a[data-button='import']").hide()
             else
               authorArticle.removeClass("imported")
               itemSection.removeClass("imported")
-              link.text "Mark as imported"
+              button.text "Mark as imported"
               $("#author-#{authorId} a[data-button='import']").show()
               itemSection.find("a[data-button='import']").show()
             refreshAudit(type, itemId)
@@ -177,8 +187,8 @@
             alert "Unknown button"
 
       error: (data, status, error) ->
-        link.html linkhtml
-        link.prop("disabled", false)
+        enableButton(button)
+        enableButton(authorArticle)
 
         message = "<p class=\"alert alert-danger\">An error occurred while processing the request: #{error}</p>"
         summaryDiv.html message
@@ -186,12 +196,25 @@
         itemDiv.html message
         debug(data)
 
-  else if buttonType in ["clear", "audit"]
-    switch buttonType
-      when "clear"
-        clearAllMessages(authorId)
-      when "audit"
-        refreshAudit(type, id)
+  else if buttonType == "clear"
+    clearAllMessages(authorId)
+
+  else if buttonType == "audit"
+    refreshAudit(type, id)
+
+  else if buttonType in ["hideAllImported", "showAllImported"]
+    # Alphabetical paginate sometimes duplicates the button because it's in its div so need to grab all
+    buttons = $(".btn-hide-all")
+    allImportedAuthors = $("article.imported")
+
+    if buttonType == "hideAllImported"
+      buttons.text "Show imported authors"
+      buttons.attr("data-button", "showAllImported")
+      allImportedAuthors.hide()
+    else
+      buttons.text "Hide imported authors"
+      buttons.attr("data-button", "hideAllImported")
+      allImportedAuthors.show()
 
   else
     alert "Unknown button - something is broken!"

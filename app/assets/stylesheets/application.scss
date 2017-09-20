@@ -15,6 +15,12 @@
  */
 
 @import "bootstrap";
+@import "bootstrap/variables";
+
+$importColor: #5bc0de;
+$checkColor: #67956c;
+$dniColor: #cb8498;
+$clearColor: #906b59;
 
 * {
   font-size: 14px;
@@ -34,32 +40,9 @@ h3 .badge, h4 .badge {
 }
 
 .pagination {
+  @extend .pagination;
   display: inline-flex;
   margin: 1rem auto 0;
-}
-
-ul.pagination > li {
-  @extend .page-item;
-}
-
-ul.pagination > li.active {
-  @extend .page-item;
-  z-index: 2;
-  color: #fff;
-  background-color: #0275d8;
-  border-color: #0275d8;
-}
-
-ul.pagination > li > a {
-  @extend .page-link;
-  line-height: inherit;
-}
-
-ul.pagination > li.active > a {
-  z-index: 2;
-  color: #fff;
-  background-color: #0275d8;
-  border-color: #0275d8;
 }
 
 .loading {
@@ -67,6 +50,7 @@ ul.pagination > li.active > a {
   height: 16px;
 }
 
+/* Fix for collapse bug in Bootstrap */
 .row.collapse.show {
   display: flex;
 }
@@ -84,15 +68,24 @@ ul.pagination > li.active > a {
 article {
   padding: 5px;
   border: #95dafe solid 1px;
-  border-radius: 0.2rem;
+  border-radius: 0.26rem;
   margin-bottom: 10px;
+
+  .progress-bar-animated {
+    background-color: rgb(226, 226, 226);
+  }
+
+  a.collapse, a.collapse:hover {
+    text-decoration: none;
+    color: $body-color;
+  }
 }
 
 section {
   margin-top: 10px;
   display: block;
   background-color: rgba(195, 241, 255, 0.2);
-  border-radius: 0.2rem;
+  border-radius: 0.26rem;
   text-decoration: none;
   margin-left: 0px;
   margin-right: 5px;
@@ -102,24 +95,26 @@ section {
 .btn-sm:hover {
   text-decoration: none;
 }
+
 .btn-import {
-  @include button-variant(#fff, #5bc0de, #5bc0de);
+  @include button-variant(#fff, $importColor, $importColor);
   text-decoration: none;
 }
 
 .btn-check {
-  @include button-variant(#fff, #67956c, #67956c);
+  @include button-variant(#fff, $checkColor, $checkColor);
   text-decoration: none;
 }
 
 .btn-dni {
-  @include button-variant(#fff, #cb8498, #cb8498);
+  @include button-variant(#fff, $dniColor, $dniColor);
   text-decoration: none;
 }
 
-.btn-clear {
-  @include button-variant(#fff, #906b59, #78594a);
+.btn-clear, .btn-hide-all {
+  @include button-variant(#fff, $clearColor, $clearColor);
   text-decoration: none;
+  margin-bottom: 4px; /* weird interaction with the adjacent alphabetical paginate nav */
 }
 
 /* Import statuses */

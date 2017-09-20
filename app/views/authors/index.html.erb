@@ -1,59 +1,39 @@
-<nav class="text-center"><%= alphabetical_paginate @letters %></nav>
+<div class="text-center">
+  <nav class="d-inline-block">
+    <%= alphabetical_paginate @letters %>
+  </nav>
+  <span>&nbsp;</span>
+  <%= link_to "Hide imported authors", "#",
+              id: "all-author-hide", remote: true,
+              class: "btn btn-hide-all",
+              data: { method: :post, button: :hideAllImported } %>
+</div>
 <%= will_paginate(@authors, renderer: "BootstrapPaginationHelper::LinkRenderer") ||
                             '<nav><ul class="pagination will_paginate justify-content-center"><li/></ul></nav>'.html_safe %>
 
 <div id="pagination_table">
   <% @authors.each do |author|
-    css_class = (author.imported ? "imported" : "") + (author.do_not_import ? " do_not_import" : "")
+    css_class = (author.imported || author.all_imported? ? "imported" : "") + (author.do_not_import ? " do_not_import" : "")
   %>
 
     <article id="<%= "author-#{author.id}" %>" class="<%= css_class %>">
       <a name="<%= author.name.to_s.parameterize(separator: "_") %>"></a>
-        <div class="row justify-content-lg-center">
-          <div class="col-lg-4">
-            <h2>
-              <span class="badge badge-primary"><%= author.id %></span>
-              <%= author.name %>
-            </h2>
+        <div class="row justify-content-lg-center align-middle">
+          <div class="col-12 col-md align-middle">
+            <a href="#items-<%= author.id %>" data-toggle="collapse">
+              <h2>
+                <span class="badge badge-primary"><%= author.id %></span>
+                <%= author.name %>
+              </h2>
+            </a>
           </div>
-          <div class="col-md-8 col-sm-9 extra-space text-right">
-            <% unless author.imported %>
-              <%= link_to "Import Everything", author_import_path(author.id),
-                          id: "author-import-#{author.id}", remote: true,
-                          class: "btn-sm btn-import", hidden: author.do_not_import,
-                          data: { method: :post, button: :import, author: author.id } %>
-            <% end %>
-            <!-- Mark as import - we don't think we need this anymore
-            <span>&nbsp;</span>
-            <% #= link_to (author.imported ? "Mark NOT imported" : "Mark as imported"), author_mark_path(author.id),
-               #         id: "author-mark-#{author.id}", remote: true,
-               #         data: { method: :post, button: :mark, author: author.id } %>
-            -->
-            <span>&nbsp;</span>
-            <%= link_to "Check imports", author_check_path(author.id),
-                        id: "author-check-#{author.id}", remote: true,
-                        class: "btn-sm btn-check",
-                        data: { method: :post, button: :check, author: author.id } %>
-            <span>&nbsp;</span>
-            <%= link_to (author.do_not_import ? "Mark as ALLOW import" : "Mark as do NOT import"), author_dni_path(author.id),
-                        id: "author-dni-#{author.id}", remote: true,
-                        class: "btn-sm btn-dni", confirm: "Are you sure this author should not be imported?",
-                        data: { method: :post, button: :dni, author: author.id } %>
-            <span>&nbsp;</span>
-            <%= link_to "Clear messages", "#",
-                        id: "author-clear-#{author.id}", remote: true,
-                        class: "btn-sm btn-clear",
-                        data: { method: :post, button: :clear, author: author.id } %>
-            <!--<span>&nbsp;</span>-->
-            <!-- %= # link_to "Audit log", "#",
-                # id: "author-audit-#{author.id}", remote: true,
-                # class: "btn-sm btn-clear",
-                # data: { method: :get, button: :audit, author: author.id } % -->
-          </div>
+          <%= render "author_buttons", author: author %>
         </div>
         <div class="author message <%= @api_response %>">
           <%= @api_response %>
         </div>
+
+        <div id="items-<%= author.id %>" class="<%= author.all_imported? ? "collapse" : "expanded" %>">
         <% if author.stories.present? %>
           <h3>Stories</h3>
           <% author.stories.each do |story| %>
@@ -74,9 +54,17 @@
             <%= render partial: "/shared/meta", locals: { item: story, type: :coauthored_story, author_view: true } %>
           <% end %>
         <% end %>
+        </div>
     </article>
   <% end %>
 </div>
 
 <%= will_paginate @authors, renderer: "BootstrapPaginationHelper::LinkRenderer" %>
-<nav class="text-center"><%= alphabetical_paginate @letters %></nav>
+<nav class="text-center">
+  <%= alphabetical_paginate @letters %>
+  <span>&nbsp;</span>
+  <%= link_to "Hide imported authors", "#",
+              id: "all-author-hide", remote: true,
+              class: "btn btn-hide-all",
+              data: { method: :post, button: :hideAllImported } %>
+</nav>
