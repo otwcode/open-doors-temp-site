@@ -5,6 +5,7 @@ class AuthorsController < ApplicationController
   include OtwArchive
   include OtwArchive::Request
   include ApplicationHelper
+  include AlphabeticalPaginate::ViewHelpers
 
   def initialize
     active_api   = Rails.application.secrets[:ao3api][:active]
@@ -17,7 +18,7 @@ class AuthorsController < ApplicationController
   def index
     letter_authors, @letters = Author.with_stories_or_story_links
                                      .alpha_paginate(params[:letter],
-                                                     bootstrap3: true,
+                                                     bootstrap4: true,
                                                      include_all: false,
                                                      numbers: true,
                                                      others: true
@@ -45,6 +46,7 @@ class AuthorsController < ApplicationController
         author.works_and_bookmarks(@client.config.archivist, @archive_config.collection_name, request.host_with_port)
 
       response = @client.import(works: works, bookmarks: bookmarks)
+
       works_responses = response[0]["works"]
       if works_responses.present?
         works_responses.each do |work_response|
@@ -52,17 +54,17 @@ class AuthorsController < ApplicationController
         end
       end
 
-      bookmarks_responses = if response[1]
-                              response[1]["bookmarks"]
-                            else
-                              response[0]["bookmarks"]
-                            end
+      bookmarks_responses = response[1] ? response[1]["bookmarks"] : response[0]["bookmarks"]
       if bookmarks_responses.present?
         bookmarks_responses.each do |bookmark_response|
           update_item(:bookmark, bookmark_response.symbolize_keys)
         end
       end
     end
+
+    # Is the author now fully imported?
+    response[0][:author_imported] = author.all_imported?
+    puts response.inspect
     if request.xhr?
       render json: response, content_type: "text/json"
     else

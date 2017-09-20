@@ -1,0 +1,34 @@
+<div class="col extra-space text-md-right text-left align-middle">
+  <% unless author.imported || author.all_imported? %>
+    <%= link_to "Import Everything", author_import_path(author.id),
+                id: "author-import-#{author.id}", remote: true,
+                class: "btn btn-sm btn-import", hidden: author.do_not_import,
+                data: { method: :post, button: :import, author: author.id } %>
+  <% end %>
+  <!-- Mark as import - we don't think we need this anymore
+            <span>&nbsp;</span>
+            <% #= link_to (author.imported ? "Mark NOT imported" : "Mark as imported"), author_mark_path(author.id),
+               #         id: "author-mark-#{author.id}", remote: true,
+               #         data: { method: :post, button: :mark, author: author.id } %>
+            -->
+  <span>&nbsp;</span>
+  <%= link_to "Check imports", author_check_path(author.id),
+              id: "author-check-#{author.id}", remote: true,
+              class: "btn btn-sm btn-check",
+              data: { method: :post, button: :check, author: author.id } %>
+  <span>&nbsp;</span>
+  <%= link_to (author.do_not_import ? "Mark as ALLOW import" : "Mark as do NOT import"), author_dni_path(author.id),
+              id: "author-dni-#{author.id}", remote: true,
+              class: "btn btn-sm btn-dni", confirm: "Are you sure this author should not be imported?",
+              data: { method: :post, button: :dni, author: author.id } %>
+  <span>&nbsp;</span>
+  <%= link_to "Clear messages", "#",
+              id: "author-clear-#{author.id}", remote: true,
+              class: "btn btn-sm btn-clear",
+              data: { method: :post, button: :clear, author: author.id } %>
+  <!--<span>&nbsp;</span>-->
+  <!-- %= # link_to "Audit log", "#",
+      # id: "author-audit-#{author.id}", remote: true,
+      # class: "btn-sm btn-clear",
+      # data: { method: :get, button: :audit, author: author.id } % -->
+</div>

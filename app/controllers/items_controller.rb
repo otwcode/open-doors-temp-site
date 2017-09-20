@@ -148,13 +148,9 @@ class ItemsController < ApplicationController
     # respond_to :json
     type = params[:type]
     id = params[:id]
-
     item = find_item(id, type)
-
     audit = item.audits.map { |audit| "#{audit.created_at} - [#{audit.remote_address}] #{CGI.escapeHTML(audit.comment)}<br/>" }.join()
 
-    puts audit
-    
     render json: audit, content_type: "text/html"
   end
 
