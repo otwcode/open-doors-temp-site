@@ -61,6 +61,9 @@ class ItemsController < ApplicationController
       ]
     end
 
+    # Is the author now fully imported?
+    final_response[0][:author_imported] = item.author.all_imported?
+
     puts "item import: #{final_response.inspect}"
 
     render json: final_response, content_type: 'text/json'
@@ -81,6 +84,11 @@ class ItemsController < ApplicationController
     response << { status: :ok,
                   mark: item.imported,
                   messages: ["Successfully #{imported_status}"] }
+
+
+    # Is the author now fully imported?
+    response[0][:author_imported] = item.author.all_imported?
+
     if request.xhr?
       render json: response, content_type: "text/json"
     else
@@ -96,13 +104,18 @@ class ItemsController < ApplicationController
     item = find_item(id, type)
     author = item.author
 
-    imported_status = "set #{type} '#{item.title}' by #{author.name} to #{item.do_not_import ? "NOT " : ""}allow importing."
+    imported_status = "set #{type} '#{item.title}' by #{author.name} to #{item.do_not_import ? "" : "NOT "}allow importing."
     item.update_attributes!(do_not_import: !item.do_not_import, audit_comment: imported_status)
 
     response = []
     response << { status: :ok,
                   dni: item.do_not_import,
                   messages: ["Successfully #{imported_status}"] }
+
+
+    # Is the author now fully imported?
+    response[0][:author_imported] = author.all_imported?
+
     if request.xhr?
       render json: response, content_type: "text/json"
     else
