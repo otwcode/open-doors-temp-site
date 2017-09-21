@@ -12,13 +12,7 @@ class Author < ApplicationRecord
   validates_presence_of :name
 
   def all_imported?
-    stories_not_imported = stories.present? && stories.none?(&:to_be_imported)
-    story_links_not_imported = story_links.present? && story_links.none?(&:to_be_imported)
-
-    (stories_not_imported && story_links_not_imported) ||
-      (stories_not_imported && story_links.blank?) ||
-        (stories.blank? & story_links_not_imported) ||
-        self.imported || self.do_not_import
+    self.imported || self.do_not_import || items_all_imported?
   end
 
   def coauthored_stories
@@ -29,5 +23,15 @@ class Author < ApplicationRecord
     works = stories.map { |s| s.to_work(collection_name, host) }
     bookmarks = story_links.map { |b| b.to_bookmark(archivist, collection_name) }
     [works, bookmarks]
+  end
+
+  private
+
+  # True if items are blank, or items are present and none remain to be imported
+  def items_all_imported?
+    stories_all_imported = stories.blank? || (stories.present? && stories.none?(&:to_be_imported))
+    story_links_all_imported = story_links.blank? || (story_links.present? && story_links.none?(&:to_be_imported))
+
+    (stories_all_imported && story_links_all_imported)
   end
 end

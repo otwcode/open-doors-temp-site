@@ -64,7 +64,7 @@ class AuthorsController < ApplicationController
 
     # Is the author now fully imported?
     response[0][:author_imported] = author.all_imported?
-    puts response.inspect
+
     if request.xhr?
       render json: response, content_type: "text/json"
     else
@@ -82,6 +82,10 @@ class AuthorsController < ApplicationController
     response << { status: :ok,
                   mark: author.imported,
                   messages: ["Successfully #{imported_status}"] }
+
+    # Is the author now fully imported?
+    response[0][:author_imported] = author.all_imported?
+
     if request.xhr?
       render json: response, content_type: "text/json"
     else
@@ -91,9 +95,7 @@ class AuthorsController < ApplicationController
 
   def check
     respond_to :json
-    Rails.logger.info("Check author")
     author = Author.find(params[:author_id])
-    imported_status = "checked status of author items."
 
     works, bookmarks =
       author.works_and_bookmarks(@client.config.archivist, @archive_config.collection_name, request.host_with_port)
@@ -118,6 +120,9 @@ class AuthorsController < ApplicationController
       end
     end
 
+    # Is the author now fully imported?
+    response[0][:author_imported] = author.all_imported?
+
     if request.xhr?
       render json: response, content_type: "text/json"
     else
@@ -134,6 +139,7 @@ class AuthorsController < ApplicationController
     response << { status: :ok,
                   dni: author.do_not_import,
                   messages: ["Successfully #{imported_status}"] }
+
     if request.xhr?
       render json: response, content_type: "text/json"
     else

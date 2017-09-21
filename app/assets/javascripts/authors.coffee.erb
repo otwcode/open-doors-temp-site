@@ -123,8 +123,12 @@
   clearAllMessages(authorId)
 
   authorArticle = $("#author-#{authorId}")
-  authorItems = authorArticle.find("#items-#{authorId}")
   itemSection = $("##{type}-#{itemId}")
+  if authorId
+    authorItems = $("#items-#{authorId}")
+  else
+    authorItems = itemSection.parent()
+    authorArticle = authorItems.parent()
   summaryDiv = $("#author-" + authorId + " .author.message")
 
   if buttonType in ["import", "mark", "dni", "check"]
@@ -140,9 +144,16 @@
         enableButton(button)
         enableButton(authorArticle)
         writeSummaryToDiv(data, summaryDiv, status, authorId)
+
+        # Toggle and collapse/expand author based on new import status
         if data[0]["author_imported"]
           authorItems.removeClass("expanded")
           authorItems.addClass("collapse")
+          authorArticle.addClass("imported")
+        else
+          authorItems.removeClass("collapse")
+          authorItems.addClass("expanded")
+          authorArticle.removeClass("imported")
 
         switch buttonType
           when "import"
@@ -153,14 +164,14 @@
 
           when "dni"
             if data[0]["dni"] == true
-              authorArticle.addClass("do_not_import")
-              itemSection.addClass("do_not_import")
+              authorArticle.addClass("do_not_import") if authorId
+              itemSection.addClass("do_not_import") if itemId
               button.text "Mark as ALLOW import"
               authorArticle.find("a[data-button='import']").hide()
               itemSection.find("a[data-button='import']").hide()
             else
-              authorArticle.removeClass("do_not_import")
-              itemSection.removeClass("do_not_import")
+              authorArticle.removeClass("do_not_import") if authorId
+              itemSection.removeClass("do_not_import") if itemId
               button.text "Mark as do NOT import"
               authorArticle.find("a[data-button='import']").show()
               itemImport = itemSection.find("a[data-button='import']")

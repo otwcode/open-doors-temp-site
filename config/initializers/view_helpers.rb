@@ -71,7 +71,6 @@ module AlphabeticalPaginate
       end
 
       element = use_bootstrap ? 'ul' : 'div'
-      puts use_bootstrap
       if options[:pagination_class] != "none"
         pagination = "<#{element} class='pagination %s alpha' style='height:35px;'>" % options[:pagination_class]
       else

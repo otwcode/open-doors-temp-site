@@ -26,8 +26,8 @@ RSpec.describe StatsController, type: :controller do
       result = controller.author_stats(authors)
       expect(result).to be_a(OpenStruct)
       expect(result.all).to eq 1
-      expect(result.imported).to eq 0
-      expect(result.not_imported).to eq 1
+      expect(result.imported).to eq 1
+      expect(result.not_imported).to eq 0
       expect(result.dni).to eq 0
     end
 
