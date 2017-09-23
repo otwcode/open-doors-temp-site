@@ -35,8 +35,24 @@
 @enableButton = (button) ->
   button.removeClass("progress-bar-striped progress-bar-animated")
   button.prop("disabled", false)
+  
+@toggleToShowAll = (buttons, allImportedAuthors) ->
+# Alphabetical paginate sometimes duplicates the button because it's in its div so need to grab all
+  buttons = $(".btn-hide-all")
+  allImportedAuthors = $("article.imported")
+  buttons.text "Show imported authors"
+  buttons.attr("data-button", "showAllImported")
+  allImportedAuthors.hide()
 
+@toggleToHideAll = (buttons, allImportedAuthors) ->
+# Alphabetical paginate sometimes duplicates the button because it's in its div so need to grab all
+  buttons = $(".btn-hide-all")
+  allImportedAuthors = $("article.imported")
+  buttons.text "Hide imported authors"
+  buttons.attr("data-button", "hideAllImported")
+  allImportedAuthors.show()
 
+  
 # Functions that get stuff done
 @refreshAudit = (type, itemId) ->
   if (type? && itemId?)
@@ -214,18 +230,10 @@
     refreshAudit(type, id)
 
   else if buttonType in ["hideAllImported", "showAllImported"]
-    # Alphabetical paginate sometimes duplicates the button because it's in its div so need to grab all
-    buttons = $(".btn-hide-all")
-    allImportedAuthors = $("article.imported")
-
     if buttonType == "hideAllImported"
-      buttons.text "Show imported authors"
-      buttons.attr("data-button", "showAllImported")
-      allImportedAuthors.hide()
+      toggleToShowAll()
     else
-      buttons.text "Hide imported authors"
-      buttons.attr("data-button", "hideAllImported")
-      allImportedAuthors.show()
+      toggleToHideAll()
 
   else
     alert "Unknown button - something is broken!"

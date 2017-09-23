@@ -59,12 +59,15 @@
   <% end %>
 </div>
 
-<%= will_paginate @authors, renderer: "BootstrapPaginationHelper::LinkRenderer" %>
-<nav class="text-center">
-  <%= alphabetical_paginate @letters %>
+<%= will_paginate @authors, renderer: "BootstrapPaginationHelper::LinkRenderer"  ||
+  '<nav><ul class="pagination will_paginate justify-content-center"><li/></ul></nav>'.html_safe %>
+<div class="text-center">
+  <nav class="d-inline-block">
+    <%= alphabetical_paginate @letters %>
+  </nav>
   <span>&nbsp;</span>
   <%= link_to "Hide imported authors", "#",
               id: "all-author-hide", remote: true,
               class: "btn btn-hide-all",
               data: { method: :post, button: :hideAllImported } %>
-</nav>
+</div>
