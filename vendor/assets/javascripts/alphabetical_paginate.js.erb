@@ -75,6 +75,9 @@ $(function() {
       $.get(url, function (result) {
         var pagination_table = $("article", result).closest("div#pagination_table").html(),
           will_paginate = $(".pagination.will_paginate", result).html();
+        
+        // reset hide all button to "Hide"
+        toggleToHideAll();
 
         $(".pagination.alpha").html($(".pagination.alpha", result).html());
         $("#pagination_table").html(pagination_table);
