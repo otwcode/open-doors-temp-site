@@ -129,8 +129,8 @@
   - name: Chmod log directory
     file:
       dest: "{{ deploy_path }}/log"
-      user: www-data
-      mode: u+rw
+      group: www-data
+      mode: g+rw
       recurse: yes
 
   - name: Create Unicorn script

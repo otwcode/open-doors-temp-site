@@ -12,22 +12,22 @@
 
 ActiveRecord::Schema.define(version: 20171021090124) do
 
-  create_table "archive_configs", id: :integer, default: 0, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string  "key",             limit: 45,                      null: false
+  create_table "archive_configs", force: :cascade, options: "ENGINE=MyISAM DEFAULT CHARSET=utf8" do |t|
+    t.string  "key",             limit: 45,                       null: false
     t.string  "name"
     t.string  "fandom"
     t.text    "stories_note",    limit: 65535
     t.text    "bookmarks_note",  limit: 65535
-    t.boolean "send_email",                    default: false,   null: false
-    t.boolean "post_preview",                  default: false,   null: false
-    t.integer "items_per_page",                default: 30,      null: false
-    t.string  "archivist",                     default: "testy", null: false
+    t.boolean "send_email",                    default: false,    null: false
+    t.boolean "post_preview",                  default: false,    null: false
+    t.integer "items_per_page",                default: 30,       null: false
+    t.string  "archivist",       limit: 100,   default: "testy",  null: false
     t.string  "collection_name"
     t.integer "imported",                      default: 0
     t.integer "not_imported",                  default: 0
-    t.string  "host"
+    t.string  "host",            limit: 15,    default: "ariana"
     t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
-    t.index ["key"], name: "key_UNIQUE", unique: true, using: :btree
+    t.index ["key"], name: "Key_UNIQUE", unique: true, using: :btree
   end
 
   create_table "audits", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -52,7 +52,7 @@ ActiveRecord::Schema.define(version: 20171021090124) do
     t.index ["user_id", "user_type"], name: "user_index", using: :btree
   end
 
-  create_table "authors", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "authors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string  "name",          default: "",    null: false
     t.string  "email",         default: "",    null: false
     t.boolean "imported",      default: false, null: false
@@ -62,19 +62,19 @@ ActiveRecord::Schema.define(version: 20171021090124) do
   end
 
   create_table "chapters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "position"
-    t.string   "title",                      default: "", null: false
-    t.integer  "author_id",                  default: 0,  null: false
-    t.text     "text",      limit: 16777215
+    t.bigint   "position"
+    t.string   "title",                     default: "", null: false
+    t.integer  "authorID",                  default: 0,  null: false
+    t.text     "text",     limit: 16777215
     t.datetime "date"
-    t.integer  "story_id",                   default: 0
-    t.text     "notes",     limit: 65535
-    t.string   "url",       limit: 1024
+    t.integer  "story_id",                  default: 0
+    t.text     "notes",    limit: 65535
+    t.string   "url",      limit: 1024
     t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
     t.index ["story_id"], name: "storyid", using: :btree
   end
 
-  create_table "stories", id: :integer, default: 0, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "stories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title",                       default: "",    null: false
     t.text     "summary",       limit: 65535
     t.text     "notes",         limit: 65535
@@ -93,17 +93,18 @@ ActiveRecord::Schema.define(version: 20171021090124) do
     t.boolean  "do_not_import",               default: false, null: false
     t.string   "ao3_url"
     t.string   "import_notes",  limit: 1024,  default: ""
-    t.string   "coauthor_id",   limit: 45,    default: "0"
+    t.integer  "coauthor_id",                 default: 0
     t.index ["author_id"], name: "authorId", using: :btree
+    t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
   end
 
-  create_table "story_links", id: :integer, default: 0, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "title",                       default: "",    null: false
+  create_table "story_links", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "title",                       default: "",    null: false, collation: "latin1_swedish_ci"
     t.text     "summary",       limit: 65535
     t.text     "notes",         limit: 65535
     t.integer  "author_id",                   default: 0
-    t.string   "rating",                      default: "",    null: false
-    t.date     "date",                                        null: false
+    t.string   "rating",                      default: "",    null: false, collation: "latin1_swedish_ci"
+    t.date     "date"
     t.datetime "updated"
     t.string   "categories",    limit: 45
     t.string   "tags",                        default: "",    null: false
@@ -118,6 +119,7 @@ ActiveRecord::Schema.define(version: 20171021090124) do
     t.boolean  "broken_link",                 default: false, null: false
     t.string   "import_notes",  limit: 1024,  default: ""
     t.index ["author_id"], name: "authorId", using: :btree
+    t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

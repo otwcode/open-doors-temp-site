@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS `archive_configs` (
   `post_preview` tinyint(1) NOT NULL DEFAULT '0',
   `archivist` varchar(100) NOT NULL DEFAULT 'testy',
   `collection_name` varchar(255) DEFAULT NULL,
+  `host` varchar(15) DEFAULT 'ariana',  
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `Key_UNIQUE` (`key`)
@@ -19,10 +20,10 @@ CREATE TABLE IF NOT EXISTS `archive_configs` (
 -- This will only insert the row the first time it is run
 INSERT IGNORE INTO `archive_configs`
   (`id`, `key`, `name`, `fandom`, `stories_note`,  `bookmarks_note`, `send_email`, `post_preview`,
-   `archivist`, `collection_name`)
+   `archivist`, `collection_name`, `host`)
   VALUES
   (1, "{{ sitekey }}", "{{ name }}", "Testing", "OD STORY NOTE", "OD BOOKMARK NOTE", 0, 0,
-   "testy", "COLLECTION_NAME");
+   "testy", "COLLECTION_NAME", "ariana");
 
 --
 -- Table structure for table `audits`
