@@ -4,7 +4,7 @@ class AuthorsController < ApplicationController
 
   include OtwArchive
   include OtwArchive::Request
-  include ApplicationHelper
+  include Item
   include AlphabeticalPaginate::ViewHelpers
 
   def initialize

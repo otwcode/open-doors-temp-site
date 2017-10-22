@@ -3,9 +3,9 @@ class ApplicationController < ActionController::Base
 
   before_action :load_config
   def load_config
-    @active_host ||= Rails.application.secrets[:ao3api][:active]
     @archive_config ||= ArchiveConfig.archive_config
-    @api_config ||= Rails.application.secrets[:ao3api][@active_host.to_sym]
+    @active_host = @archive_config.host
+    @api_config = Rails.application.secrets[:ao3api][@active_host.to_sym]
   end
 
   def current_user
