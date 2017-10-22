@@ -99,6 +99,13 @@
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
     when: create_database
+    
+  - name: Run migrations 
+    command: bundle exec rake db:migrate
+    args:
+      chdir: "{{ deploy_path }}"
+    environment:
+      RAILS_ENV: production
 
   - name: Create Open Doors user for the site
     command: bundle exec rake users:create_user["Open Doors","{{ opendoors_site_user_email }}","{{ opendoors_site_user_pw }}"]
@@ -118,6 +125,13 @@
       - log
       - runtime/sockets
       - runtime/pids
+      
+  - name: Chmod log directory
+    file:
+      dest: "{{ deploy_path }}/log"
+      user: www-data
+      mode: u+rw
+      recurse: yes
 
   - name: Create Unicorn script
     template:
