@@ -3,7 +3,7 @@ class ItemsController < ApplicationController
 
   include OtwArchive
   include OtwArchive::Request
-  include ApplicationHelper
+  include Item
 
   def initialize
     active_api   = Rails.application.secrets[:ao3api][:active]

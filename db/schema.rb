@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20171021090124) do
 
   create_table "archive_configs", id: :integer, default: 0, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string  "key",             limit: 45,                      null: false
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string  "collection_name"
     t.integer "imported",                      default: 0
     t.integer "not_imported",                  default: 0
+    t.string  "host"
     t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
     t.index ["key"], name: "key_UNIQUE", unique: true, using: :btree
   end

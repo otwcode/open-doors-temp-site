@@ -3,7 +3,7 @@
 <%= form_for(@archive_config) do |f| %>
   <% if @archive_config.errors.any? %>
     <div id="alert alert-danger error_explanation">
-      <h2><%= pluralize(@archive_config.errors.count, "error") %> prohibited this archive config from being saved:</h2>
+      <h2><%= pluralize(@archive_config.errors.count, "error") %> stopped this archive config from being saved:</h2>
 
       <ul>
         <% @archive_config.errors.full_messages.each do |message| %>
@@ -12,6 +12,12 @@
       </ul>
     </div>
   <% end %>
+
+  <div class="field form-group">
+    <%= f.label :host %>
+    <%= f.select :host, [:local, :ariana, :test, :live], {}, class: "form-control" %>
+    <small id="hostHelp" class="form-text">Warning: changing this will clear imported and do not import flags and AO3 urls from all stories and story links</small>
+  </div>
 
   <div class="field form-group">
     <%= f.label :name %>

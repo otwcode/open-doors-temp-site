@@ -12,7 +12,7 @@
 
   <div class="row col-12 align-items-center" style="padding-right: 0px">
     <!-- Title and authors -->
-    <h4 class="col col-lg-5 col-md-12">
+    <h4 class="col col-lg-4 col-md-12">
       <span class="badge badge-info"><%= item.id %></span>
       <a href="<%= "#details-#{item_id}" %>" data-toggle="collapse">
         <% if (is_story || type == :coauthored_story) && item.chapters.size > 0 %>
@@ -42,7 +42,7 @@
     </h4>
 
     <!-- BUTTONS -->
-    <div class=" col-lg-7 col-sm-12 extra-space text-right" style="padding-right: 0px;">
+    <div class="col col-lg-8 col-sm-12 extra-space text-right" style="padding-right: 0px;">
       <% if type != :coauthored_story %>
         <!-- Import -->
         <span id="<%= "import-#{item_id}" %>">
