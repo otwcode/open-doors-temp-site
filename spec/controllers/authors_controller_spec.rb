@@ -3,6 +3,10 @@ require "rails_helper"
 describe AuthorsController, type: :controller do
   let!(:author1) { create(:author_with_stories, audit_comment: "Test") }
   let(:story1) { create(:story, author_id: author1.id, audit_comment: "Test") }
+  
+  def before
+    @archive_config = create(:archive_config)
+  end
 
   it "lists authors with stories and bookmarks" do
     get :index

@@ -5,6 +5,8 @@ require File.expand_path('../../config/environment', __FILE__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'spec_helper'
 require 'rspec/rails'
+require 'simplecov'
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Checks for pending migration and applies them before tests are run.

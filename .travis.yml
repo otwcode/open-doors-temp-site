@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - "2.2.5"
+  - "2.3.0"
 script:
   - cp config/database.travis.yml config/database.yml
   - cp config/secrets.travis.yml config/secrets.yml

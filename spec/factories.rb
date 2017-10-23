@@ -32,6 +32,7 @@ FactoryGirl.define do
   factory :archive_config do
     key APP_CONFIG[:sitekey]
     name APP_CONFIG[:name]
+    host "local"
     initialize_with { ArchiveConfig.where(key: key).first_or_create }
   end
 end
