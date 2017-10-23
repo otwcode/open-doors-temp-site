@@ -103,7 +103,7 @@ DROP TABLE IF EXISTS `chapters`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `chapters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `position` bigint(22) DEFAULT NULL,
+  `position` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL DEFAULT '',
   `authorID` int(11) NOT NULL DEFAULT '0',
   `text` mediumtext,
