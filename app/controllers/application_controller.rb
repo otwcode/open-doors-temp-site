@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :load_config
   def load_config
     @archive_config ||= ArchiveConfig.archive_config
-    @active_host = @archive_config.host
+    @active_host = @archive_config&.host || "local"
     @api_config = Rails.application.secrets[:ao3api][@active_host.to_sym]
   end
 

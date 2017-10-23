@@ -14,7 +14,7 @@ ActiveRecord::Schema.define(version: 20171021090124) do
 
   create_table "archive_configs", force: :cascade, options: "ENGINE=MyISAM DEFAULT CHARSET=utf8" do |t|
     t.string  "key",             limit: 45,                       null: false
-    t.string  "name"
+    t.string  "name",                                             null: false
     t.string  "fandom"
     t.text    "stories_note",    limit: 65535
     t.text    "bookmarks_note",  limit: 65535
@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 20171021090124) do
     t.string  "collection_name"
     t.integer "imported",                      default: 0
     t.integer "not_imported",                  default: 0
-    t.string  "host",            limit: 15,    default: "ariana"
+    t.string  "host",            limit: 15,    default: "ariana", null: false
     t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
     t.index ["key"], name: "Key_UNIQUE", unique: true, using: :btree
   end
