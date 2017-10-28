@@ -1,6 +1,6 @@
 module OtwArchive
   module Request
-    class BookmarkCheckRequest
+    class BookmarkSearchRequest
       def initialize(archivist, bookmarks = [])
         @archivist = archivist
         @bookmarks = bookmarks
