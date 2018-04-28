@@ -29,7 +29,7 @@ module OtwArchive
 
           responses << @http.post_request(type.to_s, request_body)
         end
-        
+
         Rails.logger.info "\n>>> Processed import responses: \n#{JSON.pretty_generate(responses.as_json)}"
       rescue StandardError => e
         Rails.logger.error "\n>>> Error: #{e}"
