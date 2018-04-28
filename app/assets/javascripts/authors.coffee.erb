@@ -83,12 +83,10 @@
   mainDiv = $("#" + type + "-" + itemId)
 
   if status in ["created", "already_imported", "found"]
-    console.log("found")
     mainDiv.addClass("imported")
     importButton = $("#import-#{type}-#{itemId}")
     importButton.html ao3linkHTML(url)
   if status in ["bad_request", "not_found"]
-    console.log("not found")
     mainDiv.removeClass("imported")
     importButton = $("#import-#{type}-#{itemId}")
     importButton.html @importButtonHTML(type, itemId)
