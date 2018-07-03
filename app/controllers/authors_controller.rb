@@ -25,6 +25,17 @@ class AuthorsController < ApplicationController
                                      ) { |author| author.name.downcase }
     @authors = letter_authors.paginate(page: params[:page], per_page: 30)
   end
+  
+  def api_index
+    letter_authors, @letters = Author.with_stories_or_story_links
+                                 .alpha_paginate(params[:letter],
+                                                 bootstrap4: true,
+                                                 include_all: false,
+                                                 numbers: true,
+                                                 others: true
+                                 ) { |author| author.name.downcase }
+    render json: letter_authors.paginate(page: params[:page], per_page: 30)
+  end
 
   def import
     respond_to :json

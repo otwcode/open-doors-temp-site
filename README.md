@@ -32,6 +32,14 @@ $ bin/rails server
 
 In your browser, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
 
+## Generate new React component
+
+```bash
+rails g react:component HelloWorld greeting:string
+```
+
+See https://github.com/reactjs/react-rails
+
 # Deployment
 Before you proceed, you will need to install Ansible (https://www.ansible.com/).
 

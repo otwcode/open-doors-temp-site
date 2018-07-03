@@ -1,0 +1,25 @@
+{
+  "messages": [
+    "None of the works were imported. Please check the works array for further information."
+  ],
+  "works": [
+    {
+      "status": "unprocessable_entity",
+      "url": "",
+      "original_id": 3064,
+      "original_url": "http://localhost:3010/opendoorstempsite/chapters/3089",
+      "messages": [
+        "A work has already been imported from http://localhost:3010/opendoorstempsite/chapters/3089."
+      ]
+    },
+    {
+      "status": "unprocessable_entity",
+      "url": "",
+      "original_id": 1566,
+      "original_url": "http://localhost:3010/opendoorstempsite/chapters/2145",
+      "messages": [
+        "A work has already been imported from http://localhost:3010/opendoorstempsite/chapters/2145."
+      ]
+    }
+  ]
+}
