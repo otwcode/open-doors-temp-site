@@ -1,4 +1,6 @@
 # Formatter for WillPaginate
+require 'will_paginate/view_helpers/action_view.rb'
+
 module BootstrapPaginationHelper
   class LinkRenderer < WillPaginate::ActionView::LinkRenderer
     protected

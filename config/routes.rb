@@ -13,6 +13,9 @@ Rails.application.routes.draw do
       post :dni
     end
 
+    get "authors/api_index" => "authors#api_index", as: :api_index
+  
+
     resources :chapters
 
     # Authentication
