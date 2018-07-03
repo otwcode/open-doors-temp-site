@@ -7,103 +7,24 @@
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
   <%= javascript_include_tag 'jquery-3.1.1.min', 'data-turbolinks-track': 'reload' %>
-  <%= javascript_include_tag 'tether.min', 'data-turbolinks-track': 'reload' %>
-  <%= javascript_include_tag 'bootstrap.min', 'data-turbolinks-track': 'reload' %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'authors', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
 </head>
 
 <body>
-<nav class="navbar navbar-toggleable-sm navbar-inverse bg-primary">
-  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-          data-target="#navbarMainMenu" aria-controls="navbarMainMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <a class="navbar-brand" href="<%= authors_path %>">
-    <img src="<%= asset_path('Opendoors.png') %>"
-         style="width: 50px;"/>
-  </a>
-
-  <!-- Collect the nav links, forms, and other content for toggling -->
-  <div class="collapse navbar-collapse" id="navbarMainMenu">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item <%= "active" if params[:controller] == "authors" %>">
-        <%= link_to "Works by Author (use for importing)", authors_path, class: "nav-link" %>
-      </li>
-
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle <%= "active" if params[:controller] == "stories" %>"
-           href="<%= authors_path(letter: params[:letter]) %>" id="navbarDropdownStories"
-           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Stories
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownStories">
-          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Stories to be imported</a>
-          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Stories NOT to be imported</a>
-          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Imported stories</a>
-        </div>
-      </li>
-
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle <%= "active" if params[:controller] == "bookmarks" %>" href="<%= authors_path %>"
-           id="navbarDropdownBookmarks" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          External links
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownBookmarks">
-          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Links to be bookmarked</a>
-          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Links NOT to be bookmarked</a>
-          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Broken links</a>
-          <a class="dropdown-item" href="<%= authors_path(letter: params[:letter]) %>">Bookmarked links</a>
-        </div>
-      </li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <% if current_user %>
-        <li class="nav-item">
-          <span class="navbar-text" style="padding: .5rem">Signed in as <strong><%= current_user.name %></strong></span>
-        </li>
-        <li class="nav-item">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle <%= "active" if params[:controller] == "stats" || params[:controller] == "archive_config" %>" href=""
-               id="navbarDropdownAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Admin
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
-              <%= link_to "Stats", stats_path, class: "dropdown-item" %>
-              <%= link_to "Config", archive_config_path(@archive_config), class: "dropdown-item" %>
-            </div>
-          </li>
-
-        </li>
-        <li class="nav-item">
-          <%= link_to "Log out", logout_path, class: "nav-link" %>
-        </li>
-      <% else %>
-        <li class="nav-item">
-          <%= link_to "Log in", login_path, class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Sign up", signup_path, class: "nav-link" %>
-        </li>
-      <% end %>
-    </ul>
-  </div>
-  <!-- /.navbar-collapse -->
-</nav>
 <div class="container">
+<%= react_component("navigation/Navigation", {  controller: params[:controller],
+                                                letter: params[:letter],
+                                                logo_path: asset_path("Opendoors.png"),
+                                                config: @archive_config,
+                                                current_user: current_user.as_json,
+                                                logout_path: logout_path,
+                                                login_path: login_path,
+                                                signup_path: signup_path,
+                                                authors_path: authors_path}) %>
   <p>&nbsp;</p>
   <h1><%= APP_CONFIG[:name] %></h1>
-
-  <div class="card">
-    <div class="card-block">
-      <p class="card-text">
-        Importing to <a href="<%= "http://#{@api_config[:url]}/collections/#{@archive_config.collection_name}" %>" target="_blank">
-          <%= "http://#{@api_config[:url]}/collections/#{@archive_config.collection_name}" %>
-        </a> as <strong><%= @archive_config.archivist %></strong>.
-        Sending emails is <strong><%= @archive_config.send_email ? "ON" : "OFF" %></strong> and
-        posting as drafts is <strong><%= @archive_config.post_preview ? "ON" : "OFF" %></strong>
-      </p>
-    </div>
-  </div>
+  <%= react_component("SiteInfo", { config: @api_config.merge(@archive_config) } ) %>
 
   <%= yield %>
 </div>

@@ -7,7 +7,7 @@ end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "rails", "~> 5.0.1"
+gem "rails", "~> 5.2"
 # Use mysql as the database for Active Record
 gem "mysql2", ">= 0.3.18", "< 0.5"
 # Use Puma as the app server
@@ -35,7 +35,11 @@ gem "coffee-rails", "~> 4.2"
 gem "therubyracer", platforms: :ruby
 
 # Use react as the JavaScript library
-# gem 'react-rails'
+gem 'webpacker'
+gem 'react-rails'
+gem 'jquery-rails'
+gem 'popper_js'
+
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -57,7 +61,7 @@ end
 group :test do
   gem "capybara"
   gem "coveralls"
-  gem "factory_girl_rails"
+  gem "factory_bot_rails"
   gem "rails-controller-testing"
   gem "rspec-rails"
   gem "selenium-webdriver"
