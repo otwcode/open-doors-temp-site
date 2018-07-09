@@ -55,6 +55,7 @@ GEM
       babel-source (>= 4.0, < 6)
       execjs (~> 2.0)
     bcrypt (3.1.11)
+    bcrypt (3.1.11-x64-mingw32)
     bindex (0.5.0)
     bootstrap (4.0.0.alpha6)
       autoprefixer-rails (>= 6.0.3)
@@ -99,6 +100,7 @@ GEM
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
     ffi (1.9.23)
+    ffi (1.9.23-x64-mingw32)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     i18n (1.0.1)
@@ -125,11 +127,16 @@ GEM
     mimemagic (0.3.2)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
+    mini_racer (0.2.0)
+      libv8 (>= 6.3)
     minitest (5.11.3)
     multipart-post (2.0.0)
     mysql2 (0.4.10)
+    mysql2 (0.4.10-x64-mingw32)
     nio4r (2.3.1)
     nokogiri (1.8.2)
+      mini_portile2 (~> 2.3.0)
+    nokogiri (1.8.2-x64-mingw32)
       mini_portile2 (~> 2.3.0)
     popper_js (1.12.9)
     public_suffix (3.0.2)
@@ -178,7 +185,6 @@ GEM
       execjs
       railties (>= 3.2)
       tilt
-    ref (2.0.0)
     rspec-core (3.7.1)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
@@ -231,9 +237,6 @@ GEM
       sprockets (>= 3.0.0)
     term-ansicolor (1.6.0)
       tins (~> 1.0)
-    therubyracer (0.12.3)
-      libv8 (~> 3.16.14.15)
-      ref
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.8)
@@ -264,6 +267,7 @@ GEM
 
 PLATFORMS
   ruby
+  x64-mingw32
 
 DEPENDENCIES
   alphabetical_paginate
@@ -277,6 +281,7 @@ DEPENDENCIES
   faraday
   faraday_middleware
   jquery-rails
+  mini_racer
   mysql2 (>= 0.3.18, < 0.5)
   popper_js
   puma (~> 3.8)
@@ -289,7 +294,6 @@ DEPENDENCIES
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
-  therubyracer
   turbolinks (~> 5)
   unicorn
   web-console (>= 3.3.0)
@@ -297,4 +301,4 @@ DEPENDENCIES
   will_paginate (~> 3.1.0)
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

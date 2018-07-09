@@ -20,6 +20,8 @@ Requirements:
 - Ruby 2.3
 - MySQL 5.7
 - Bundler
+- Node 8.11 https://nodejs.org/en/blog/release/v8.11.1/
+- Yarn https://yarnpkg.com/lang/en/docs/install/
 
 See [Rails Getting Started Guide](http://guides.rubyonrails.org/getting_started.html) for instructions on installing and configuring Rails.
 
