@@ -125,6 +125,8 @@ GEM
     mimemagic (0.3.2)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
+    mini_racer (0.2.0)
+      libv8 (>= 6.3)
     minitest (5.11.3)
     multipart-post (2.0.0)
     mysql2 (0.4.10)
@@ -178,7 +180,6 @@ GEM
       execjs
       railties (>= 3.2)
       tilt
-    ref (2.0.0)
     rspec-core (3.7.1)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
@@ -231,9 +232,6 @@ GEM
       sprockets (>= 3.0.0)
     term-ansicolor (1.6.0)
       tins (~> 1.0)
-    therubyracer (0.12.3)
-      libv8 (~> 3.16.14.15)
-      ref
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.8)
@@ -277,6 +275,7 @@ DEPENDENCIES
   faraday
   faraday_middleware
   jquery-rails
+  mini_racer
   mysql2 (>= 0.3.18, < 0.5)
   popper_js
   puma (~> 3.8)
@@ -289,7 +288,6 @@ DEPENDENCIES
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
-  therubyracer
   turbolinks (~> 5)
   unicorn
   web-console (>= 3.3.0)
@@ -297,4 +295,4 @@ DEPENDENCIES
   will_paginate (~> 3.1.0)
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

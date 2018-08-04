@@ -69,6 +69,16 @@
       - ruby
       - ruby-dev
       - zlib1g-dev
+      
+  - name: Download Node for React front-end
+    command: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+  
+  - apt_repository:
+      repo: deb https://deb.nodesource.com/setup_8.x nodejs
+      state: present
+      
+  - name: Install Node
+    command: sudo apt-get install -y nodejs 
 
   - name: Symlink exists for Ruby 2.0
     file: src=/usr/bin/ruby dest=/usr/local/bin/ruby state=link
