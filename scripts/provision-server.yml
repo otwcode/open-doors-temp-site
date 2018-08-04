@@ -80,6 +80,12 @@
   - name: Install Node
     command: sudo apt-get install -y nodejs 
 
+  - name: Install Yarn
+    npm:
+       name: yarn
+       global: yes
+       state: present
+
   - name: Symlink exists for Ruby 2.0
     file: src=/usr/bin/ruby dest=/usr/local/bin/ruby state=link
 
