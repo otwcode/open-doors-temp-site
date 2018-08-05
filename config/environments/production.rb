@@ -4,7 +4,6 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
   config.cache_classes = true
   config.public_file_server.enabled = true
-  config.serve_static_assets = true
 
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = false
