@@ -88,6 +88,7 @@
       - runtime/sockets
       - runtime/pids
       - node_modules
+      - tmp
 
   - name: Chmod log and node_modules directory
     file:
@@ -98,6 +99,8 @@
     with_items:
       - log
       - node_modules
+      - public
+      - tmp
 
   - name: Install NPM modules for front-end
     command: npm install --only=production
@@ -107,6 +110,7 @@
 
   - name: Precompile assets
     command: bundle exec rake assets:precompile
+    become: false
     args:
       chdir: "{{ deploy_path }}"
     environment:
