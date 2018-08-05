@@ -10,13 +10,6 @@
     unicorn_script: unicorn_{{ sitekey }}
 
   tasks:
-  - name: Create Bundler directory
-    file:
-      path: "{{ remote_path }}/../bundler/{{ repo_version }}"
-      owner: "{{ remote_user }}"
-      group: "{{ remote_group }}"
-      state: directory
-
   - name: Stop app if already running
     service:
       name: "{{ unicorn_script }}"
@@ -55,17 +48,19 @@
      src: "{{ playbook_dir }}/ansible/config.yml.j2"
      dest: "{{ deploy_path }}/config/config.yml"
 
-  - name: Create database config file
-    template:
-     src: "{{ playbook_dir }}/ansible/database.yml.j2"
-     dest: "{{ deploy_path }}/config/database.yml"
-
   - name: Copy secrets
     copy:
       src: "{{ playbook_dir }}/../config/secrets.yml"
       dest: "{{ deploy_path }}/config/secrets.yml"
 
   # Install
+  - name: Create Bundle directory 
+    file:
+      path: "{{ remote_path }}/../bundler/{{ repo_version }}"
+      owner: "{{ remote_user }}"
+      group: "{{ remote_group }}"
+      state: directory
+      
   - name: Update bundle
     command: bundle update
     args:
@@ -76,7 +71,14 @@
     args:
       chdir: "{{ deploy_path }}"
 
-  # Create folders
+  - debug: 
+      msg: ~~~~~~~  FRONT END ~~~~~~~~~~
+
+  - name: Create Webpacker config file
+    template:
+     src: "{{ playbook_dir }}/ansible/webpacker.yml.j2"
+     dest: "{{ deploy_path }}/config/webpacker.yml"
+     
   - name: Create log, pid and socket folders for Unicorn
     file:
       dest: "{{ deploy_path }}/{{ item }}"
@@ -116,7 +118,14 @@
     environment:
       RAILS_ENV: production
 
-#  Database
+  - debug: 
+      msg: ~~~~~~~  DATABASE ~~~~~~~~~~
+
+  - name: Create database config file
+    template:
+     src: "{{ playbook_dir }}/ansible/database.yml.j2"
+     dest: "{{ deploy_path }}/config/database.yml"
+
   - name: Copy MySQL script
     template:
       src: "{{ playbook_dir }}/ansible/archive_config.sql.j2"
@@ -155,6 +164,9 @@
     environment:
       RAILS_ENV: production
 
+  - debug: 
+      msg: ~~~~~~~ START APP ~~~~~~~~~
+      
   - name: Create Unicorn script
     template:
       src: "{{ playbook_dir }}/provision/etc/init.d/unicorn_app.j2"
