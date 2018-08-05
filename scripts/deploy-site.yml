@@ -76,6 +76,43 @@
     args:
       chdir: "{{ deploy_path }}"
 
+  # Create folders
+  - name: Create log, pid and socket folders for Unicorn
+    file:
+      dest: "{{ deploy_path }}/{{ item }}"
+      owner: "{{ remote_user }}"
+      group: "{{ remote_group }}"
+      state: directory
+    with_items:
+      - log
+      - runtime/sockets
+      - runtime/pids
+      - node_modules
+
+  - name: Chmod log and node_modules directory
+    file:
+      dest: "{{ deploy_path }}/{{ item }}"
+      group: www-data
+      mode: g+rw
+      recurse: yes
+    with_items:
+      - log
+      - node_modules
+
+  - name: Install NPM modules for front-end
+    command: npm install --only=production
+    become: false
+    args:
+      chdir: "{{ deploy_path }}"
+
+  - name: Precompile assets
+    command: bundle exec rake assets:precompile
+    args:
+      chdir: "{{ deploy_path }}"
+    environment:
+      RAILS_ENV: production
+
+#  Database
   - name: Copy MySQL script
     template:
       src: "{{ playbook_dir }}/ansible/archive_config.sql.j2"
@@ -106,13 +143,6 @@
       chdir: "{{ deploy_path }}"
     environment:
       RAILS_ENV: production
-      
-  - name: Precompile assets
-    command: bundle exec rake assets:precompile
-    args:
-      chdir: "{{ deploy_path }}"
-    environment:
-      RAILS_ENV: production
 
   - name: Create Open Doors user for the site
     command: bundle exec rake users:create_user["Open Doors","{{ opendoors_site_user_email }}","{{ opendoors_site_user_pw }}"]
@@ -120,25 +150,6 @@
       chdir: "{{ deploy_path }}"
     environment:
       RAILS_ENV: production
-
-  # Create folders
-  - name: Create log, pid and socket folders for Unicorn
-    file:
-      dest: "{{ deploy_path }}/{{ item }}"
-      owner: "{{ remote_user }}"
-      group: "{{ remote_group }}"
-      state: directory
-    with_items:
-      - log
-      - runtime/sockets
-      - runtime/pids
-      
-  - name: Chmod log directory
-    file:
-      dest: "{{ deploy_path }}/log"
-      group: www-data
-      mode: g+rw
-      recurse: yes
 
   - name: Create Unicorn script
     template:
