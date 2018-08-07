@@ -10,124 +10,121 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171021090124) do
+ActiveRecord::Schema.define(version: 0) do
 
-  create_table "archive_configs", id: :integer, default: 0, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string  "key",             limit: 45,                       null: false
-    t.string  "name",                                             null: false
-    t.string  "fandom"
-    t.text    "stories_note",    limit: 65535
-    t.text    "bookmarks_note",  limit: 65535
-    t.boolean "send_email",                    default: false,    null: false
-    t.boolean "post_preview",                  default: false,    null: false
-    t.integer "items_per_page",                default: 30,       null: false
-    t.string  "archivist",       limit: 100,   default: "testy",  null: false
-    t.string  "collection_name"
-    t.integer "imported",                      default: 0
-    t.integer "not_imported",                  default: 0
-    t.string  "host",            limit: 15,    default: "ariana", null: false
-    t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
-    t.index ["key"], name: "Key_UNIQUE", unique: true, using: :btree
+  create_table "archive_configs", id: :integer, options: "ENGINE=MyISAM DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "key", limit: 45, null: false
+    t.string "name"
+    t.string "fandom"
+    t.text "stories_note"
+    t.text "bookmarks_note"
+    t.boolean "send_email", default: false, null: false
+    t.boolean "post_preview", default: false, null: false
+    t.string "archivist", limit: 100, default: "testy", null: false
+    t.string "collection_name"
+    t.string "host", limit: 15, default: "ariana"
+    t.index ["id"], name: "id_UNIQUE", unique: true
+    t.index ["key"], name: "Key_UNIQUE", unique: true
   end
 
-  create_table "audits", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "auditable_id"
-    t.string   "auditable_type"
-    t.integer  "associated_id"
-    t.string   "associated_type"
-    t.integer  "user_id"
-    t.string   "user_type"
-    t.string   "username"
-    t.string   "action"
-    t.text     "audited_changes", limit: 65535
-    t.integer  "version",                       default: 0
-    t.string   "comment"
-    t.string   "remote_address"
-    t.string   "request_uuid"
+  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "auditable_id"
+    t.string "auditable_type"
+    t.integer "associated_id"
+    t.string "associated_type"
+    t.integer "user_id"
+    t.string "user_type"
+    t.string "username"
+    t.string "action"
+    t.text "audited_changes"
+    t.integer "version", default: 0
+    t.string "comment"
+    t.string "remote_address"
+    t.string "request_uuid"
     t.datetime "created_at"
-    t.index ["associated_id", "associated_type"], name: "associated_index", using: :btree
-    t.index ["auditable_id", "auditable_type"], name: "auditable_index", using: :btree
-    t.index ["created_at"], name: "index_audits_on_created_at", using: :btree
-    t.index ["request_uuid"], name: "index_audits_on_request_uuid", using: :btree
-    t.index ["user_id", "user_type"], name: "user_index", using: :btree
+    t.index ["associated_id", "associated_type"], name: "associated_index"
+    t.index ["auditable_id", "auditable_type"], name: "auditable_index"
+    t.index ["created_at"], name: "index_audits_on_created_at"
+    t.index ["request_uuid"], name: "index_audits_on_request_uuid"
+    t.index ["user_id", "user_type"], name: "user_index"
   end
 
-  create_table "authors", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string  "name",          default: "",    null: false
-    t.string  "email",         default: "",    null: false
-    t.boolean "imported",      default: false, null: false
+  create_table "authors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.string "email", default: "", null: false
+    t.boolean "imported", default: false, null: false
     t.boolean "do_not_import", default: false, null: false
-    t.boolean "to_delete",     default: false
-    t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
+    t.boolean "to_delete", default: false
+    t.index ["id"], name: "id_UNIQUE", unique: true
   end
 
-  create_table "chapters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "position"
-    t.string   "title",                      default: "", null: false
-    t.integer  "author_id",                  default: 0,  null: false
-    t.text     "text",      limit: 16777215
+  create_table "chapters", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "position"
+    t.string "title", default: "", null: false
+    t.integer "authorID", default: 0, null: false
+    t.text "text", limit: 16777215
     t.datetime "date"
-    t.integer  "story_id",                   default: 0
-    t.text     "notes",     limit: 65535
-    t.string   "url",       limit: 1024
-    t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
-    t.index ["story_id"], name: "storyid", using: :btree
+    t.integer "story_id", default: 0
+    t.text "notes"
+    t.string "url", limit: 1024
+    t.index ["id"], name: "id_UNIQUE", unique: true
+    t.index ["story_id"], name: "storyid"
   end
 
-  create_table "stories", id: :integer, default: 0, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "title",                       default: "",    null: false
-    t.text     "summary",       limit: 65535
-    t.text     "notes",         limit: 65535
-    t.integer  "author_id",                   default: 0
-    t.string   "rating",                      default: "",    null: false
+  create_table "stories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "title", default: "", null: false
+    t.text "summary"
+    t.text "notes"
+    t.integer "author_id", default: 0
+    t.string "rating", default: "", null: false
     t.datetime "date"
     t.datetime "updated"
-    t.string   "categories",    limit: 45
-    t.string   "tags",                        default: "",    null: false
-    t.string   "warnings",                    default: ""
-    t.string   "fandoms"
-    t.string   "characters"
-    t.string   "relationships"
-    t.string   "url"
-    t.boolean  "imported",                    default: false, null: false
-    t.boolean  "do_not_import",               default: false, null: false
-    t.string   "ao3_url"
-    t.string   "import_notes",  limit: 1024,  default: ""
-    t.string   "coauthor_id",   limit: 45,    default: "0"
-    t.index ["author_id"], name: "authorId", using: :btree
-    t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
+    t.string "categories", limit: 45
+    t.string "tags", default: "", null: false
+    t.string "warnings", default: ""
+    t.string "fandoms", default: ""
+    t.string "characters", default: ""
+    t.string "relationships", default: ""
+    t.string "url"
+    t.boolean "imported", default: false, null: false
+    t.boolean "do_not_import", default: false, null: false
+    t.string "ao3_url"
+    t.string "import_notes", limit: 1024, default: ""
+    t.integer "coauthor_id", default: 0
+    t.index ["author_id"], name: "authorId"
+    t.index ["id"], name: "id_UNIQUE", unique: true
   end
 
-  create_table "story_links", id: :integer, default: 0, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "title",                       default: "",    null: false
-    t.text     "summary",       limit: 65535
-    t.text     "notes",         limit: 65535
-    t.integer  "author_id",                   default: 0
-    t.string   "rating",                      default: "",    null: false
-    t.date     "date",                                        null: false
+  create_table "story_links", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "title", default: "", null: false, collation: "latin1_swedish_ci"
+    t.text "summary"
+    t.text "notes"
+    t.integer "author_id", default: 0
+    t.string "rating", default: "", null: false, collation: "latin1_swedish_ci"
+    t.date "date"
     t.datetime "updated"
-    t.string   "categories",    limit: 45
-    t.string   "tags",                        default: "",    null: false
-    t.string   "warnings",                    default: ""
-    t.string   "fandoms"
-    t.string   "characters"
-    t.string   "relationships"
-    t.string   "url"
-    t.boolean  "imported",                    default: false, null: false
-    t.boolean  "do_not_import",               default: false, null: false
-    t.string   "ao3_url"
-    t.boolean  "broken_link",                 default: false, null: false
-    t.string   "import_notes",  limit: 1024,  default: ""
-    t.index ["author_id"], name: "authorId", using: :btree
-    t.index ["id"], name: "id_UNIQUE", unique: true, using: :btree
+    t.string "categories", limit: 45
+    t.string "tags", default: "", null: false
+    t.string "warnings", default: ""
+    t.string "fandoms", default: ""
+    t.string "characters", default: ""
+    t.string "relationships", default: ""
+    t.string "url"
+    t.boolean "imported", default: false, null: false
+    t.boolean "do_not_import", default: false, null: false
+    t.string "ao3_url"
+    t.boolean "broken_link", default: false, null: false
+    t.string "import_notes", limit: 1024, default: ""
+    t.index ["author_id"], name: "authorId"
+    t.index ["id"], name: "id_UNIQUE", unique: true
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name"
-    t.string   "email"
-    t.string   "password_digest"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+  create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "password_digest"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

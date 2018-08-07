@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `audits` (
   KEY `user_index` (`user_id`,`user_type`),
   KEY `index_audits_on_request_uuid` (`request_uuid`),
   KEY `index_audits_on_created_at` (`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 --
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `authors` (
   `to_delete` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,55 +132,6 @@ INSERT IGNORE INTO `authors` VALUES
 /*!40000 ALTER TABLE `authors` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `bookmarks`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS `story_links` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
-  `summary` text,
-  `notes` text,
-  `author_id` int(11) DEFAULT '0',
-  `rating` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
-  `date` date DEFAULT NULL,
-  `updated` datetime DEFAULT NULL,
-  `categories` varchar(45) DEFAULT NULL,
-  `tags` varchar(255) NOT NULL DEFAULT '',
-  `warnings` varchar(255) DEFAULT '',
-  `fandoms` varchar(255) DEFAULT '',
-  `characters` varchar(255) DEFAULT '',
-  `relationships` varchar(255) DEFAULT '',
-  `url` varchar(255) DEFAULT NULL,
-  `imported` tinyint(1) NOT NULL DEFAULT '0',
-  `do_not_import` tinyint(1) NOT NULL DEFAULT '0',
-  `ao3_url` varchar(255) DEFAULT NULL,
-  `broken_link` tinyint(1) NOT NULL DEFAULT '0',
-  `import_notes` varchar(1024) DEFAULT '',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`),
-  KEY `authorId` (`author_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `story_links`
---
-
-LOCK TABLES `story_links` WRITE;
-/*!40000 ALTER TABLE `story_links` DISABLE KEYS */;
-INSERT IGNORE INTO `story_links` VALUES
-  (1,'Bookmark 1','This is the bookmark summary','The author’s original notes',2,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp179.htm',0,0,NULL,0,'Some notes on this import.'),
-  (2,'Bookmark 2','This is the bookmark summary','The author’s original notes',2,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp101.htm',0,0,NULL,0,'Some notes on this import.'),
-  (3,'Bookmark 3','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp102.htm',0,0,NULL,0,'Some notes on this import.'),
-  (4,'Bookmark 4','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp103.htm',0,0,NULL,0,'Some notes on this import.'),
-  (5,'Bookmark 5','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp104.htm',0,0,NULL,0,'Some notes on this import.'),
-  (6,'Bookmark 6','This is the bookmark summary','The author’s original notes',4,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp105.htm',0,0,NULL,0,'Some notes on this import.'),
-  (7,'Bookmark 7','This is the bookmark summary','The author’s original notes',4,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp106.htm',0,0,NULL,0,'Some notes on this import.')
-;/*!40000 ALTER TABLE `story_links` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `chapters`
@@ -201,7 +152,8 @@ CREATE TABLE IF NOT EXISTS `chapters` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `storyid` (`story_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -286,6 +238,14 @@ UNLOCK TABLES;
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `schema_migrations` (
+  `version` varchar(255) NOT NULL,
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT EXISTS `stories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL DEFAULT '',
@@ -310,7 +270,7 @@ CREATE TABLE IF NOT EXISTS `stories` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `authorId` (`author_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -377,14 +337,64 @@ INSERT IGNORE INTO `stories` VALUES
  ;
 /*!40000 ALTER TABLE `stories` ENABLE KEYS */;
 UNLOCK TABLES;
+--
+-- Table structure for table `story_links`
+--
 
-CREATE TABLE IF NOT EXISTS `users`
-(
-  id int auto_increment primary key,
-  name varchar(255) null,
-  email varchar(255) null,
-  password_digest varchar(255) null,
-  created_at datetime not null,
-  updated_at datetime not null
-);
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE IF NOT EXISTS `story_links` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `summary` text,
+  `notes` text,
+  `author_id` int(11) DEFAULT '0',
+  `rating` varchar(255) NOT NULL DEFAULT '',
+  `date` datetime DEFAULT NULL,
+  `updated` datetime DEFAULT NULL,
+  `categories` varchar(45) DEFAULT NULL,
+  `tags` varchar(255) NOT NULL DEFAULT '',
+  `warnings` varchar(255) DEFAULT '',
+  `fandoms` varchar(255) DEFAULT '',
+  `characters` varchar(255) DEFAULT '',
+  `relationships` varchar(255) DEFAULT '',
+  `url` varchar(255) DEFAULT NULL,
+  `imported` tinyint(1) NOT NULL DEFAULT '0',
+  `do_not_import` tinyint(1) NOT NULL DEFAULT '0',
+  `ao3_url` varchar(255) DEFAULT NULL,
+  `broken_link` tinyint(1) NOT NULL DEFAULT '0',
+  `import_notes` varchar(1024) DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `authorId` (`author_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `story_links`
+--
+
+LOCK TABLES `story_links` WRITE;
+/*!40000 ALTER TABLE `story_links` DISABLE KEYS */;
+INSERT IGNORE INTO `story_links` VALUES
+  (1,'Bookmark 1','This is the bookmark summary','The author’s original notes',2,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp179.htm',0,0,NULL,0,'Some notes on this import.'),
+  (2,'Bookmark 2','This is the bookmark summary','The author’s original notes',2,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp101.htm',0,0,NULL,0,'Some notes on this import.'),
+  (3,'Bookmark 3','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp102.htm',0,0,NULL,0,'Some notes on this import.'),
+  (4,'Bookmark 4','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp103.htm',0,0,NULL,0,'Some notes on this import.'),
+  (5,'Bookmark 5','This is the bookmark summary','The author’s original notes',3,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp104.htm',0,0,NULL,0,'Some notes on this import.'),
+  (6,'Bookmark 6','This is the bookmark summary','The author’s original notes',4,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp105.htm',0,0,NULL,0,'Some notes on this import.'),
+  (7,'Bookmark 7','This is the bookmark summary','The author’s original notes',4,'Mature','2003-02-01','2005-06-12 00:00:00','M/M','Alternate Universe','','Testing',NULL,NULL,'http://www.insidethex.co.uk/transcrp/scrp106.htm',0,0,NULL,0,'Some notes on this import.')
+;/*!40000 ALTER TABLE `story_links` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `password_digest` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

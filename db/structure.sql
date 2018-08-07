@@ -1,8 +1,3 @@
--- MySQL dump 10.13  Distrib 5.7.19, for osx10.12 (x86_64)
---
--- Host: localhost    Database: opendoorstempsite
--- ------------------------------------------------------
--- Server version	5.7.19
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -15,9 +10,17 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `archive_configs`
---
+DROP TABLE IF EXISTS `ar_internal_metadata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ar_internal_metadata` (
+  `key` varchar(255) NOT NULL,
+  `value` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `archive_configs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -31,21 +34,14 @@ CREATE TABLE `archive_configs` (
   `bookmarks_note` text,
   `send_email` tinyint(1) NOT NULL DEFAULT '0',
   `post_preview` tinyint(1) NOT NULL DEFAULT '0',
-  `items_per_page` int(11) NOT NULL DEFAULT '30',
   `archivist` varchar(100) NOT NULL DEFAULT 'testy',
   `collection_name` varchar(255) DEFAULT NULL,
-  `imported` int(11) DEFAULT '0',
-  `not_imported` int(11) DEFAULT '0',
   `host` varchar(15) DEFAULT 'ariana',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `Key_UNIQUE` (`key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `audits`
---
 
 DROP TABLE IF EXISTS `audits`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -72,12 +68,8 @@ CREATE TABLE `audits` (
   KEY `user_index` (`user_id`,`user_type`),
   KEY `index_audits_on_request_uuid` (`request_uuid`),
   KEY `index_audits_on_created_at` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `authors`
---
 
 DROP TABLE IF EXISTS `authors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -91,19 +83,15 @@ CREATE TABLE `authors` (
   `to_delete` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `chapters`
---
 
 DROP TABLE IF EXISTS `chapters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `chapters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `position` int(11) DEFAULT NULL,
+  `position` bigint(22) DEFAULT NULL,
   `title` varchar(255) NOT NULL DEFAULT '',
   `authorID` int(11) NOT NULL DEFAULT '0',
   `text` mediumtext,
@@ -114,12 +102,17 @@ CREATE TABLE `chapters` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `storyid` (`story_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
+
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `schema_migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `schema_migrations` (
+  `version` varchar(255) NOT NULL,
+  PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `stories`
---
 
 DROP TABLE IF EXISTS `stories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -136,9 +129,9 @@ CREATE TABLE `stories` (
   `categories` varchar(45) DEFAULT NULL,
   `tags` varchar(255) NOT NULL DEFAULT '',
   `warnings` varchar(255) DEFAULT '',
-  `fandoms` varchar(255) DEFAULT NULL,
-  `characters` varchar(255) DEFAULT NULL,
-  `relationships` varchar(255) DEFAULT NULL,
+  `fandoms` varchar(255) DEFAULT '',
+  `characters` varchar(255) DEFAULT '',
+  `relationships` varchar(255) DEFAULT '',
   `url` varchar(255) DEFAULT NULL,
   `imported` tinyint(1) NOT NULL DEFAULT '0',
   `do_not_import` tinyint(1) NOT NULL DEFAULT '0',
@@ -148,12 +141,8 @@ CREATE TABLE `stories` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `authorId` (`author_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `story_links`
---
 
 DROP TABLE IF EXISTS `story_links`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -170,9 +159,9 @@ CREATE TABLE `story_links` (
   `categories` varchar(45) DEFAULT NULL,
   `tags` varchar(255) NOT NULL DEFAULT '',
   `warnings` varchar(255) DEFAULT '',
-  `fandoms` varchar(255) DEFAULT NULL,
-  `characters` varchar(255) DEFAULT NULL,
-  `relationships` varchar(255) DEFAULT NULL,
+  `fandoms` varchar(255) DEFAULT '',
+  `characters` varchar(255) DEFAULT '',
+  `relationships` varchar(255) DEFAULT '',
   `url` varchar(255) DEFAULT NULL,
   `imported` tinyint(1) NOT NULL DEFAULT '0',
   `do_not_import` tinyint(1) NOT NULL DEFAULT '0',
@@ -182,12 +171,8 @@ CREATE TABLE `story_links` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `authorId` (`author_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `users`
---
 
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -202,10 +187,6 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping routines for database 'opendoorstempsite'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -215,5 +196,6 @@ CREATE TABLE `users` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
 
 
