@@ -67,7 +67,9 @@
       type: "GET"
       url: "#{host}/#{sitename}/items/audit/#{type}/#{itemId}"
       dataType: "text"
-
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      }
       success: (data, status, xhr) ->
         itemAudit.html data
         $("#info-img-#{type}-#{itemId}").show()
@@ -155,7 +157,10 @@
       type: "POST"
       url: button[0]
       dataType: "json"
-
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      }
+      
       success: (data, status, xhr) ->
         enableButton(button)
         enableButton(authorArticle)
@@ -245,8 +250,4 @@
 $ ->
   $("body").on("click", "a[data-button]", bindImport)
 
-  $.ajaxSetup {
-    beforeSend: (xhr) ->
-      xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
-  }
 

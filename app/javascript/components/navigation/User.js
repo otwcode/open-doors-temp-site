@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import {NavDropdown} from "./NavDropdown";
 
 class User extends React.Component {
   render () {
@@ -8,26 +9,19 @@ class User extends React.Component {
         <ul className="nav navbar-nav navbar-right">
           <li className="nav-item">
             <span className="navbar-text"
-                  style="padding: .5rem">Signed in as <strong>{this.props.current_user.name}</strong></span>
+                  style={{padding: .5 + 'rem'}}>Signed in as <strong>{this.props.current_user.name}</strong></span>
+          </li>
+          <NavDropdown name="Admin">
+            <a href="stats" className="dropdown-item">Stats</a>
+            <a href={this.props.configPath} className="dropdown-item">Config</a>
+          </NavDropdown>
+
+          <li className="nav-item">
+            <a className="nav-item" href={this.props.logoutPath}>Log out</a>
           </li>
         </ul>
       );
-      // <li className="nav-item">
-      //   <li className="nav-item dropdown">
-      //     <a className="nav-link dropdown-toggle <%= "active" if params[:controller] == "stats" || params[:controller] == "archive_config" %>" href=""
-      //        id="navbarDropdownAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      //       Admin
-      //     </a>
-      //     <div className="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
-      //       <%= link_to "Stats", stats_path, class: "dropdown-item" %>
-      //       <%= link_to "Config", archive_config_path(@archive_config), class: "dropdown-item" %>
-      //     </div>
-      //   </li>
-      //
-      // </li>
-      // <li className="nav-item">
-      //   <%= link_to "Log out", logout_path, class: "nav-link" %>
-      // </li>
+      
     } else {
       return (
         <ul className="nav navbar-nav navbar-right">
@@ -47,6 +41,7 @@ User.propTypes = {
   current_user: PropTypes.object,
   loginPath: PropTypes.string,
   logoutPath: PropTypes.string,
-  signupPath: PropTypes.string
+  signupPath: PropTypes.string,
+  configPath: PropTypes.string
 };
 export default User
