@@ -14,8 +14,9 @@
   <% end %>
 
   <div class="field form-group">
+    <% host_list = ENV['RAILS_ENV'] == "production" ? [:ariana, :test, :live] : [:local, :ariana, :test, :live]  %>
     <%= f.label :host %>
-    <%= f.select :host, [:local, :ariana, :test, :live], {}, class: "form-control" %>
+    <%= f.select :host, host_list, {}, class: "form-control" %>
     <small id="hostHelp" class="form-text">Warning: changing this will clear imported and do not import flags and AO3 urls from all stories and story links</small>
   </div>
 

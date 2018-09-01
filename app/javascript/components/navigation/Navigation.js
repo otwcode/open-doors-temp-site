@@ -1,6 +1,22 @@
 import React from "react"
 import PropTypes from "prop-types"
 import User from "./User"
+import {NavDropdown} from "./NavDropdown";
+
+const NavItem = props => {
+  const pageURI = window.location.pathname+window.location.search;
+  const liClassName = (props.path === pageURI) ? "nav-item active" : "nav-item";
+  const aClassName = props.disabled ? "nav-link disabled" : "nav-link";
+  return (
+    <li className={liClassName}>
+      <a href={props.path} className={aClassName}>
+        {props.name}
+        {(props.path === pageURI) ? (<span className="sr-only">(current)</span>) : ''}
+      </a>
+    </li>
+  );
+};
+
 
 class Navigation extends React.Component {
   render () {
@@ -17,10 +33,13 @@ class Navigation extends React.Component {
 
         <div className="collapse navbar-collapse" id="navbarMainMenu">
           <ul className="navbar-nav mr-auto">
-            <li className={(this.props.controller === "authors") ? "nav-item active" : "nav-item"}>
-              <a href={this.props.authors_path} className="nav-link">Works by Author (use for importing)</a>
-              
-            </li>
+            <NavItem path={this.props.authors_path} name="Works by Author (use for importing)" />
+
+            <NavDropdown name="Stories">
+              <a className="dropdown-item" href={this.props.authors_path + "?letter=" + this.props.letter}>Stories to be imported</a>
+              <a className="dropdown-item" href={this.props.authors_path + "?letter=" + this.props.letter}>Stories NOT to be imported</a>
+              <a className="dropdown-item" href={this.props.authors_path + "?letter=" + this.props.letter}>Imported stories</a>
+            </NavDropdown>
 
             <li className="nav-item dropdown">
               <a className={this.props.controller === "bookmarks" ? "nav-link dropdown-toggle active" : "nav-link dropdown-toggle"}
@@ -49,7 +68,12 @@ class Navigation extends React.Component {
               </div>
             </li>
           </ul>
-          <User current_user={this.props.current_user} loginPath={this.props.login_path} logoutPath={this.props.logout_path} signupPath={this.props.signup_path}/>
+          <User current_user={this.props.current_user} 
+                loginPath={this.props.login_path} 
+                logoutPath={this.props.logout_path} 
+                signupPath={this.props.signup_path}
+                configPath={this.props.config_path}
+          />
         </div>
       </nav>
     );
@@ -66,5 +90,6 @@ Navigation.propTypes = {
   login_path: PropTypes.string,
   signup_path: PropTypes.string,
   authors_path: PropTypes.string,
+  config_path: PropTypes.string
 };
 export default Navigation
