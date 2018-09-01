@@ -47,7 +47,7 @@ module OtwArchive
         next if items.blank?
 
         request_body = if type == :works
-                         { original_urls: items.map { |w| { id: w.id, url: w.chapter_urls.first } } }
+                         { works: [{ original_urls: items.map { |w| { id: w.id, url: w.chapter_urls.first } } }] }
                        else
                          { archivist: @config.archivist, bookmarks: items }
                        end

@@ -8,7 +8,7 @@ class ItemsController < ApplicationController
   def initialize
     active_api   = Rails.application.secrets[:ao3api][:active]
     api_settings = Rails.application.secrets[:ao3api][active_api.to_sym]
-    import_config = OtwArchive::ImportConfig.new("http://" + api_settings[:url], api_settings[:key], "testy")
+    import_config = OtwArchive::ImportConfig.new("https://" + api_settings[:url], api_settings[:key], "testy")
     @client = OtwArchive::Client.new(import_config)
     super
   end
