@@ -7,10 +7,10 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-//= require jquery3
-//= require popper
-//= require bootstrap
-//= require ../authors
+// require jquery3
+// require popper
+// require bootstrap
+//= require authors.js
 //= require_tree .
 
 // Support component names relative to this directory
