@@ -7,7 +7,7 @@
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <%= stylesheet_link_tag 'application', media: 'all' %>
   
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <%#= javascript_include_tag 'jquery-3.1.1.min' %>
@@ -16,9 +16,8 @@
 </head>
 
 <body>
-<div class="container">
 <%= react_component("navigation/Navigation", {  controller: params[:controller],
-                                                letter: params[:letter],
+                                                letter: params[:letter] || 'A',
                                                 logo_path: asset_path("Opendoors.png"),
                                                 config: @archive_config,
                                                 current_user: current_user.as_json,
@@ -28,6 +27,7 @@
                                                 authors_path: authors_path,
                                                 config_path: archive_config_path(@archive_config)
 }) %>
+<div class="container">
   <p>&nbsp;</p>
   <h1><%= APP_CONFIG[:name] %></h1>
   <%= react_component("SiteInfo", { config: @api_config.merge(@archive_config) } ) %>

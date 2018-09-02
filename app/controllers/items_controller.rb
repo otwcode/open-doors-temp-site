@@ -6,9 +6,9 @@ class ItemsController < ApplicationController
   include Item
 
   def initialize
-    active_api   = Rails.application.secrets[:ao3api][:active]
-    api_settings = Rails.application.secrets[:ao3api][active_api.to_sym]
-    import_config = OtwArchive::ImportConfig.new("https://" + api_settings[:url], api_settings[:key], "testy")
+    archive_config = ArchiveConfig.archive_config
+    api_settings = Rails.application.secrets[:ao3api][archive_config.host.to_sym]
+    import_config = OtwArchive::ImportConfig.new(api_settings[:url], api_settings[:key], "testy")
     @client = OtwArchive::Client.new(import_config)
     super
   end
@@ -39,11 +39,17 @@ class ItemsController < ApplicationController
         end
 
       response = @client.import(item_request)
+      
+      if response[0]["status"].in? ["ok", "created"]
+        item_response = response[0][ao3_type]
+        final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
+      else 
+        Rails.logger.error(">>> Error returned from remote API:\n #{item_response}")
+        
+        final_response[0][ao3_type] = response
+        final_response[0][ao3_type][0].merge!(original_id: item.id)
+      end
 
-      Rails.logger.info("response: #{response}")
-
-      item_response = response[0][ao3_type][0]
-      final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
     else
 
       final_response[0][ao3_type] = [

@@ -8,9 +8,9 @@ class AuthorsController < ApplicationController
   include AlphabeticalPaginate::ViewHelpers
 
   def initialize
-    active_api   = Rails.application.secrets[:ao3api][:active]
-    api_settings = Rails.application.secrets[:ao3api][active_api.to_sym]
-    import_config = OtwArchive::ImportConfig.new("https://" + api_settings[:url], api_settings[:key], "testy")
+    archive_config = ArchiveConfig.archive_config
+    api_settings = Rails.application.secrets[:ao3api][archive_config.host.to_sym]
+    import_config = OtwArchive::ImportConfig.new(api_settings[:url], api_settings[:key], "testy")
     @client = OtwArchive::Client.new(import_config)
     super
   end

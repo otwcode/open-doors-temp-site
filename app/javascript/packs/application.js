@@ -10,7 +10,7 @@
 // require jquery3
 // require popper
 // require bootstrap
-//= require authors.js
+//= require authors
 //= require_tree .
 
 // Support component names relative to this directory

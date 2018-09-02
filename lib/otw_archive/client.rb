@@ -29,7 +29,7 @@ module OtwArchive
           Rails.logger.info "\nRESP: #{resp.inspect}"
           responses << resp
         end
-        Rails.logger.info "\n>>> responses: \n#{JSON.pretty_generate(responses.as_json)}"
+        Rails.logger.info "\n>>> Import responses: \n#{JSON.pretty_generate(responses.as_json)}"
       rescue StandardError => e
         Rails.logger.error "\n>>> Error: #{e}"
         Rails.logger.error e.backtrace.join("\n")
@@ -66,7 +66,7 @@ module OtwArchive
           responses << resp
         end
       end
-      Rails.logger.info "\n>>> responses: \n#{JSON.pretty_generate(responses.as_json)}"
+      Rails.logger.info "\n>>> Search responses: \n#{JSON.pretty_generate(responses.as_json)}"
       responses
     end
 
