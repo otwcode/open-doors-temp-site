@@ -32,7 +32,7 @@ gem "sass-rails", "~> 5.0"
 # Use CoffeeScript for .coffee assets and views
 gem "coffee-rails", "~> 4.2"
 # For asset compilation
-gem "mini_racer"
+# gem "mini_racer"
 
 # Use react as the JavaScript library
 gem 'webpacker'
