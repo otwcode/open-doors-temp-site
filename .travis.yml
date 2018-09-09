@@ -10,9 +10,8 @@ before_install:
 script:
   - cp config/database.travis.yml config/database.yml
   - cp config/secrets.travis.yml config/secrets.yml
-  - RAILS_ENV=test bundle install --binstubs
   - RAILS_ENV=test bundle exec rake db:create:all
   - RAILS_ENV=test bundle exec rake db:schema:load
   - RAILS_ENV=test bundle exec rake db:migrate
-  - RAILS_ENV=test bundle exec rake webpacker:install
+  - NODE_ENV=test bundle exec rails webpacker:compile
   - RAILS_ENV=test bundle exec rspec spec --format doc
