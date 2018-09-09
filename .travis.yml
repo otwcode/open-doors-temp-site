@@ -13,5 +13,5 @@ script:
   - RAILS_ENV=test bundle exec rake db:create:all
   - RAILS_ENV=test bundle exec rake db:schema:load
   - RAILS_ENV=test bundle exec rake db:migrate
-  - NODE_ENV=test bundle exec rails webpacker:compile
+  - RAILS_ENV=test bundle exec rails webpacker:compile
   - RAILS_ENV=test bundle exec rspec spec --format doc
