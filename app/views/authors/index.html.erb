@@ -1,15 +1,18 @@
-<div class="text-center">
-  <nav class="d-inline-block">
-    <%= alphabetical_paginate @letters %>
-  </nav>
-  <span>&nbsp;</span>
-  <%= link_to "Hide imported authors", "#",
-              id: "all-author-hide", remote: true,
-              class: "btn btn-hide-all",
-              data: { method: :post, button: :hideAllImported } %>
-</div>
-<%= will_paginate(@authors, renderer: "BootstrapPaginationHelper::LinkRenderer") ||
-                            '<nav><ul class="pagination will_paginate justify-content-center"><li/></ul></nav>'.html_safe %>
+<%= react_component("AuthorsPage", {
+  all_letters: @all_letters,
+  controller: params[:controller],
+  root_path: root_path,
+  letter: params[:letter] || 'A',
+  page: params[:page] || '1',
+  pages: @pages,
+  logo_path: asset_path("Opendoors.png"),
+  config: @api_config.merge(@archive_config),
+  current_user: current_user&.name || '',
+  config_path: archive_config_path(@archive_config),
+  authors: @authors
+}) %>
+
+
 
 <div id="pagination_table">
   <% @authors.each do |author|
@@ -59,13 +62,7 @@
   <% end %>
 </div>
 
-<%= will_paginate @authors, renderer: "BootstrapPaginationHelper::LinkRenderer"  ||
-  '<nav><ul class="pagination will_paginate justify-content-center"><li/></ul></nav>'.html_safe %>
-<div class="text-center">
-  <nav class="d-inline-block">
-    <%= alphabetical_paginate @letters %>
-  </nav>
-  <span>&nbsp;</span>
+
   <%= link_to "Hide imported authors", "#",
               id: "all-author-hide", remote: true,
               class: "btn btn-hide-all",

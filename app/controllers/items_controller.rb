@@ -12,6 +12,14 @@ class ItemsController < ApplicationController
     @client = OtwArchive::Client.new(import_config)
     super
   end
+  
+  def get_by_author
+    author = Author.find(params[:author_id])
+    render json: {
+      stories: author.stories,
+      story_links: author.story_links
+    }
+  end
 
   def import
     respond_to :json
