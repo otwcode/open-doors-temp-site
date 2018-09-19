@@ -83,30 +83,7 @@
   <!-- Blurb -->
   <div id="<%= "details-#{item_id}" %>" class="details row col-12 collapse">
     <div id="<%= "meta-#{item_id}" %>" class="blurb col-lg-6 col-md-12">
-      <b>Rating:</b>        <%= item.rating || "None" %><br/>
-      <b>Warnings:</b>      <%= item.warnings || "None" %><br/>
-      <b>Categories:</b>    <%= item.categories || "None" %><br/>
-      <b>Fandoms:</b>       <%= item.fandoms || "None" %><br/>
-      <b>Relationships:</b> <%= item.relationships || "None" %><br/>
-      <b>Characters:</b>    <%= item.characters || "None" %><br/>
-      <b>Tags:</b>          <%= item.tags || "None" %><br/>
-      <b>Date:</b>          <%= item.date.present? ? item.date.to_date.to_s(:iso8601) : "No date" %>
-      <% if is_story %>
-        - <b>Updated:</b> <%= item.updated.present? ? item.updated.to_date.to_s(:iso8601)   : "No update date set" %>
-      <% end %>
-      <br/>
-
-      <b>Summary:</b> <%= item.summary.html_safe %><br/>
-
-      <% if is_story %>
-        <ol>
-          <% item.chapters.each do |chapter| %>
-            <li>
-              <%= link_to chapter.title, chapter_path(chapter.id) %>
-            </li>
-          <% end %>
-        </ol>
-      <% end %>
+      
     </div><!-- end meta -->
 
     <!-- Audit -->

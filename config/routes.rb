@@ -13,7 +13,7 @@ Rails.application.routes.draw do
       post :dni
     end
 
-    get "authors/api_index" => "authors#api_index", as: :api_index
+    # get "authors/api_index" => "authors#api_index", as: :api_index
   
 
     resources :chapters
@@ -27,16 +27,21 @@ Rails.application.routes.draw do
     get "logout" => "sessions#destroy", as: :logout
 
     # AJAX end points
-    post "items/import/:type/:id" => "items#import",  as: :item_import
-    post "items/mark/:type/:id"   => "items#mark",    as: :item_mark
-    post "items/check/:type/:id"  => "items#check",   as: :item_check
-    post "items/dni/:type/:id"    => "items#dni",     as: :item_dni
-    get  "items/audit/:type/:id"  => "items#audit",   as: :item_audit
+    post "authors/cable/:author_id"  => "authors#cable_event"
+     
+    get  "items/author/:author_id"   => "items#get_by_author", as: :item_by_author
+    post "items/import/:type/:id"    => "items#import",        as: :item_import
+    post "items/mark/:type/:id"      => "items#mark",          as: :item_mark
+    post "items/check/:type/:id"     => "items#check",         as: :item_check
+    post "items/dni/:type/:id"       => "items#dni",           as: :item_dni
+    get  "items/audit/:type/:id"     => "items#audit",         as: :item_audit
 
     # Admin features
     resource :archive_configs, path: :config
     resources :archive_configs, path: :config, only: [:edit, :show, :update]
 
     get "stats" => "stats#show"
+
+    mount ActionCable.server => '/cable'
   end
 end

@@ -1,11 +1,9 @@
 class AuthorsController < ApplicationController
-  require 'will_paginate/array'
   require 'application_helper'
 
   include OtwArchive
   include OtwArchive::Request
   include Item
-  include AlphabeticalPaginate::ViewHelpers
 
   def initialize
     archive_config = ArchiveConfig.archive_config
@@ -14,27 +12,49 @@ class AuthorsController < ApplicationController
     @client = OtwArchive::Client.new(import_config)
     super
   end
-
-  def index
-    letter_authors, @letters = Author.with_stories_or_story_links
-                                     .alpha_paginate(params[:letter],
-                                                     bootstrap4: true,
-                                                     include_all: false,
-                                                     numbers: true,
-                                                     others: true
-                                     ) { |author| author.name.downcase }
-    @authors = letter_authors.paginate(page: params[:page], per_page: 30)
+  
+  def allLetters
+    Author.all
+      .map do |a|
+      { 
+        name: a.name, 
+        imported: a.imported, 
+        s_to_import: a.stories.where(imported: false).count, 
+        l_to_import: a.story_links.where(imported: false).count 
+      }
+      end
+      .group_by { |a| a[:name][0].upcase }
   end
   
-  def api_index
-    letter_authors, @letters = Author.with_stories_or_story_links
-                                 .alpha_paginate(params[:letter],
-                                                 bootstrap4: true,
-                                                 include_all: false,
-                                                 numbers: true,
-                                                 others: true
-                                 ) { |author| author.name.downcase }
-    render json: letter_authors.paginate(page: params[:page], per_page: 30)
+  def current_authors
+    max = 30
+    page = params[:page] || '1'
+    letter = params[:letter] || 'A'
+    all_current_authors = Author.select(:id, :name, :imported, :do_not_import).where("substr(upper(name), 1, 1) = '#{letter}'")
+    @pages = (all_current_authors.size.to_f / max.to_f).ceil
+    all_current_authors.limit(30).offset((page.to_i - 1) * 30)
+  end
+
+  def index
+    @all_letters = allLetters
+    @authors = current_authors
+  end
+  # 
+  # def api_index
+  #   letter_authors, @letters = Author.with_stories_or_story_links
+  #                                .alpha_paginate(params[:letter],
+  #                                                bootstrap4: true,
+  #                                                include_all: false,
+  #                                                numbers: true,
+  #                                                others: true
+  #                                ) { |author| author.name.downcase }
+  #   render json: letter_authors.paginate(page: params[:page], per_page: 30)
+  # end
+  
+  def cable_event
+    message = { message: "Imported #{params[:author_id]}" }
+    ActionCable.server.broadcast 'imports_channel', message
+    render json: message, content_type: "application/json"
   end
 
   def import
