@@ -1,35 +1,36 @@
 import React from "react"
-import PropTypes from "prop-types"
-import {NavDropdown} from "./NavDropdown";
+import NavDropdown from "react-bootstrap/lib/NavDropdown";
+import Nav from "react-bootstrap/lib/Nav";
 
 class User extends React.Component {
   render () {
     if (this.props.current_user) {
+      const logoutPath = `${this.props.root_path}/logout`; 
+      const statsPath = `${this.props.root_path}/stats`;
       return (
-        <ul className="nav navbar-nav navbar-right">
-          <li className="nav-item">
-            <span className="navbar-text"
-                  style={{padding: .5 + 'rem'}}>Signed in as <strong>{this.props.current_user.name}</strong></span>
-          </li>
-          <NavDropdown name="Admin">
-            <a href="stats" className="dropdown-item">Stats</a>
-            <a href={this.props.configPath} className="dropdown-item">Config</a>
+        <Nav>
+          <Nav.Item>
+            <span className="navbar-text" 
+                  style={{ paddingRight: '20 px' }}>Signed in as <strong>{this.props.current_user}</strong>&nbsp;</span>
+          </Nav.Item>
+          <NavDropdown title="Admin" id="admin-nav-dropdown">
+            <NavDropdown.Item href={statsPath}>Stats</NavDropdown.Item>
+            <NavDropdown.Item href={this.props.config_path}>Config</NavDropdown.Item>
           </NavDropdown>
-
-          <li className="nav-item">
-            <a className="nav-item" href={this.props.logoutPath}>Log out</a>
-          </li>
-        </ul>
+            <Nav.Link className="nav-item" href={logoutPath}>Log out</Nav.Link>
+        </Nav>
       );
       
     } else {
+      const loginPath = `${this.props.root_path}/login`; 
+      const signupPath = `${this.props.root_path}/signup`; 
       return (
         <ul className="nav navbar-nav navbar-right">
           <li className="nav-item">
-            <a href={this.props.loginPath} className="nav-link">Log in</a>
+            <a href={loginPath} className="nav-link">Log in</a>
           </li>
           <li className="nav-item">
-            <a href={this.props.signupPath} className="nav-link">Sign up</a>
+            <a href={signupPath} className="nav-link">Sign up</a>
           </li>
         </ul>
       );
@@ -37,11 +38,4 @@ class User extends React.Component {
   }
 }
 
-User.propTypes = {
-  current_user: PropTypes.object,
-  loginPath: PropTypes.string,
-  logoutPath: PropTypes.string,
-  signupPath: PropTypes.string,
-  configPath: PropTypes.string
-};
 export default User

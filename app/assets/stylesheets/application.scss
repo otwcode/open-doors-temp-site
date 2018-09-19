@@ -1,177 +1,189 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
- *= require_tree .
- *= require_self
- */
-
-@import "bootstrap";
-@import "bootstrap/variables";
+///*
+// * This is a manifest file that'll be compiled into application.css, which will include all the files
+// * listed below.
+// *
+// * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+// * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+// *
+// * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+// * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+// * files in this directory. Styles in this file should be added after the last require_* statement.
+// * It is generally better to create a new file per style scope.
+// *
+// *= require_tree 
+// *= require_self
+// */
+//
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+//@import "bootstrap/variables";
 
 $importColor: #5bc0de;
 $checkColor: #67956c;
 $dniColor: #cb8498;
 $clearColor: #906b59;
 
-* {
-  font-size: 14px;
+.card-title {
+  @extend .card-title;
+  margin-bottom: 0px;
+  margin-top: .5em;
 }
 
-.badge {
-  vertical-align: middle;
+.importing {
+  @extend .progress-bar-striped;
+  @extend .progress-bar-animated;
+  background-color: $importColor;
 }
-
-h2 .badge {
-  font-size: 10px;
-  margin-top: -0.5em;
-}
-
-h3 .badge, h4 .badge {
-  font-size: 8px;
-}
-
-.pagination {
-  @extend .pagination;
-  display: inline-flex;
-  margin: 1rem auto 0;
-}
-
-.loading {
-  width: 16px;
-  height: 16px;
-}
-
-/* Fix for collapse bug in Bootstrap */
-.row.collapse.show {
-  display: flex;
-}
-
-/* Navbar */
-.navbar-toggler {
-  padding-top: 10px;
-}
-
-/* Listings */
-#pagination_table {
-  margin-top: 1rem;
-}
-
-article {
-  padding: 5px;
-  border: #95dafe solid 1px;
-  border-radius: 0.26rem;
-  margin-bottom: 10px;
-
-  .progress-bar-animated {
-    background-color: rgb(226, 226, 226);
-  }
-
-  a.collapse, a.collapse:hover {
-    text-decoration: none;
-    color: $body-color;
-  }
-}
-
-section {
-  margin-top: 10px;
-  display: block;
-  background-color: rgba(195, 241, 255, 0.2);
-  border-radius: 0.26rem;
-  text-decoration: none;
-  margin-left: 0px;
-  margin-right: 5px;
-}
-
-/* Buttons */
-.btn-sm {
-  white-space: nowrap;
-}
-
-.btn-sm:hover {
-  text-decoration: none;
-}
-
-.btn-import {
-  @include button-variant(#fff, $importColor, $importColor);
-  text-decoration: none;
-}
-
-.btn-check {
-  @include button-variant(#fff, $checkColor, $checkColor);
-  text-decoration: none;
-}
-
-.btn-dni {
-  @include button-variant(#fff, $dniColor, $dniColor);
-  text-decoration: none;
-}
-
-.btn-clear, .btn-hide-all {
-  @include button-variant(#fff, $clearColor, $clearColor);
-  text-decoration: none;
-  margin-bottom: 4px; /* weird interaction with the adjacent alphabetical paginate nav */
-}
-
-/* Import statuses */
-.imported {
-  background-color: lightgray;
-  color: #484848;
-}
-
-.do_not_import {
-  background-color: #f7d0cb;
-  text-decoration: none;
-  color: gray;
-}
-
-.broken_link {
-  background-color: #fbc680;
-  border-radius: 10px;
-  text-decoration: none;
-  color: #494949;
-}
-
-/* Layout */
-.audit {
-  font-size: small;
-  text-decoration: none;
-  font-weight: normal;
-  margin-top: 5px;
-  margin-bottom: 5px;
-
-  overflow: auto;
-  max-height: 400px;
-  -moz-transition: height ease 0.5s;
-  -o-transition: height ease 0.5s;
-  -webkit-transition: height ease 0.5s;
-  transition: height ease 0.5s;
-}
-
-.fa-info-circle {
-  color: rgb(2, 117, 216);
-  font-family: FontAwesome;
-  font-size: 14px;
-  height: 14px;
-  line-height: 14px;
-  width: 12px;
-}
-
-footer {
-  background-color: #0275d8;
-  margin-top: 20px;
-  padding: 10px;
-}
-
-.card {
-  @extend .card;
-  margin-bottom: 1rem;
-}
+//
+//* {
+//  font-size: 14px;
+//}
+//
+//.badge {
+//  vertical-align: middle;
+//}
+//
+//h2 .badge {
+//  font-size: 10px;
+//  margin-top: -0.5em;
+//}
+//
+//h3 .badge, h4 .badge {
+//  font-size: 8px;
+//}
+//
+//.pagination {
+//  @extend .pagination;
+//  display: inline-flex;
+//  margin: 1rem auto 0;
+//}
+//
+//.loading {
+//  width: 16px;
+//  height: 16px;
+//}
+//
+///* Fix for collapse bug in Bootstrap */
+//.row.collapse.show {
+//  display: flex;
+//}
+//
+///* Navbar */
+//.navbar-toggler {
+//  padding-top: 10px;
+//}
+//
+///* Listings */
+//#pagination_table {
+//  margin-top: 1rem;
+//}
+//
+//article {
+//  padding: 5px;
+//  border: #95dafe solid 1px;
+//  border-radius: 0.26rem;
+//  margin-bottom: 10px;
+//
+//  .progress-bar-animated {
+//    background-color: rgb(226, 226, 226);
+//  }
+//
+//  a.collapse, a.collapse:hover {
+//    text-decoration: none;
+//    color: $body-color;
+//  }
+//}
+//
+//section {
+//  margin-top: 10px;
+//  display: block;
+//  background-color: rgba(195, 241, 255, 0.2);
+//  border-radius: 0.26rem;
+//  text-decoration: none;
+//  margin-left: 0px;
+//  margin-right: 5px;
+//}
+//
+///* Buttons */
+//.btn-sm {
+//  white-space: nowrap;
+//}
+//
+//.btn-sm:hover {
+//  text-decoration: none;
+//}
+//
+//.btn-import {
+//  @include button-variant(#fff, $importColor, $importColor);
+//  text-decoration: none;
+//}
+//
+//.btn-check {
+//  @include button-variant(#fff, $checkColor, $checkColor);
+//  text-decoration: none;
+//}
+//
+//.btn-dni {
+//  @include button-variant(#fff, $dniColor, $dniColor);
+//  text-decoration: none;
+//}
+//
+//.btn-clear, .btn-hide-all {
+//  @include button-variant(#fff, $clearColor, $clearColor);
+//  text-decoration: none;
+//  margin-bottom: 4px; /* weird interaction with the adjacent alphabetical paginate nav */
+//}
+//
+///* Import statuses */
+//.imported {
+//  background-color: lightgray;
+//  color: #484848;
+//}
+//
+//.do_not_import {
+//  background-color: #f7d0cb;
+//  text-decoration: none;
+//  color: gray;
+//}
+//
+//.broken_link {
+//  background-color: #fbc680;
+//  border-radius: 10px;
+//  text-decoration: none;
+//  color: #494949;
+//}
+//
+///* Layout */
+//.audit {
+//  font-size: small;
+//  text-decoration: none;
+//  font-weight: normal;
+//  margin-top: 5px;
+//  margin-bottom: 5px;
+//
+//  overflow: auto;
+//  max-height: 400px;
+//  -moz-transition: height ease 0.5s;
+//  -o-transition: height ease 0.5s;
+//  -webkit-transition: height ease 0.5s;
+//  transition: height ease 0.5s;
+//}
+//
+//.fa-info-circle {
+//  color: rgb(2, 117, 216);
+//  font-family: FontAwesome;
+//  font-size: 14px;
+//  height: 14px;
+//  line-height: 14px;
+//  width: 12px;
+//}
+//
+//footer {
+//  background-color: #0275d8;
+//  margin-top: 20px;
+//  padding: 10px;
+//}
+//
+//.card {
+//  @extend .card;
+//  margin-bottom: 1rem;
+//}
