@@ -125,11 +125,15 @@
     template:
      src: "{{ playbook_dir }}/ansible/database.yml.j2"
      dest: "{{ deploy_path }}/config/database.yml"
+    tags:
+      - database
 
   - name: Copy MySQL script
     template:
       src: "{{ playbook_dir }}/ansible/archive_config.sql.j2"
       dest: "{{ deploy_path }}/archive_config.sql"
+    tags:
+      - database
 
   - name: Create MySQL database
     mysql_db:
@@ -139,6 +143,8 @@
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
     register: create_database
+    tags:
+      - database
 
   - name: Load sample data into MySQL
     mysql_db:
@@ -149,6 +155,8 @@
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
     when: create_database
+    tags:
+      - database
     
   - name: Run migrations 
     command: bundle exec rake db:migrate
@@ -156,6 +164,8 @@
       chdir: "{{ deploy_path }}"
     environment:
       RAILS_ENV: production
+    tags:
+      - database
 
   - name: Create Open Doors user for the site
     command: bundle exec rake users:create_user["Open Doors","{{ opendoors_site_user_email }}","{{ opendoors_site_user_pw }}"]
@@ -163,6 +173,8 @@
       chdir: "{{ deploy_path }}"
     environment:
       RAILS_ENV: production
+    tags:
+      - database
 
   - debug: 
       msg: ~~~~~~~ START APP ~~~~~~~~~

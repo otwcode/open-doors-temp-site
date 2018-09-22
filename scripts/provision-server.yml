@@ -66,6 +66,7 @@
       - nginx
       - python
       - python-mysqldb
+      - redis
       - ruby
       - ruby-dev
       - zlib1g-dev
