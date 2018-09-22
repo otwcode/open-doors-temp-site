@@ -30,8 +30,8 @@ export default class AuthorsPage extends Component {
       <div>
         <Navigation data={this.props}/>
         <SiteInfo config={this.state.config}/>
-        <ActionCableProvider url={`ws://${window.location.host}/${this.props.root_path}/cable`}>
-          <MessageBoard />
+        <ActionCableProvider url={`ws://${window.location.host}${this.props.root_path}/cable`.replace('//', '/')}>
+          <MessageBoard type="info"/>
         </ActionCableProvider>
         <div className="container">
           <AlphabeticalPagination root_path={this.props.root_path}
