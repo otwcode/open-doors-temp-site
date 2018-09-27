@@ -6,6 +6,9 @@ import SiteInfo from "./SiteInfo";
 import Authors from "./items/Authors";
 import NumberPagination from "./pagination/NumberPagination";
 import MessageBoard from "./MessageBoard";
+import Container from "react-bootstrap/lib/Container";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
 
 export default class AuthorsPage extends Component {
   constructor(props) {
@@ -24,42 +27,44 @@ export default class AuthorsPage extends Component {
   };
 
   render() {
-    console.log(this.props);
-    
     return (
       <div>
         <Navigation data={this.props}/>
         <SiteInfo config={this.state.config}/>
         <ActionCableProvider url={`ws://${window.location.host}${this.props.root_path}/cable`.replace('//', '/')}>
-          <MessageBoard type="info"/>
-        </ActionCableProvider>
-        <div className="container">
-          <AlphabeticalPagination root_path={this.props.root_path}
-                                  letter={this.state.letter}
-                                  authors={this.props.all_letters}
-                                  onLetterChange={this.handleLetterChange}/>
-          { this.props.pages > 1 ?
-            <NumberPagination root_path={this.props.root_path}
-                        letter={this.state.letter}
-                        page={this.state.page}
-                        pages={this.props.pages}
-                        onPageChange={this.handlePageChange}/> : ''}
-                        
-            <Authors root_path={this.props.root_path}
-                     authors={this.state.authors}/>
+          <Container>
+            <Row>
+              <Col>
+                <AlphabeticalPagination root_path={this.props.root_path}
+                                        letter={this.state.letter}
+                                        authors={this.props.all_letters}
+                                        onLetterChange={this.handleLetterChange}/>
+                {this.props.pages > 1 ?
+                  <NumberPagination root_path={this.props.root_path}
+                                    letter={this.state.letter}
+                                    page={this.state.page}
+                                    pages={this.props.pages}
+                                    onPageChange={this.handlePageChange}/> : ''}
 
-          { this.props.pages > 1 ?
-            <NumberPagination letter={this.state.letter}
-                      page={this.state.page}
-                      pages={this.props.pages}
-                      onPageChange={this.handlePageChange}/> : ''}
-          <AlphabeticalPagination root_path={this.props.root_path}
-                                  letter={this.state.letter}
-                                  authors={this.props.all_letters}
-                                  onLetterChange={this.handleLetterChange}/>
-          
-            
-        </div>
+                <Authors root_path={this.props.root_path}
+                         authors={this.state.authors}/>
+
+                {this.props.pages > 1 ?
+                  <NumberPagination letter={this.state.letter}
+                                    page={this.state.page}
+                                    pages={this.props.pages}
+                                    onPageChange={this.handlePageChange}/> : ''}
+                <AlphabeticalPagination root_path={this.props.root_path}
+                                        letter={this.state.letter}
+                                        authors={this.props.all_letters}
+                                        onLetterChange={this.handleLetterChange}/>
+              </Col>
+              <Col xs lg={2}>
+                <MessageBoard type="info"/>
+              </Col>
+            </Row>
+          </Container>
+        </ActionCableProvider>
       </div>
     );
   }
