@@ -33,6 +33,7 @@ $clearColor: #906b59;
   @extend .progress-bar-animated;
   background-color: $importColor;
 }
+
 //
 //* {
 //  font-size: 14px;
@@ -133,18 +134,18 @@ $clearColor: #906b59;
 //  margin-bottom: 4px; /* weird interaction with the adjacent alphabetical paginate nav */
 //}
 //
-///* Import statuses */
-//.imported {
-//  background-color: lightgray;
-//  color: #484848;
-//}
-//
-//.do_not_import {
-//  background-color: #f7d0cb;
-//  text-decoration: none;
-//  color: gray;
-//}
-//
+/* Import statuses */
+.imported {
+  background-color: lightgray;
+  color: #484848;
+}
+
+.do_not_import {
+  background-color: #f7d0cb;
+  text-decoration: none;
+  color: gray;
+}
+
 //.broken_link {
 //  background-color: #fbc680;
 //  border-radius: 10px;

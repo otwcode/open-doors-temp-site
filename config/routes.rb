@@ -7,9 +7,7 @@ Rails.application.routes.draw do
     root to: 'authors#index'
 
     resources :authors do
-      post :import
       post :mark
-      post :check
       post :dni
     end
 
@@ -27,9 +25,11 @@ Rails.application.routes.draw do
     get "logout" => "sessions#destroy", as: :logout
 
     # AJAX end points
-    post "authors/cable/:author_id"  => "authors#cable_event"
+    post "authors/import/:author_id"  => "authors#import"
+    post "authors/check/:author_id"  => "authors#check"
      
     get  "items/author/:author_id"   => "items#get_by_author", as: :item_by_author
+    
     post "items/import/:type/:id"    => "items#import",        as: :item_import
     post "items/mark/:type/:id"      => "items#mark",          as: :item_mark
     post "items/check/:type/:id"     => "items#check",         as: :item_check

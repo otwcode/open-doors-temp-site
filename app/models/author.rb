@@ -26,6 +26,78 @@ class Author < ApplicationRecord
     [works, bookmarks]
   end
 
+  def import(client, collection_name, host)
+    response = {}
+    if self.do_not_import
+      response = 
+        {
+          status: :unprocessable_entity,
+          messages: [
+            "This author is set to do NOT import."
+          ],
+          works: [],
+          bookmarks: []
+        }
+    else
+      works, bookmarks =
+        self.works_and_bookmarks(client.config.archivist, collection_name, host)
+
+      # Perform Archive request
+      ao3_response = client.import(works: works, bookmarks: bookmarks)
+
+      # Apply Archive response to items in the database
+      works_responses = ao3_response[0]["works"]
+      if works_responses.present?
+        works_responses.each do |work_response|
+          update_item(:story, work_response.symbolize_keys)
+        end
+        response["works"] = works_responses
+      end
+
+      bookmarks_responses = ao3_response[1] ? ao3_response[1]["bookmarks"] : ao3_response[0]["bookmarks"]
+      if bookmarks_responses.present?
+        bookmarks_responses.each do |bookmark_response|
+          update_item(:bookmark, bookmark_response.symbolize_keys)
+        end
+        response["bookmarks"] = bookmarks_responses
+      end
+    end
+
+    # Is the author now fully imported?
+    response[:author_imported] = self.all_imported?
+    response[:author_id] = self.id
+    response
+  end
+
+  def check(client, collection_name, host)
+    works, bookmarks =
+      self.works_and_bookmarks(client.config.archivist, collection_name, host)
+
+    response = client.search(works: works, bookmarks: bookmarks)
+
+    works_responses = response[0]["works"]
+    if works_responses.present?
+      works_responses.each do |work_response|
+        update_item(:story, work_response.symbolize_keys)
+      end
+    end
+
+    bookmarks_responses = if response[1]
+                            response[1]["bookmarks"]
+                          else
+                            response[0]["bookmarks"]
+                          end
+    if bookmarks_responses.present?
+      bookmarks_responses.each do |bookmark_response|
+        update_item(:bookmark, bookmark_response.symbolize_keys)
+      end
+    end
+
+    # Is the author now fully imported?
+    response[0][:author_imported] = author.all_imported?
+    response
+  end
+
   private
 
   # True if items are blank, or items are present and none remain to be imported
