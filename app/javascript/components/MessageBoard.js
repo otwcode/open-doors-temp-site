@@ -7,12 +7,11 @@ export default class MessageBoard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: []
+      messages: this.props.messages || []
     };
   }
 
   onReceived = (message) => {
-    console.log(`ActionCable message: ${message.message}`);
     this.setState({
       messages: [
         ...this.state.messages,
@@ -46,14 +45,14 @@ export default class MessageBoard extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ height: '100%' }}>
         <ActionCable ref='importsChannel' channel={{ channel: 'ImportsChannel', room: '1' }}
                      onReceived={this.onReceived}/>
         <Alert key="messages" 
                variant={this.props.type} 
-               style={{ height: 100 + 'px', overflowY: 'scroll' }}
+               style={{ fontSize: 'x-small', height: '100%', overflowY: 'scroll' }}
                ref={(el) => { this.messagesContainer = el; }}>
-          {this.state.messages.map(m => <span>{m}</span>)}
+          {this.state.messages.map((m, idx) => <span key={`msg${idx}`}>{m}<br/></span>)}
         </Alert>
       </div>
     )
