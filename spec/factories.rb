@@ -6,6 +6,7 @@ FactoryBot.define do
   factory :story do
     author
     id { generate :id }
+    chapters { create_list(:chapter, 2, story_id: id, audit_comment: "A story") }
   end
 
   factory :author do

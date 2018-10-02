@@ -58,18 +58,19 @@ class Author extends Component {
             }
           })
         .then(res => {
-          const response = res.data[0];
+          const response = res.data;
           this.setState({
-            hasError: response.has_error,
+            hasError: !["ok"].includes(response.is_ok),
             isImported: response.author_imported,
-            message: response.messages[0]
+            message: response.messages
           });
         })
         .catch(err => {
-            console.log(err);
+          console.log(JSON.stringify(err));
+          const message = err.response ? err.response.status : JSON.stringify(err);
             this.setState({
               hasError: true,
-              message: err.response.statusText
+              message: message
             })
           }
         )
@@ -104,7 +105,7 @@ class Author extends Component {
         .catch(err => {
             this.setState({
               hasError: true,
-              message: err.response.statusText
+              message: err.statusText
             })
           }
         )
@@ -157,11 +158,11 @@ export default class Authors extends Component {
 
   onReceived = (message) => {
     if (message.response &&
-        this.props.authors.some(a => a.id.toString() === message.author_id)) {
-      console.log(`Message for author on this page: ${message.author_id}`);
+        this.props.authors.some(a => a.id.toString() === message.response.author_id)) {
+      console.log(`Message for author on this page: ${message.response.author_id}`);
       this.setState({
         [message.author_id]: {
-          imported: message.response[0].author_imported,
+          imported: message.response.author_imported,
           message: message.message
         }
       })

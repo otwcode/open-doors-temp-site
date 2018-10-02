@@ -11,9 +11,6 @@ Rails.application.routes.draw do
       post :dni
     end
 
-    # get "authors/api_index" => "authors#api_index", as: :api_index
-  
-
     resources :chapters
 
     # Authentication
@@ -26,7 +23,7 @@ Rails.application.routes.draw do
 
     # AJAX end points
     post "authors/import/:author_id"  => "authors#import"
-    post "authors/check/:author_id"  => "authors#check"
+    post "authors/check/:author_id"   => "authors#check"
      
     get  "items/author/:author_id"   => "items#get_by_author", as: :item_by_author
     
