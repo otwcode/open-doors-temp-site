@@ -4,15 +4,12 @@ module Item
   include OtwArchive::Request
 
   def reset_flags
-    print "RESET FLAGS"
     Story.update_all(do_not_import: false, imported: false, ao3_url: nil)
     StoryLink.update_all(do_not_import: false, imported: false, ao3_url: nil)
     Author.update_all(do_not_import: false, imported: false)
   end
 
-  def update_item(type, response)
-    puts "\nupdate_item: #{response.inspect}"
-
+  def self.update_item(type, response)
     item = nil
     if type == :story
       item = Story.find_by_id(response[:original_id])

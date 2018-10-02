@@ -36,18 +36,36 @@ module OtwArchive
         response = @conn.post path, request.to_json
 
         Rails.logger.info "\n----------raw response----------"
+        Rails.logger.info response.success?
+        Rails.logger.info response.reason_phrase
         Rails.logger.info response.status
         Rails.logger.info response.headers
         Rails.logger.info JSON.pretty_generate(response.body.as_json) unless response.body.nil?
-        response.body
+
+        success = response.status < 400 && response.status >= 200
+        reason_phrase = response.reason_phrase.empty? ? (success ? "Ok" : "Error") : response.reason_phrase
+        
+        body = response.body.is_a?(String) ? { messages: [response.body] } : response.body&.symbolize_keys
+        
+        {
+          success: success,
+          status: reason_phrase,
+          body: body
+        }
       rescue ConnectionFailed => e
         puts e.inspect
-        { status: :error,
-          messages: [e.message] }
+        {
+          success: false,
+          status: :error,
+          body: { messages: [e.message] } 
+        }
       rescue StandardError => e
         puts e.inspect
-        { status: :error,
-          messages: [e.message] }
+        {
+          success: false,
+          status: :error,
+          body: { messages: [e.message] }
+        }
       end
     end
   end # HttpClient
