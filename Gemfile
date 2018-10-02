@@ -26,8 +26,6 @@ gem "coffee-rails", "~> 4.2"
 # Use react as the JavaScript library
 gem 'webpacker'
 gem 'react-rails'
-# gem 'jquery-rails'
-# gem 'popper_js'
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
@@ -55,6 +53,7 @@ group :test do
   gem "rspec-rails"
   gem "selenium-webdriver"
   gem "simplecov"
+  gem "webmock"
 end
 
 group :production do

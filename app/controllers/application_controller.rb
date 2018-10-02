@@ -16,4 +16,12 @@ class ApplicationController < ActionController::Base
   def authorize
     redirect_to :login unless current_user
   end
+
+  # Return a standard HTTP + Json envelope for errors that drop through other handling
+  def render_standard_error_response(exception)
+    type = exception.class
+    message = "An error occurred: #{exception.message}"
+    render status: :internal_server_error, 
+           json: { status: :internal_server_error, messages: message, type: type }
+  end
 end

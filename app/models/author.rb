@@ -13,7 +13,7 @@ class Author < ApplicationRecord
   validates_presence_of :name
 
   def all_imported?
-    self.imported || self.do_not_import || items_all_imported?
+    imported || do_not_import || items_all_imported?
   end
 
   def coauthored_stories
@@ -26,9 +26,19 @@ class Author < ApplicationRecord
     [works, bookmarks]
   end
 
+  def self.all_letters
+    Author.all.map { |a|
+      {
+        name: a.name,
+        imported: a.imported,
+        s_to_import: a.stories.where(imported: false).count,
+        l_to_import: a.story_links.where(imported: false).count
+      }
+    }.group_by { |a| a[:name][0].upcase }
+  end
+
   def import(client, collection_name, host)
-    response = {}
-    if self.do_not_import
+    if do_not_import
       response = 
         {
           status: :unprocessable_entity,
@@ -40,45 +50,31 @@ class Author < ApplicationRecord
         }
     else
       works, bookmarks =
-        self.works_and_bookmarks(client.config.archivist, collection_name, host)
+        works_and_bookmarks(client.config.archivist, collection_name, host)
 
       # Perform Archive request
       ao3_response = client.import(works: works, bookmarks: bookmarks)
 
-      # Apply Archive response to items in the database
-      works_responses = ao3_response[0]["works"]
-      if works_responses.present?
-        works_responses.each do |work_response|
-          update_item(:story, work_response.symbolize_keys)
-        end
-        response["works"] = works_responses
-      end
-
-      bookmarks_responses = ao3_response[1] ? ao3_response[1]["bookmarks"] : ao3_response[0]["bookmarks"]
-      if bookmarks_responses.present?
-        bookmarks_responses.each do |bookmark_response|
-          update_item(:bookmark, bookmark_response.symbolize_keys)
-        end
-        response["bookmarks"] = bookmarks_responses
-      end
+      # Apply Archive response to items in the database 
+      response = items_responses(ao3_response)
     end
 
     # Is the author now fully imported?
-    response[:author_imported] = self.all_imported?
-    response[:author_id] = self.id
+    response[:author_imported] = all_imported?
+    response[:author_id] = id
     response
   end
 
   def check(client, collection_name, host)
     works, bookmarks =
-      self.works_and_bookmarks(client.config.archivist, collection_name, host)
+      works_and_bookmarks(client.config.archivist, collection_name, host)
 
     response = client.search(works: works, bookmarks: bookmarks)
 
     works_responses = response[0]["works"]
     if works_responses.present?
       works_responses.each do |work_response|
-        update_item(:story, work_response.symbolize_keys)
+        Item.update_item(:story, work_response.symbolize_keys)
       end
     end
 
@@ -89,17 +85,42 @@ class Author < ApplicationRecord
                           end
     if bookmarks_responses.present?
       bookmarks_responses.each do |bookmark_response|
-        update_item(:bookmark, bookmark_response.symbolize_keys)
+        Item.update_item(:bookmark, bookmark_response.symbolize_keys)
       end
     end
 
     # Is the author now fully imported?
-    response[0][:author_imported] = author.all_imported?
+    response[0][:author_imported] = all_imported?
     response
   end
 
   private
 
+
+  def items_responses(ao3_response)
+    response = {}
+    has_success = ao3_response[0][:success]
+    if has_success
+      bookmarks_responses = ao3_response[1] ? ao3_response[1][:bookmarks] : ao3_response[0][:bookmarks]
+   
+      response[:works] = update_items(ao3_response[0]["works"], :story)
+      response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
+    end
+    response[:messages] = ao3_response[0][:body][:messages]
+    response[:status] = ao3_response[0][:status] || "ok"
+    response[:success] = has_success
+    response
+  end
+
+  def update_items(items_responses, type)
+    if items_responses.present?
+      items_responses.each do |item_response|
+        Item.update_item(type, item_response.symbolize_keys)
+      end
+    end
+    items_responses
+  end
+    
   # True if items are blank, or items are present and none remain to be imported
   def items_all_imported?
     stories_all_imported = stories.blank? || (stories.present? && stories.none?(&:to_be_imported))
