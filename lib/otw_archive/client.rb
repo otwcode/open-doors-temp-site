@@ -26,11 +26,12 @@ module OtwArchive
 
         items_to_import.symbolize_keys.each do |type, items|
           next if items.blank?
-          
+
           responses << @http.post_request(type.to_s, request_body)
         end
         
         Rails.logger.info "\n>>> Processed import responses: \n#{JSON.pretty_generate(responses.as_json)}"
+
       rescue StandardError => e
         Rails.logger.error "\n>>> Error: #{e}"
         Rails.logger.error e.backtrace.join("\n")

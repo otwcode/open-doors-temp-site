@@ -34,6 +34,14 @@ $clearColor: #906b59;
   background-color: $importColor;
 }
 
+.message-board {
+  height: calc(100% - 35px);
+  min-width: 300px;
+}
+
+.alert {
+  margin-top: 10px;
+}
 //
 //* {
 //  font-size: 14px;
@@ -52,11 +60,11 @@ $clearColor: #906b59;
 //  font-size: 8px;
 //}
 //
-//.pagination {
-//  @extend .pagination;
-//  display: inline-flex;
-//  margin: 1rem auto 0;
-//}
+.pagination {
+  @extend .pagination;
+  display: inline-flex;
+  margin: 1rem auto;
+}
 //
 //.loading {
 //  width: 16px;
@@ -178,11 +186,11 @@ $clearColor: #906b59;
 //  width: 12px;
 //}
 //
-//footer {
-//  background-color: #0275d8;
-//  margin-top: 20px;
-//  padding: 10px;
-//}
+footer {
+  background-color: #0275d8;
+  margin-top: 20px;
+  padding: 10px;
+}
 //
 //.card {
 //  @extend .card;

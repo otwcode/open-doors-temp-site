@@ -8,20 +8,22 @@ class ApplicationController < ActionController::Base
     @api_config = Rails.application.secrets[:ao3api][@active_host.to_sym]
   end
 
+  helper_method :current_user
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
   end
-  helper_method :current_user
 
   def authorize
-    redirect_to :login unless current_user
+    redirect_to :login unless current_user || request.xhr?
   end
 
   # Return a standard HTTP + Json envelope for errors that drop through other handling
   def render_standard_error_response(exception)
+    Rails.logger.error(exception)
+    Rails.logger.error(exception.backtrace)
     type = exception.class
     message = "An error occurred: #{exception.message}"
-    render status: :internal_server_error, 
-           json: { status: :internal_server_error, messages: message, type: type }
+    render status: :internal_server_error,
+           json: {status: :internal_server_error, messages: message, type: type}
   end
 end

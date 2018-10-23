@@ -23,19 +23,33 @@ class AuthorsController < ApplicationController
   def import
     id = params[:author_id]
     author = Author.find(id)
-    message = { author_id: id, message: "Starting import for #{author.name}" }
-    ActionCable.server.broadcast 'imports_channel', message
+    response = {}
+    begin
+      broadcast = { author_id: id, isImporting: true, message: "#{current_user&.name}: Starting import for #{author.name}" }
+      ActionCable.server.broadcast 'imports_channel', broadcast
 
-    response = author.import(@client, @archive_config.collection_name, request.host_with_port)
+      response = author.import(@client, @archive_config.collection_name, request.host_with_port)
 
-    message = {
-      author_id: id,
-      is_ok: ["ok"].include?(response[:status]),
-      message: "Imported #{author.name}.",
-      response: response
-    }
-    ActionCable.server.broadcast 'imports_channel', message
+      message = "#{current_user&.name}: Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
 
+      broadcast = {
+        author_id: id,
+        is_ok: ["ok"].include?(response[:status]),
+        message: message,
+        isImporting: false,
+        response: response
+      }
+      ActionCable.server.broadcast 'imports_channel', broadcast
+    rescue StandardError => e
+      message = {
+        author_id: id,
+        is_ok: false,
+        message: "#{current_user&.name}: Error importing #{author.name} with error: #{e.message}.",
+        isImporting: false,
+        response: response
+      }
+      ActionCable.server.broadcast 'imports_channel', message
+    end
     render json: response, content_type: "application/json"
   end
 
@@ -44,7 +58,7 @@ class AuthorsController < ApplicationController
   def mark
     respond_to :json
     author = Author.find(params[:author_id])
-    imported_status = "set author to #{author.imported ? "" : "NOT "}imported."
+    imported_status = "set author to #{author.imported ? '' : 'NOT '}imported."
     author.update_attributes!(imported: !author.imported, audit_comment: imported_status)
     response = []
     response << {
@@ -79,7 +93,7 @@ class AuthorsController < ApplicationController
   def dni
     respond_to :json
     author = Author.find(params[:author_id])
-    imported_status = "set author to #{!author.do_not_import ? "NOT " : ""}allow importing."
+    imported_status = "set author to #{!author.do_not_import ? 'NOT ' : ''}allow importing."
     author.update_attributes!(do_not_import: !author.do_not_import, audit_comment: imported_status)
     response = []
     response << { status: :ok,
@@ -106,8 +120,8 @@ class AuthorsController < ApplicationController
     max = 30
     page = params[:page] || '1'
     letter = params[:letter] || 'A'
-    all_current_authors = Author.select(:id, :name, :imported, :do_not_import).where("substr(upper(name), 1, 1) = '#{letter}'")
+    all_current_authors = Author.by_letter_with_items(letter)
     @pages = (all_current_authors.size.to_f / max.to_f).ceil
-    all_current_authors.limit(30).offset((page.to_i - 1) * 30)
+    all_current_authors[(page.to_i - 1) * 30, 30]
   end
 end

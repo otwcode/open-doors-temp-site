@@ -1,8 +1,14 @@
+# frozen_string_literal: true
+
 module Item
   extend ActiveSupport::Concern
   include OtwArchive
   include OtwArchive::Request
 
+  OK_STATUSES = %w[ok created already_imported found].freeze
+  NOT_FOUND_STATUSES = ["not_found"].freeze
+  ERROR_STATUSES = %w[unprocessable_entity bad_request].freeze
+  
   def reset_flags
     Story.update_all(do_not_import: false, imported: false, ao3_url: nil)
     StoryLink.update_all(do_not_import: false, imported: false, ao3_url: nil)
@@ -17,7 +23,7 @@ module Item
       item = StoryLink.find_by_id(response[:original_id])
     end
 
-    if response[:status].in? ["ok", "created", "already_imported", "found"]
+    if response[:status].in? OK_STATUSES
       if item.ao3_url != response[:archive_url] || (item.ao3_url == response[:archive_url] && !item.imported)
         response[:messages] << "Archive URL updated to #{response[:archive_url]}."
         item.update_attributes!(
@@ -28,7 +34,7 @@ module Item
       else
         response[:messages] << "Item is already imported at #{response[:archive_url]}."
       end
-    elsif response[:status].in? ["not_found"]
+    elsif response[:status].in? NOT_FOUND_STATUSES
       if item.imported || item.ao3_url.present?
         response[:messages] << "Item has been deleted or target site has changed."
         item.update_attributes!(
@@ -39,7 +45,7 @@ module Item
       else
         response[:messages] << "Item is already marked as not imported."
       end
-    elsif response[:status].in? ["unprocessable_entity", "bad_request"]
+    elsif response[:status].in? ERROR_STATUSES
       audit = Audited::Audit.new(
         auditable_id: item.id,
         auditable_type: item.class.name,
