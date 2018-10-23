@@ -58,9 +58,6 @@ export default class ImportButtons extends Component {
                 onClick={(e) => this.handleDNI(e)}>
           <i className="fa fa-times"/> Mark DNI
         </Button>
-        {/*<Button variant="outline-dark">*/}
-        {/*<i className="fa fa-eye-slash"/> Clear msg*/}
-        {/*</Button>*/}
       </ButtonGroup>
     )
   }

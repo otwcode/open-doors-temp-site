@@ -5,25 +5,24 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem "rails", "~> 5.2"
+gem 'rails', '~> 5.2'
 # Use mysql as the database for Active Record
-gem "mysql2", ">= 0.3.18", "< 0.5"
+gem 'mysql2', '>= 0.3.18', '< 0.5'
 # Use Puma as the app server
-gem "puma", "~> 3.8"
+gem 'puma', '~> 3.8'
 
-gem "faraday"
-gem "faraday_middleware"
+gem 'faraday'
+gem 'faraday_middleware'
 
-gem "audited", "~> 4.4"
+gem 'audited', '~> 4.4'
 
 # Use SCSS for stylesheets
-gem "sass-rails", "~> 5.0"
-# Use Uglifier as compressor for JavaScript assets - needs a JavaScript runtime so let's skip it for a moment
-# gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
-gem "coffee-rails", "~> 4.2"
+gem 'sass-rails', '~> 5.0'
 
-# Use react as the JavaScript library
+# Use CoffeeScript for .coffee assets and views
+gem 'coffee-rails', '~> 4.2'
+
+# Use React for the front end
 gem 'webpacker'
 gem 'react-rails'
 
