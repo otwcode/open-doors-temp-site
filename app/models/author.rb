@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Author < ApplicationRecord
   audited comment_required: true
   has_associated_audits
@@ -9,7 +11,9 @@ class Author < ApplicationRecord
   scope :with_stories, (-> { joins(:stories).where("stories.id IS NOT NULL") })
   scope :with_story_links, (-> { joins(:story_links).where("story_links.id IS NOT NULL") })
   scope :with_stories_or_story_links, (-> { (with_stories + with_story_links).uniq })
-  
+  scope :by_letter, ->(letter) { where("substr(upper(name), 1, 1) = '#{letter}'") }
+  scope :by_letter_with_items, ->(letter) { by_letter(letter).merge(with_stories_or_story_links) }
+
   validates_presence_of :name
 
   def all_imported?
@@ -27,30 +31,27 @@ class Author < ApplicationRecord
   end
 
   def self.all_letters
-    Author.all.map { |a|
+    Author.with_stories_or_story_links.map do |a|
       {
         name: a.name,
         imported: a.imported,
         s_to_import: a.stories.where(imported: false).count,
         l_to_import: a.story_links.where(imported: false).count
       }
-    }.group_by { |a| a[:name][0].upcase }
+    end.group_by { |a| a[:name][0].upcase }
   end
 
   def import(client, collection_name, host)
     if do_not_import
-      response = 
+      response =
         {
           status: :unprocessable_entity,
-          messages: [
-            "This author is set to do NOT import."
-          ],
+          messages: ["This author is set to do NOT import."],
           works: [],
           bookmarks: []
         }
     else
-      works, bookmarks =
-        works_and_bookmarks(client.config.archivist, collection_name, host)
+      works, bookmarks = works_and_bookmarks(client.config.archivist, collection_name, host)
 
       # Perform Archive request
       ao3_response = client.import(works: works, bookmarks: bookmarks)
@@ -60,8 +61,13 @@ class Author < ApplicationRecord
     end
 
     # Is the author now fully imported?
+    imported = all_imported?
     response[:author_imported] = all_imported?
     response[:author_id] = id
+
+    # Update audit and return response
+    imported_status = "Import request processed. #{imported ? 'Author is now fully imported.' : 'Author still has some items to import.'}"
+    update_attributes!(imported: imported, audit_comment: imported_status)
     response
   end
 
@@ -96,13 +102,12 @@ class Author < ApplicationRecord
 
   private
 
-
   def items_responses(ao3_response)
     response = {}
     has_success = ao3_response[0][:success]
     if has_success
       bookmarks_responses = ao3_response[1] ? ao3_response[1][:bookmarks] : ao3_response[0][:bookmarks]
-   
+
       response[:works] = update_items(ao3_response[0]["works"], :story)
       response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
     end
@@ -120,7 +125,11 @@ class Author < ApplicationRecord
     end
     items_responses
   end
-    
+
+  def has_items?
+    stories.present? || story_links.present?
+  end
+
   # True if items are blank, or items are present and none remain to be imported
   def items_all_imported?
     stories_all_imported = stories.blank? || (stories.present? && stories.none?(&:to_be_imported))
