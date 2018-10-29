@@ -33,6 +33,7 @@ class Author < ApplicationRecord
   def self.all_letters
     Author.with_stories_or_story_links.map do |a|
       {
+        id: a.id,
         name: a.name,
         imported: a.imported,
         s_to_import: a.stories.where(imported: false).count,

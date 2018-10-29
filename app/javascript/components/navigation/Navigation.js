@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
-import User from "./User"
+import UserNavigation from "./UserNavigation"
 import Navbar from "react-bootstrap/lib/Navbar";
 import Nav from "react-bootstrap/lib/Nav";
 import NavDropdown from "react-bootstrap/lib/NavDropdown";
@@ -29,8 +29,8 @@ class Navigation extends Component {
               <NavDropdown.Item href={linksPath}>Bookmarked links</NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          <User current_user={data.current_user}
-                root_path={data.root_path} />
+          <UserNavigation current_user={data.current_user}
+                          root_path={data.root_path} />
         </Navbar.Collapse>
       </Navbar>
     )

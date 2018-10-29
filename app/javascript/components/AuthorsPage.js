@@ -15,6 +15,9 @@ import Container from "react-bootstrap/lib/Container";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 
+const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
+const store = createStoreWithMiddleware(reducers);
+
 export default class AuthorsPage extends Component {
   constructor(props) {
     super(props);
@@ -31,11 +34,33 @@ export default class AuthorsPage extends Component {
     window.location = `${this.props.root_path}/authors?letter=${this.state.letter}&page=${page}`;
   };
 
-  createStoreWithMiddleware = applyMiddleware(promise)(createStore);
+  handleAuthorSelect = (key) => {
+    this.setState({selectedAuthor: key});
+  };
+
+  componentDidUpdate() {
+    if (this.state.selectedAuthor) {
+      const element = document.getElementById(this.state.selectedAuthor);
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   render() {
+    const alphabeticalPagination = <AlphabeticalPagination root_path={this.props.root_path}
+                                                     letter={this.state.letter}
+                                                     authors={this.props.all_letters}
+                                                     onAuthorSelect={this.handleAuthorSelect}
+                                                     onLetterChange={this.handleLetterChange}/>
+    const numberPagination = (this.props.pages > 1) ?
+      <NumberPagination root_path={this.props.root_path}
+                        letter={this.state.letter}
+                        page={this.state.page}
+                        pages={this.props.pages}
+                        onPageChange={this.handlePageChange}/> : '';
+
+
     return (
-        <Provider store={this.createStoreWithMiddleware(reducers)}>
+        <Provider store={store}>
           <div>
             <Navigation data={this.props}/>
             <SiteInfo config={this.state.config}/>
@@ -43,29 +68,14 @@ export default class AuthorsPage extends Component {
               <Container>
                 <Row>
                   <Col>
-                    <AlphabeticalPagination root_path={this.props.root_path}
-                                            letter={this.state.letter}
-                                            authors={this.props.all_letters}
-                                            onLetterChange={this.handleLetterChange}/>
-                    {this.props.pages > 1 ?
-                        <NumberPagination root_path={this.props.root_path}
-                                          letter={this.state.letter}
-                                          page={this.state.page}
-                                          pages={this.props.pages}
-                                          onPageChange={this.handlePageChange}/> : ''}
+                    {alphabeticalPagination}
+                    {numberPagination}
 
                     <Authors root_path={this.props.root_path}
                              authors={this.state.authors}/>
 
-                    {this.props.pages > 1 ?
-                        <NumberPagination letter={this.state.letter}
-                                          page={this.state.page}
-                                          pages={this.props.pages}
-                                          onPageChange={this.handlePageChange}/> : ''}
-                    <AlphabeticalPagination root_path={this.props.root_path}
-                                            letter={this.state.letter}
-                                            authors={this.props.all_letters}
-                                            onLetterChange={this.handleLetterChange}/>
+                    {numberPagination}
+                    {alphabeticalPagination}
                   </Col>
                   <Col xs lg={2}>
                     <MessageBoard type="info"/>

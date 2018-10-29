@@ -20,7 +20,7 @@ class AuthorsController < ApplicationController
     @authors = current_authors
   end
 
-  def import
+  def import_author
     id = params[:author_id]
     author = Author.find(id)
     response = {}

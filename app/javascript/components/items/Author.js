@@ -47,35 +47,6 @@ class Author extends Component {
     this.props.fetchAuthorItems(this.props.root_path, this.props.author.id);
   };
 
-  old = () => {
-    axios
-      .post(`${this.props.root_path}/authors/import/${this.props.author.id}`,
-        {},
-        {
-          headers: {
-            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Content-Type': 'application/json',
-          }
-        })
-      .then(res => {
-        const response = res.data;
-        this.setState({
-          hasError: ![ "ok" ].includes(response.is_ok),
-          isImported: response.author_imported,
-          message: response.messages
-        });
-      })
-      .catch(err => {
-          console.log(JSON.stringify(err));
-          const message = err.response ? err.response.status : JSON.stringify(err);
-          this.setState({
-            hasError: true,
-            message: message
-          })
-        }
-      )
-  };
-
   handleImporting = (e) => {
     this.stopEvents(e);
     this.setState(
@@ -134,7 +105,6 @@ class Author extends Component {
   };
 
   handleBroadcast = (broadcast) => {
-    console.log(`Broadcast for ${broadcast.author_id} received by ${this.props.author.id}: ${broadcast.message}`);
     if (broadcast.author_id === this.props.author.id.toString()) {
       this.setState({ isImporting: broadcast.isImporting })
     }
@@ -154,9 +124,6 @@ class Author extends Component {
   };
 
   render() {
-
-    console.log('Author render');
-    console.log(this.state.data);
     // Extract data from the state
     const { open, isImporting, isChecking } = this.state;
     const items = this.state.data && this.state.data.items ? this.state.data.items : {};
@@ -176,13 +143,11 @@ class Author extends Component {
         <Card.Header onClick={this.handleAuthorClick}
                      aria-controls="example-collapse-text"
                      aria-expanded={open}
-                     className={headerClass}
-        >
+                     className={headerClass}>
           <ActionCable ref='importsChannel' channel={{ channel: 'ImportsChannel', room: '1' }}
                        onReceived={this.handleBroadcast}/>
           <ButtonToolbar className="justify-content-between">
             {this.props.author.name}
-
             <ImportButtons isChecking={isChecking} onChecking={this.handleChecking} onDNI={this.handleDNI}
                            isImporting={isImporting} isImported={isImported} onImporting={this.handleImporting}/>
           </ButtonToolbar>
