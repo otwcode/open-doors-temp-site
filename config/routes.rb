@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     get "logout" => "sessions#destroy", as: :logout
 
     # AJAX end points
-    post "authors/import/:author_id"  => "authors#import"
+    post "authors/import/:author_id"  => "authors#import_author"
     post "authors/check/:author_id"   => "authors#check"
      
     get  "items/author/:author_id"   => "items#get_by_author", as: :item_by_author

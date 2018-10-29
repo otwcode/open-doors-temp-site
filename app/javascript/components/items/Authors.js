@@ -12,7 +12,6 @@ export default class Authors extends Component {
   onReceived = (message) => {
     if (message.response &&
         this.props.authors.some(a => a.id.toString() === message.response.author_id)) {
-      console.log(`Message for author on this page: ${message.response.author_id}`);
       this.setState({
         [ message.author_id ]: {
           imported: message.response.author_imported,
