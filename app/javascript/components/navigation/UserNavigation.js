@@ -2,7 +2,7 @@ import React from "react"
 import NavDropdown from "react-bootstrap/lib/NavDropdown";
 import Nav from "react-bootstrap/lib/Nav";
 
-class User extends React.Component {
+class UserNavigation extends React.Component {
   render () {
     if (this.props.current_user) {
       const logoutPath = `${this.props.root_path}/logout`; 
@@ -38,4 +38,4 @@ class User extends React.Component {
   }
 }
 
-export default User
+export default UserNavigation

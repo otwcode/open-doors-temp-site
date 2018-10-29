@@ -9,32 +9,38 @@ class SiteInfo extends React.Component {
     this.props.fetchStats(`/${this.props.config.key}`);
   };
 
-  render() {
-    const config = this.props.config;
+  renderImportStats = () => {
     if (this.props.stats.stories) {
       const storiesLeft = this.props.stats.stories.table.not_imported;
       const storiesTotal = this.props.stats.stories.table.all;
       const linksLeft = this.props.stats.story_links.table.not_imported;
       const linksTotal = this.props.stats.story_links.table.all;
       return (
-          <Card>
-            <Card.Body>
-              <Card.Text>Importing to <a href="http://{config.url}/collections/{config.collection_name}"
-                                         target="_blank">
-                http://{config.url}/collections/{config.collection_name}</a> as <strong>{config.archivist}</strong>.
-                Sending emails is <strong>{config.send_email ? "ON" : "OFF"}</strong> and
-                posting as drafts is <strong>{config.post_preview ? "ON" : "OFF"}</strong>
-              </Card.Text>
-              <Card.Text>
-                <strong>{storiesLeft}</strong>/{storiesTotal} stories and <strong>{linksLeft}</strong>/{linksTotal} links
-                still to be imported.
-              </Card.Text>
-            </Card.Body>
-          </Card>
+        <Card.Text>
+          <strong>{storiesLeft}</strong>/{storiesTotal} stories and <strong>{linksLeft}</strong>/{linksTotal} links
+          still to be imported.
+        </Card.Text>
       )
     } else {
-      return <div/>
+      return <Card.Text>Loading latest stats...</Card.Text>
     }
+  };
+
+  render() {
+    const config = this.props.config;
+    return (
+      <Card>
+        <Card.Body>
+          <Card.Text>Importing to <a href="http://{config.url}/collections/{config.collection_name}"
+                                     target="_blank">
+            http://{config.url}/collections/{config.collection_name}</a> as <strong>{config.archivist}</strong>.
+            Sending emails is <strong>{config.send_email ? "ON" : "OFF"}</strong> and
+            posting as drafts is <strong>{config.post_preview ? "ON" : "OFF"}</strong>
+          </Card.Text>
+          {this.renderImportStats()}
+        </Card.Body>
+      </Card>
+    )
   }
 }
 
