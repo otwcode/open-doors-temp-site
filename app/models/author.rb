@@ -4,13 +4,14 @@ class Author < ApplicationRecord
   audited comment_required: true
   has_associated_audits
 
-  has_many :stories, (-> { order Arel.sql('lower(title)') })
+  has_many :stories, (-> { order(Arel.sql('lower(title)')) })
   has_many :story_links, (-> { order Arel.sql('lower(title)') })
   default_scope { order Arel.sql('lower(name)') }
   # All items
   scope :with_stories, (-> { joins(:stories).where("stories.id IS NOT NULL") })
   scope :with_story_links, (-> { joins(:story_links).where("story_links.id IS NOT NULL") })
   scope :with_stories_or_story_links, (-> { (with_stories + with_story_links).uniq })
+  # Front-end scopes
   scope :by_letter, ->(letter) { where("substr(upper(name), 1, 1) = '#{letter}'") }
   scope :by_letter_with_items, ->(letter) { by_letter(letter).merge(with_stories_or_story_links) }
 
@@ -22,6 +23,18 @@ class Author < ApplicationRecord
 
   def coauthored_stories
     Story.where(coauthor_id: id)
+  end
+
+  def stories_with_chapters
+    Story.where(author_id: id).joins(:chapters).group(:id)
+  end
+
+  def all_items_as_json
+    {
+      stories: stories_with_chapters.as_json(include: { chapters: { only: [:id, :title] } }),
+      story_links: story_links,
+      coauthored: coauthored_stories
+    }
   end
 
   def works_and_bookmarks(archivist, collection_name, host)
@@ -106,12 +119,11 @@ class Author < ApplicationRecord
   def items_responses(ao3_response)
     response = {}
     has_success = ao3_response[0][:success]
-    if has_success
-      bookmarks_responses = ao3_response[1] ? ao3_response[1][:bookmarks] : ao3_response[0][:bookmarks]
 
-      response[:works] = update_items(ao3_response[0]["works"], :story)
-      response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
-    end
+    bookmarks_responses = ao3_response[1] ? ao3_response[1][:body][:bookmarks] : ao3_response[0][:body][:bookmarks]
+    response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
+
+    response[:works] = ao3_response[0][:body][:works] ? update_items(ao3_response[0][:body][:works], :story) : []
     response[:messages] = ao3_response[0][:body][:messages]
     response[:status] = ao3_response[0][:status] || "ok"
     response[:success] = has_success
@@ -119,12 +131,13 @@ class Author < ApplicationRecord
   end
 
   def update_items(items_responses, type)
+    responses = {}
     if items_responses.present?
       items_responses.each do |item_response|
-        Item.update_item(type, item_response.symbolize_keys)
+        responses.merge!(Item.update_item(type, item_response.symbolize_keys))
       end
     end
-    items_responses
+    responses
   end
 
   def has_items?

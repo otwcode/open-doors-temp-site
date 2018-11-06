@@ -3,7 +3,7 @@ import OverlayTrigger from "react-bootstrap/es/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Pagination from "react-bootstrap/lib/Pagination";
 import Dropdown from "react-bootstrap/lib/Dropdown";
-import DropdownButton from "react-bootstrap/lib/DropdownButton";
+import Config from "../../config";
 
 export default class AlphabeticalPagination extends React.Component {
   constructor(props) {
@@ -22,8 +22,7 @@ export default class AlphabeticalPagination extends React.Component {
   };
 
   render() {
-    const letters = Object.keys(this.props.authors);
-    const linkUrl = l => `${this.props.root_path}/authors?letter=${l}`;
+    const linkUrl = l => `/${Config.sitekey}/authors?letter=${l}`;
     const listItems = Object.entries(this.props.authors).map((kv) => {
         const [ l, as ] = kv;
         const numAuthors = as.length;
@@ -39,7 +38,7 @@ export default class AlphabeticalPagination extends React.Component {
                 <Tooltip id="tooltip">{`${l}: ${authorsWithImports}/${numAuthors} to import`}</Tooltip>
               }
             >
-              <a href={linkUrl(l)}
+              <a href="{linkUrl(l)}"
                  onClick={e => this.handleLetterChange(e, l)}
                  className={isDone ? "page-link text-dark bg-light" : "page-link"}>
                 {l}{isCurrent ? <span className="sr-only"> (current)</span> : ""}
@@ -49,8 +48,10 @@ export default class AlphabeticalPagination extends React.Component {
       }
     );
 
-    const prev = letters.findIndex(x => x === this.props.letter) - 1;
-    const next = letters.findIndex(x => x === this.props.letter) + 1;
+    const letters = Object.keys(this.props.authors);
+    const letterIndex = letters.findIndex(x => x === this.props.letter);
+    const prev = letterIndex - 1;
+    const next = letterIndex + 1;
     const prevLink = prev < 0 ? '' : linkUrl(letters[ prev ]);
     const nextLink = next > letters.length - 1 ? '' : linkUrl(letters[ next ]);
 
@@ -60,22 +61,23 @@ export default class AlphabeticalPagination extends React.Component {
           <Pagination.Prev disabled={prev < 0} href={prevLink}/>
           {listItems}
           <Pagination.Next disabled={next > letters.length - 1} href={nextLink}/>
-          <DropdownButton variant="primary-outline" id="dropdown-basic-button"
-                          title={`Scroll to...'`}>
-            {Object.entries(this.props.authors).map((kv) => {
-              const [ l, authors ] = kv;
-              if (l === this.props.letter) {
-                return authors.map(a => {
-                  const key = `author-${a.id}`;
-                  return <Dropdown.Item key={`${key}-link`}
-                                        onClick={e => this.handleAuthorSelect(e, key)}>{a.name}</Dropdown.Item>
-                })
-              }
-            })}
-          </DropdownButton>
+          <Dropdown className="page-item">
+            <Dropdown.Toggle className="page-link" id="dropdown-basic-button">Scroll to...</Dropdown.Toggle>
+            <Dropdown.Menu>
+              {Object.entries(this.props.authors).map((kv) => {
+                const [ l, authors ] = kv;
+                if (l === this.props.letter) {
+                  return authors.map(a => {
+                    const key = `author-${a.id}`;
+                    return <Dropdown.Item key={`${key}-link`}
+                                          onClick={e => this.handleAuthorSelect(e, key)}>{a.name}</Dropdown.Item>
+                  })
+                }
+              })}
+            </Dropdown.Menu>
+          </Dropdown>
         </Pagination>
       </div>
     )
   }
 }
-

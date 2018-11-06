@@ -65,6 +65,9 @@ $clearColor: #906b59;
   display: inline-flex;
   margin: 1rem auto;
 }
+div.page-item {
+  @extend .page-item
+}
 //
 //.loading {
 //  width: 16px;

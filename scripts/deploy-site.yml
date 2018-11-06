@@ -78,6 +78,11 @@
     template:
      src: "{{ playbook_dir }}/ansible/webpacker.yml.j2"
      dest: "{{ deploy_path }}/config/webpacker.yml"
+
+  - name: Create Front-end app config file
+    template:
+     src: "{{ playbook_dir }}/ansible/config.js.j2"
+     dest: "{{ deploy_path }}/app/javascript/config.js"
      
   - name: Create log, pid and socket folders for Unicorn
     file:

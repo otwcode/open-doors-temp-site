@@ -16,7 +16,7 @@ module OtwArchive
         conn.headers["Content-Type"] = "application/json"
 
         conn.options[:open_timeout] = 2000
-        conn.options[:timeout] = 1_200_000 # 20 minutes
+        conn.options[:timeout] = 3_000 # 5 minutes
         conn.request :json
 
         conn.response :json, content_type: /\bjson$/
