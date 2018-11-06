@@ -12,13 +12,10 @@ class ItemsController < ApplicationController
     @client = OtwArchive::Client.new(import_config)
     super
   end
-  
+
   def get_by_author
     author = Author.find(params[:author_id])
-    render json: {
-      stories: author.stories,
-      story_links: author.story_links
-    }
+    render json: author.all_items_as_json
   end
 
   def import
@@ -47,13 +44,13 @@ class ItemsController < ApplicationController
         end
 
       response = @client.import(item_request)
-      
+
       if response[0]["status"].in? ["ok", "created"]
         item_response = response[0][ao3_type]
         final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
-      else 
+      else
         Rails.logger.error(">>> Error returned from remote API:\n #{item_response}")
-        
+
         final_response[0][ao3_type] = response
         final_response[0][ao3_type][0].merge!(original_id: item.id)
       end

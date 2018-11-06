@@ -1,17 +1,18 @@
 import axios from "axios";
+import Config from "../config";
 
 export const GET_SITE_STATS = "get_site_stats";
 export const GET_AUTHOR_ITEMS = "get_author_items";
 export const IMPORT_AUTHOR = "import_author";
 
 
-function getReq(rootPath, endpoint) {
-  return axios.get(`${rootPath}/${endpoint}`,
+function getReq(endpoint) {
+  return axios.get(`/${Config.sitekey}/${endpoint}`,
     { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
 }
 
-export function fetchStats(rootPath) {
-  const req = getReq(rootPath, 'stats');
+export function fetchStats() {
+  const req = getReq('stats');
 
   return {
     type: GET_SITE_STATS,
@@ -31,8 +32,6 @@ const authorReq = (authorID, type, req) => {
     }
   };
   return req.then(res => {
-    console.log('res');
-    console.log(res);
     return {
       [ authorID ]: {
         [ type ]: res.data
@@ -40,7 +39,6 @@ const authorReq = (authorID, type, req) => {
     }
   })
     .catch(err => {
-      console.log(err.response.data);
       const message = messageFromData(err.response.data);
       return {
         [ authorID ]: {
@@ -53,9 +51,8 @@ const authorReq = (authorID, type, req) => {
     })
 };
 
-
-export function fetchAuthorItems(rootPath, authorID) {
-  const req = authorReq(authorID, 'items', getReq(rootPath, `/items/author/${authorID}`));
+export function fetchAuthorItems(authorID) {
+  const req = authorReq(authorID, 'items', getReq(`/items/author/${authorID}`));
   console.log(req);
   return {
     type: GET_AUTHOR_ITEMS,
@@ -64,10 +61,10 @@ export function fetchAuthorItems(rootPath, authorID) {
 }
 
 // POSTS
-export function importAuthor(rootPath, authorID) {
+export function importAuthor(authorID) {
   const req = authorReq(authorID, 'import',
     axios
-      .post(`${rootPath}/authors/import/${authorID}`,
+      .post(`/${Config.sitekey}/authors/import/${authorID}`,
         {},
         {
           headers: {

@@ -17,7 +17,14 @@ class AuthorsController < ApplicationController
 
   def index
     @all_letters ||= Author.all_letters
-    @authors = current_authors
+  end
+
+  def author_letters
+    render json: Author.all_letters, content_type: "application/json"
+  end
+
+  def authors
+    render json: current_authors, content_type: "application/json"
   end
 
   def import_author
@@ -30,7 +37,7 @@ class AuthorsController < ApplicationController
 
       response = author.import(@client, @archive_config.collection_name, request.host_with_port)
 
-      message = "#{current_user&.name}: Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
+      message = "#{current_user&.name || 'Anonymous'}: Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
 
       broadcast = {
         author_id: id,

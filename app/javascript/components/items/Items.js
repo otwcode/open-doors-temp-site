@@ -5,26 +5,48 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Alert from "react-bootstrap/lib/Alert";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
+import Config from "../../config";
 
 class Item extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: this.props.open,
+      hideAlert: false
     };
   }
 
-  handleAuthorClick = () => {
+  handleItemClick = () => {
     this.setState({ open: !this.state.open })
+  };
+
+  handleAlertDismiss = (e) => {
+    this.stopEvents(e);
+    this.setState({ hideAlert: true });
+  };
+
+  msgAlert = (key, messages, success) => {
+    const hasError = !success;
+    const msg = messages ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : "";
+    return msg ?
+      <Alert key={`${key}-msg`} variant={hasError ? "danger" : "success"} className="alert-dismissible" hidden={this.state.hideAlert}>
+        {msg}
+        <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={this.handleAlertDismiss}>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </Alert> :
+      <span/>;
   };
 
   render() {
     const item = this.props.item;
     const isStory = this.props.isStory;
+    const key = isStory ? `story-${item.id}` : `link-${item.id}`;
     const headerClass = this.props.isImporting ? "importing" : "";
+    const { messages, success, archive_url } = this.props.importResult ? this.props.importResult : {};
     return (
         <Card id="blurb">
-          <Card.Header onClick={this.handleAuthorClick}
+          <Card.Header onClick={this.handleItemClick}
                        aria-controls="blurb"
                        aria-expanded={open}
                        className={headerClass}>
@@ -37,6 +59,7 @@ class Item extends Component {
                 <span>{this.props.item.title}</span>
               </OverlayTrigger>
             </ButtonToolbar>
+            {this.msgAlert(key, messages, success)}
           </Card.Header>
           <Collapse in={this.state.open}>
             <Card.Body>
@@ -55,14 +78,13 @@ class Item extends Component {
 
               <b>Summary: </b><span dangerouslySetInnerHTML={{ __html: item.summary }}/><br/>
 
-              {/*{isStory &&*/}
-              {/*<ol>*/}
-              {/*{item.chapters.map((chapter) =>*/}
-              {/*<li>*/}
-              {/*<a href={chapter.path}>chapter.title</a>*/}
-              {/*</li>)*/}
-              {/*}*/}
-              {/*</ol>}*/}
+              {(isStory) ?
+                <ol>
+                  {item.chapters.map((chapter) =>
+                    <li key={`chapter-${chapter.id}`}><a href={`${Config.sitekey}/chapters/${chapter.id}`}>{chapter.title}</a></li>)
+                  }
+                </ol> : ''
+              }
             </Card.Body>
           </Collapse>
         </Card>
@@ -89,14 +111,20 @@ export default class Items extends Component {
               stories && stories.length ?
                 <div>
                   <Card.Title>Stories</Card.Title>
-                  {stories.map((s) => <Item key={`story-${s.id}`} item={s} isStory={true}/>)}
+                  {stories.map((s) => {
+                    const importResult = this.props.works ? this.props.works[s.id] : undefined;
+                    return <Item key={`story-${s.id}`} item={s} isStory={true} importResult={importResult}/>
+                  })}
                 </div> : ''
             }
             {
               links && links.length ?
                 <div>
                   <Card.Title>Story Links</Card.Title>
-                  {links.map((s) => <Item key={`link-${s.id}`} item={s} isStory={false}/>)}
+                  {links.map((s) => {
+                    const importResult = this.props.bookmarks ? this.props.bookmarks[s.id] : undefined;
+                    return <Item key={`link-${s.id}`} item={s} isStory={false} importResult={importResult}/>
+                  })}
                 </div> : ''
             }
           </div>

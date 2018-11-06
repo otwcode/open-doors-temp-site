@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Pagination from "react-bootstrap/lib/Pagination";
+import Config from "../../config";
 
 export default class NumberPagination extends Component {
 
@@ -9,7 +10,7 @@ export default class NumberPagination extends Component {
   };
 
   render() {
-    const linkUrl = p => `${this.props.root_path}/authors?letter=${this.props.letter}&page=${p}`;
+    const linkUrl = p => `${Config.sitekey}/authors?letter=${this.props.letter}&page=${p}`;
     const listItems = [...Array(this.props.pages).keys()].map(p => p + 1).map((p) => {
         const isCurrent = (p === this.props.page);
         const props = {

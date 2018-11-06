@@ -26,3 +26,10 @@ Style/AndOr:
 # Set desired method length
 Style/MethodLength:
   Max: 30
+
+# Leave arrays alone
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+Style/WordArray:
+  EnforcedStyle: brackets
