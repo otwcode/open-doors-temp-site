@@ -6,11 +6,7 @@ Rails.application.routes.draw do
   scope "/#{APP_CONFIG[:sitekey]}" do
     root to: 'authors#index'
 
-    resources :authors do
-      post :mark
-      post :dni
-    end
-
+    resources :authors
     resources :chapters
 
     # Authentication
@@ -22,11 +18,14 @@ Rails.application.routes.draw do
     get "logout" => "sessions#destroy", as: :logout
 
     # AJAX end points
+    get  "authors/letters"                => "authors#author_letters"
+    get  "authors/letters/:letter"        => "authors#authors"
+
     post "authors/import/:author_id"  => "authors#import_author"
     post "authors/check/:author_id"   => "authors#check"
-     
+
     get  "items/author/:author_id"   => "items#get_by_author", as: :item_by_author
-    
+
     post "items/import/:type/:id"    => "items#import",        as: :item_import
     post "items/mark/:type/:id"      => "items#mark",          as: :item_mark
     post "items/check/:type/:id"     => "items#check",         as: :item_check

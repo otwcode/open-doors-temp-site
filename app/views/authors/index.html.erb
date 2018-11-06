@@ -1,13 +1,9 @@
-<%= react_component("AuthorsPage", {
+<%= react_component("App", {
   all_letters: @all_letters,
-  controller: params[:controller],
-  root_path: root_path,
   letter: params[:letter] || 'A',
   page: params[:page] || '1',
-  pages: @pages,
   logo_path: asset_path("Opendoors.png"),
   config: @api_config.merge(@archive_config),
   current_user: current_user&.name || '',
-  config_path: archive_config_path(@archive_config),
-  authors: @authors
+  config_path: archive_config_path(@archive_config)
 }) %>

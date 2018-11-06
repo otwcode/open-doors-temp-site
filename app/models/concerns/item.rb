@@ -24,6 +24,7 @@ module Item
     end
 
     if response[:status].in? OK_STATUSES
+      response[:success] = true
       if item.ao3_url != response[:archive_url] || (item.ao3_url == response[:archive_url] && !item.imported)
         response[:messages] << "Archive URL updated to #{response[:archive_url]}."
         item.update_attributes!(
@@ -36,6 +37,7 @@ module Item
       end
     elsif response[:status].in? NOT_FOUND_STATUSES
       if item.imported || item.ao3_url.present?
+        response[:success] = false
         response[:messages] << "Item has been deleted or target site has changed."
         item.update_attributes!(
           imported: false,
@@ -43,9 +45,11 @@ module Item
           audit_comment: response[:messages].join(" ")
         )
       else
+        response[:success] = true
         response[:messages] << "Item is already marked as not imported."
       end
     elsif response[:status].in? ERROR_STATUSES
+      response[:success] = false
       audit = Audited::Audit.new(
         auditable_id: item.id,
         auditable_type: item.class.name,
@@ -56,6 +60,8 @@ module Item
       audit.save!
     end
     response[:author_id] = item.author.id
-    response
+    result = {}
+    result[item.id] = response
+    result
   end
 end

@@ -10,6 +10,7 @@ import ImportButtons from "./ImportButtons";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import Alert from "react-bootstrap/lib/Alert";
 import { ActionCable } from "react-actioncable-provider";
+import Config from "../../config";
 
 class Author extends Component {
   constructor(props) {
@@ -44,7 +45,9 @@ class Author extends Component {
   handleAuthorClick = () => {
     this.setState({ open: !this.state.open });
     // Get stories and bookmarks asynchronously
-    this.props.fetchAuthorItems(this.props.root_path, this.props.author.id);
+    if (!this.state.data.items || Object.keys(this.state.data.items).length === 0) {
+      this.props.fetchAuthorItems(this.props.author.id);
+    }
   };
 
   handleImporting = (e) => {
@@ -52,7 +55,7 @@ class Author extends Component {
     this.setState(
       { isImporting: true },
       () => {
-        this.props.importAuthor(this.props.root_path, this.props.author.id)
+        this.props.importAuthor(this.props.author.id)
           .then(() => this.setState({
             isImporting: false,
             hasError: (this.props.data.error === undefined)
@@ -71,7 +74,7 @@ class Author extends Component {
     this.stopEvents(e);
     this.setState({ isChecking: true }, () => {
       axios
-        .post(`${this.props.root_path}/authors/check/${this.props.author.id}`,
+        .post(`${Config.sitekey}/authors/check/${this.props.author.id}`,
           {},
           {
             headers: {
@@ -114,9 +117,11 @@ class Author extends Component {
     const { hasError } = this.state;
     const msg = messages ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : this.state.message;
     return msg ?
-      <Alert key={`${key}-msg`} variant={hasError ? "danger" : "success"} className="alert-dismissible" hidden={this.state.hideAlert}>
+      <Alert key={`${key}-msg`} variant={hasError ? "danger" : "success"} className="alert-dismissible"
+             hidden={this.state.hideAlert}>
         {msg}
-        <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={this.handleAlertDismiss}>
+        <button type="button" className="close" data-dismiss="alert" aria-label="Close"
+                onClick={this.handleAlertDismiss}>
           <span aria-hidden="true">&times;</span>
         </button>
       </Alert> :
@@ -129,8 +134,7 @@ class Author extends Component {
     const items = this.state.data && this.state.data.items ? this.state.data.items : {};
     const importData = this.state.data && this.state.data.import ? this.state.data.import : {};
 
-    // {messages: Array(1), status: "error", success: false, author_imported: false, author_id: 48}
-    const { messages, author_imported: isImported } = importData;
+    const { messages, author_imported: isImported, works, bookmarks } = importData;
 
     // Some utility variables for simplicity
     const key = `author-${this.props.author.id}`;
@@ -138,7 +142,7 @@ class Author extends Component {
     const cardClass = isImported ? "imported" : "";
 
     return (
-      <Card key={key} className={cardClass}>
+      <Card key={key} id={key} className={cardClass}>
         <a name={this.props.author.name.replace(' ', '_').toLowerCase()}/>
         <Card.Header onClick={this.handleAuthorClick}
                      aria-controls="example-collapse-text"
@@ -156,7 +160,7 @@ class Author extends Component {
 
         <Collapse in={this.state.open}>
           <Card.Body id="example-collapse-text">
-            <Items key={`${key}-items`} data={items}/>
+            <Items key={`${key}-items`} data={items} works={works} bookmarks={bookmarks}/>
           </Card.Body>
         </Collapse>
       </Card>
