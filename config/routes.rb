@@ -36,7 +36,8 @@ Rails.application.routes.draw do
     resource :archive_configs, path: :config
     resources :archive_configs, path: :config, only: [:edit, :show, :update]
 
-    get "stats" => "stats#show"
+    get "stats/api", to: "stats#stats"
+    get "stats", to: "authors#index"
 
     mount ActionCable.server => '/cable'
   end

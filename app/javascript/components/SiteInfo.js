@@ -4,13 +4,10 @@ import Card from "react-bootstrap/lib/Card";
 import { connect } from "react-redux";
 import { fetchStats } from "../actions";
 
-let stats = {};
 
 class SiteInfo extends React.Component {
   componentDidMount = () => {
-    if (Object.keys(stats).length === 0) {
-      this.props.fetchStats();
-    }
+    this.props.fetchStats();
   };
 
   renderImportStats = () => {

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
 
-import AlphabeticalPagination from "./pagination/AlphabeticalPagination";
-import Authors from "./items/Authors";
-import NumberPagination from "./pagination/NumberPagination";
+import AlphabeticalPagination from "../pagination/AlphabeticalPagination";
+import Authors from "../items/Authors";
+import NumberPagination from "../pagination/NumberPagination";
 import Col from "react-bootstrap/lib/Col";
-import Config from "../config";
+import Config from "../../config";
 
 export default class AuthorsPage extends Component {
   constructor(props) {

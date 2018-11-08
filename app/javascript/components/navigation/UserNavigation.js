@@ -1,14 +1,14 @@
 import React from "react"
 import NavDropdown from "react-bootstrap/lib/NavDropdown";
 import Nav from "react-bootstrap/lib/Nav";
-import Config from "../../config";
+import { sitekey } from "../../config";
 
 class UserNavigation extends React.Component {
-  configPath = `/${Config.sitekey}/config`;
-  logoutPath = `/${Config.sitekey}/logout`;
-  statsPath = `/${Config.sitekey}/stats`;
-  loginPath = `/${Config.sitekey}/login`;
-  signupPath = `/${Config.sitekey}/signup`;
+  configPath = `/${sitekey}/config`;
+  logoutPath = `/${sitekey}/logout`;
+  statsPath = `/${sitekey}/stats`;
+  loginPath = `/${sitekey}/login`;
+  signupPath = `/${sitekey}/signup`;
   render () {
     if (this.props.current_user) {
       return (
