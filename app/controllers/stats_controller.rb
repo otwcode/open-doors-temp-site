@@ -1,13 +1,12 @@
 class StatsController < ApplicationController
   before_action :authorize
 
-  def show
+  def index
+  end
+
+  def stats
     stats = gather_stats
-    if request.xhr?
-      render json: stats.to_h.to_json, content_type: "application/json"
-    else
-      @stats = stats
-    end
+    render json: stats.to_h.to_json, content_type: "application/json"
   end
 
   def author_stats(authors)

@@ -4,13 +4,13 @@ import UserNavigation from "./UserNavigation"
 import Navbar from "react-bootstrap/lib/Navbar";
 import Nav from "react-bootstrap/lib/Nav";
 import NavDropdown from "react-bootstrap/lib/NavDropdown";
-import Config from "../../config";
+import { sitekey } from "../../config";
 
 class Navigation extends Component {
   data = this.props.data;
-  authorsPath = `/${Config.sitekey}/authors`;
-  storiesPath = `/${Config.sitekey}/stories`;
-  linksPath = `/${Config.sitekey}/links`;
+  authorsPath = `/${sitekey}/authors`;
+  storiesPath = `/${sitekey}/stories`;
+  linksPath = `/${sitekey}/links`;
   render() {
     return (
       <Navbar bg="primary" variant="dark" expand="lg">

@@ -1,5 +1,5 @@
 import axios from "axios";
-import Config from "../config";
+import { sitekey } from "../config";
 
 export const GET_SITE_STATS = "get_site_stats";
 export const GET_AUTHOR_ITEMS = "get_author_items";
@@ -7,12 +7,12 @@ export const IMPORT_AUTHOR = "import_author";
 
 
 function getReq(endpoint) {
-  return axios.get(`/${Config.sitekey}/${endpoint}`,
+  return axios.get(`/${sitekey}/${endpoint}`,
     { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
 }
 
 export function fetchStats() {
-  const req = getReq('stats');
+  const req = getReq('stats/api');
 
   return {
     type: GET_SITE_STATS,
