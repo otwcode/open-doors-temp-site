@@ -64,7 +64,7 @@ export function fetchAuthorItems(authorID) {
 export function importAuthor(authorID) {
   const req = authorReq(authorID, 'import',
     axios
-      .post(`/${Config.sitekey}/authors/import/${authorID}`,
+      .post(`/${sitekey}/authors/import/${authorID}`,
         {},
         {
           headers: {

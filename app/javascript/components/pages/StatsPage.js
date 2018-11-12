@@ -14,7 +14,6 @@ class StatsPage extends Component {
   constructor(props) {
     super(props);
     this.props.fetchStats();
-    console.log(props);
   }
 
   componentDidMount = () => {

@@ -16,7 +16,8 @@ import Col from "react-bootstrap/lib/Col";
 import MessageBoard from "./MessageBoard";
 import StatsPage from "./pages/StatsPage";
 
-const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const createStoreWithMiddleware = composeEnhancers(applyMiddleware(promise))(createStore);
 const store = createStoreWithMiddleware(reducers);
 
 export default class App extends Component {
