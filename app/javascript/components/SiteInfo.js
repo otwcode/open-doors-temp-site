@@ -32,7 +32,7 @@ class SiteInfo extends React.Component {
     return (
       <Card>
         <Card.Body>
-          <Card.Text>Importing to <a href="http://{config.url}/collections/{config.collection_name}"
+          <Card.Text>Importing to <a href={`http://${config.url}/collections/${config.collection_name}`}
                                      target="_blank">
             http://{config.url}/collections/{config.collection_name}</a> as <strong>{config.archivist}</strong>.
             Sending emails is <strong>{config.send_email ? "ON" : "OFF"}</strong> and

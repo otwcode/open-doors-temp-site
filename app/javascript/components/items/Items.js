@@ -5,7 +5,7 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Alert from "react-bootstrap/lib/Alert";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
-import Config from "../../config";
+import { sitekey } from "../../config";
 
 class Item extends Component {
   constructor(props) {
@@ -81,7 +81,7 @@ class Item extends Component {
               {(isStory) ?
                 <ol>
                   {item.chapters.map((chapter) =>
-                    <li key={`chapter-${chapter.id}`}><a href={`${Config.sitekey}/chapters/${chapter.id}`}>{chapter.title}</a></li>)
+                    <li key={`chapter-${chapter.id}`}><a href={`/${sitekey}/chapters/${chapter.id}`}>{chapter.title}</a></li>)
                   }
                 </ol> : ''
               }
