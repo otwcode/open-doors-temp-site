@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Pagination from "react-bootstrap/lib/Pagination";
-import Config from "../../config";
+import { authors_path } from "../../config";
 
 export default class NumberPagination extends Component {
 
@@ -10,21 +10,20 @@ export default class NumberPagination extends Component {
   };
 
   render() {
-    const linkUrl = p => `${Config.sitekey}/authors?letter=${this.props.letter}&page=${p}`;
     const listItems = [...Array(this.props.pages).keys()].map(p => p + 1).map((p) => {
         const isCurrent = (p === this.props.page);
         const props = {
           active: isCurrent,
           onClick: e => this.handlePageChange(e, p)
         };
-        return <Pagination.Item key={p} href={linkUrl(p)} {...props}>{p}</Pagination.Item>
+        return <Pagination.Item key={p} href={authors_path(this.props.letter, p)} {...props}>{p}</Pagination.Item>
       }
     );
     const props = p => {
       const isValid = (p > 0 && p <= this.props.pages);
       return { 
         disabled: !isValid, 
-        href: linkUrl(p),
+        href: authors_path(this.props.letter, p),
         onClick: e => this.handlePageChange(e, p)
       }
     };

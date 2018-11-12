@@ -4,7 +4,7 @@ import AlphabeticalPagination from "../pagination/AlphabeticalPagination";
 import Authors from "../items/Authors";
 import NumberPagination from "../pagination/NumberPagination";
 import Col from "react-bootstrap/lib/Col";
-import Config from "../../config";
+import { authors_path } from "../../config";
 
 export default class AuthorsPage extends Component {
   constructor(props) {
@@ -13,14 +13,12 @@ export default class AuthorsPage extends Component {
   }
 
   handleLetterChange = (letter) => {
-    const url = `/${Config.sitekey}/authors?letter=${letter}`;
-    history.pushState(null, `Authors for ${letter}`, url);
+    history.pushState(null, `Authors for ${letter}`, authors_path(letter));
     this.setState({ letter: letter });
   };
 
   handlePageChange = (page) => {
-    const url = `/${Config.sitekey}/authors?letter=${this.state.letter}&page=${page}`;
-    history.pushState(null, `Authors for ${letter}`, url);
+    history.pushState(null, `Authors for ${letter}`, authors_path(this.state.letter, page));
     this.setState({ page: page });
   };
 

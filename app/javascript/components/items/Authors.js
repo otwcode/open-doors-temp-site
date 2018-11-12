@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { ActionCable } from "react-actioncable-provider";
 import Author from "./Author";
 import axios from "axios";
-import Config from "../../config";
+import { sitekey } from "../../config";
 
 export default class Authors extends Component {
   constructor(props) {
@@ -25,13 +25,12 @@ export default class Authors extends Component {
 
   componentWillUpdate = (newProps) => {
     if (this.props.letter !== newProps.letter) {
-      console.log(`${newProps.letter} => ${this.props.letter}`)
       this.fetchAuthors(newProps.letter);
     }
   };
 
   fetchAuthors = (letter, page) => {
-    axios.get(`/${Config.sitekey}/authors/letters/${letter}${page ? '?page=' + page : ''}`,
+    axios.get(`/${sitekey}/authors/letters/${letter}${page ? '?page=' + page : ''}`,
       { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
       .then(res => {
         this.setState({ authors: res.data });

@@ -8,8 +8,6 @@ end
 gem 'rails', '~> 5.2'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.3.18', '< 0.5'
-# Use Puma as the app server
-gem 'puma', '~> 3.8'
 
 gem 'faraday'
 gem 'faraday_middleware'
@@ -36,6 +34,8 @@ gem 'redis', '~> 3.0'
 gem 'bcrypt', '~> 3.1.7'
 
 group :development do
+  # Use Puma as the app server
+  gem 'puma', '~> 3.8'
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   # gem 'listen', '~> 3.0.5'

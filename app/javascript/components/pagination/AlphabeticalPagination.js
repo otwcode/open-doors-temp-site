@@ -3,7 +3,7 @@ import OverlayTrigger from "react-bootstrap/es/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Pagination from "react-bootstrap/lib/Pagination";
 import Dropdown from "react-bootstrap/lib/Dropdown";
-import Config from "../../config";
+import { authors_path } from "../../config";
 
 export default class AlphabeticalPagination extends React.Component {
   constructor(props) {
@@ -22,7 +22,6 @@ export default class AlphabeticalPagination extends React.Component {
   };
 
   render() {
-    const linkUrl = l => `/${Config.sitekey}/authors?letter=${l}`;
     const listItems = Object.entries(this.props.authors).map((kv) => {
         const [ l, as ] = kv;
         const numAuthors = as.length;
@@ -38,7 +37,7 @@ export default class AlphabeticalPagination extends React.Component {
                 <Tooltip id="tooltip">{`${l}: ${authorsWithImports}/${numAuthors} to import`}</Tooltip>
               }
             >
-              <a href="{linkUrl(l)}"
+              <a href={authors_path(l)}
                  onClick={e => this.handleLetterChange(e, l)}
                  className={isDone ? "page-link text-dark bg-light" : "page-link"}>
                 {l}{isCurrent ? <span className="sr-only"> (current)</span> : ""}
@@ -52,8 +51,8 @@ export default class AlphabeticalPagination extends React.Component {
     const letterIndex = letters.findIndex(x => x === this.props.letter);
     const prev = letterIndex - 1;
     const next = letterIndex + 1;
-    const prevLink = prev < 0 ? '' : linkUrl(letters[ prev ]);
-    const nextLink = next > letters.length - 1 ? '' : linkUrl(letters[ next ]);
+    const prevLink = prev < 0 ? '' : authors_path(letters[ prev ]);
+    const nextLink = next > letters.length - 1 ? '' : authors_path(letters[ next ]);
 
     return (
       <div className="text-center">
