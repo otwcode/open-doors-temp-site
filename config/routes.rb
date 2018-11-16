@@ -21,8 +21,8 @@ Rails.application.routes.draw do
     get  "authors/letters"                => "authors#author_letters"
     get  "authors/letters/:letter"        => "authors#authors"
 
-    post "authors/import/:author_id"  => "authors#import_author"
-    post "authors/check/:author_id"   => "authors#check"
+    post "authors/import/:author_id"      => "authors#import_author"
+    get "authors/check/:author_id"        => "authors#check"
 
     get  "items/author/:author_id"   => "items#get_by_author", as: :item_by_author
 

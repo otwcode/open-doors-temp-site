@@ -34,6 +34,12 @@ $clearColor: #906b59;
   background-color: $importColor;
 }
 
+.checking {
+  @extend .progress-bar-striped;
+  @extend .progress-bar-animated;
+  background-color: $checkColor;
+}
+
 .message-board {
   height: calc(100% - 35px);
   min-width: 300px;
@@ -41,6 +47,14 @@ $clearColor: #906b59;
 
 .alert {
   margin-top: 10px;
+}
+
+.import-button {
+  min-width: 100px;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: white;
 }
 //
 //* {
@@ -115,36 +129,7 @@ div.page-item {
 //  margin-right: 5px;
 //}
 //
-///* Buttons */
-//.btn-sm {
-//  white-space: nowrap;
-//}
-//
-//.btn-sm:hover {
-//  text-decoration: none;
-//}
-//
-//.btn-import {
-//  @include button-variant(#fff, $importColor, $importColor);
-//  text-decoration: none;
-//}
-//
-//.btn-check {
-//  @include button-variant(#fff, $checkColor, $checkColor);
-//  text-decoration: none;
-//}
-//
-//.btn-dni {
-//  @include button-variant(#fff, $dniColor, $dniColor);
-//  text-decoration: none;
-//}
-//
-//.btn-clear, .btn-hide-all {
-//  @include button-variant(#fff, $clearColor, $clearColor);
-//  text-decoration: none;
-//  margin-bottom: 4px; /* weird interaction with the adjacent alphabetical paginate nav */
-//}
-//
+
 /* Import statuses */
 .imported {
   background-color: lightgray;
@@ -194,8 +179,3 @@ footer {
   margin-top: 20px;
   padding: 10px;
 }
-//
-//.card {
-//  @extend .card;
-//  margin-bottom: 1rem;
-//}

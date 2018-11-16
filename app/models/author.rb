@@ -76,7 +76,7 @@ class Author < ApplicationRecord
 
     # Is the author now fully imported?
     imported = all_imported?
-    response[:author_imported] = all_imported?
+    response[:author_imported] = imported
     response[:author_id] = id
 
     # Update audit and return response
@@ -86,31 +86,19 @@ class Author < ApplicationRecord
   end
 
   def check(client, collection_name, host)
-    works, bookmarks =
-      works_and_bookmarks(client.config.archivist, collection_name, host)
+    works, bookmarks = works_and_bookmarks(client.config.archivist, collection_name, host)
 
-    response = client.search(works: works, bookmarks: bookmarks)
-
-    works_responses = response[0]["works"]
-    if works_responses.present?
-      works_responses.each do |work_response|
-        Item.update_item(:story, work_response.symbolize_keys)
-      end
-    end
-
-    bookmarks_responses = if response[1]
-                            response[1]["bookmarks"]
-                          else
-                            response[0]["bookmarks"]
-                          end
-    if bookmarks_responses.present?
-      bookmarks_responses.each do |bookmark_response|
-        Item.update_item(:bookmark, bookmark_response.symbolize_keys)
-      end
-    end
+    ao3_response = client.search(works: works, bookmarks: bookmarks)
+    response = items_responses(ao3_response)
 
     # Is the author now fully imported?
-    response[0][:author_imported] = all_imported?
+    imported = items_all_imported?
+    response[:author_imported] = imported
+    response[:author_id] = id
+
+    # Update audit and return response
+    imported_status = "Check request processed. #{imported ? 'Author is already fully imported.' : 'Author still has some items to import.'}"
+    update_attributes!(imported: imported, audit_comment: imported_status)
     response
   end
 

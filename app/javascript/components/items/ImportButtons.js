@@ -42,18 +42,21 @@ export default class ImportButtons extends Component {
     return (
       <ButtonGroup width="100px" size="sm">
         <Button variant="outline-primary"
+                className="import-button"
                 disabled={isImporting || isImported}
                 onClick={!isImporting ? (e) => this.handleImport(e) : null}>
           {this.importText()}
         </Button>
 
         <Button variant="outline-success"
+                className="import-button"
                 disabled={isChecking}
                 onClick={!isChecking ? (e) => this.handleCheck(e) : null}>
           {this.checkText()}
         </Button>
 
         <Button variant="outline-danger"
+                className="import-button"
                 disabled={isImported}
                 onClick={(e) => this.handleDNI(e)}>
           <i className="fa fa-times"/> Mark DNI
