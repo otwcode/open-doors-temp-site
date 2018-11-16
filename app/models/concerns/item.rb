@@ -25,15 +25,18 @@ module Item
 
     if response[:status].in? OK_STATUSES
       response[:success] = true
-      if item.ao3_url != response[:archive_url] || (item.ao3_url == response[:archive_url] && !item.imported)
-        response[:messages] << "Archive URL updated to #{response[:archive_url]}."
+      search_results = response.delete(:search_results)
+      archive_url = search_results ? search_results[0]["archive_url"] : response[:archive_url]
+      response[:ao3_url] = archive_url
+      if item.ao3_url != archive_url || (item.ao3_url == archive_url && !item.imported)
+        response[:messages] << "Archive URL updated to #{archive_url}."
         item.update_attributes!(
           imported: true,
-          ao3_url: response[:archive_url],
+          ao3_url: archive_url,
           audit_comment: response[:messages].join(" ")
         )
       else
-        response[:messages] << "Item is already imported at #{response[:archive_url]}."
+        response[:messages] << "Item is already imported at #{archive_url}."
       end
     elsif response[:status].in? NOT_FOUND_STATUSES
       if item.imported || item.ao3_url.present?

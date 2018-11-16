@@ -94,7 +94,7 @@ class AuthorsController < ApplicationController
     message = { author_id: author.id, message: "Checked #{author.name}. response: #{response}" }
     ActionCable.server.broadcast 'imports_channel', message
 
-    render json: response, content_type: "text/json"
+    render json: response, content_type: "application/json"
   end
 
   def dni

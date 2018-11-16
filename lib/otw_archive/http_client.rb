@@ -54,15 +54,15 @@ module OtwArchive
           status: reason_phrase,
           body: body
         }
-      rescue ConnectionFailed => e
-        puts e.inspect
+      rescue ClientError => e # Catch all Faraday's errors
+        Rails.logger.error e.inspect
         {
           success: false,
           status: :error,
           body: { messages: [e.message] } 
         }
       rescue StandardError => e
-        puts e.inspect
+        Rails.logger.error e.inspect
         {
           success: false,
           status: :error,
