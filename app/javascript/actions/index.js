@@ -4,6 +4,7 @@ import { sitekey } from "../config";
 export const GET_SITE_STATS = "get_site_stats";
 export const GET_AUTHOR_ITEMS = "get_author_items";
 export const IMPORT_AUTHOR = "import_author";
+export const CHECK_AUTHOR = "check_author";
 
 
 function getReq(endpoint) {
@@ -52,7 +53,7 @@ const authorReq = (authorID, type, req) => {
 };
 
 export function fetchAuthorItems(authorID) {
-  const req = authorReq(authorID, 'items', getReq(`/items/author/${authorID}`));
+  const req = authorReq(authorID, 'items', getReq(`items/author/${authorID}`));
   console.log(req);
   return {
     type: GET_AUTHOR_ITEMS,
@@ -60,7 +61,6 @@ export function fetchAuthorItems(authorID) {
   }
 }
 
-// POSTS
 export function importAuthor(authorID) {
   const req = authorReq(authorID, 'import',
     axios
@@ -75,6 +75,24 @@ export function importAuthor(authorID) {
 
   return {
     type: IMPORT_AUTHOR,
+    payload: req
+  }
+}
+
+// Put check results into the same import object as import results
+export function checkAuthor(authorID) {
+  const req = authorReq(authorID, 'import',
+    axios
+      .get(`/${sitekey}/authors/check/${authorID}`,
+        {
+          headers: {
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Content-Type': 'application/json',
+          }
+        }));
+
+  return {
+    type: CHECK_AUTHOR,
     payload: req
   }
 }

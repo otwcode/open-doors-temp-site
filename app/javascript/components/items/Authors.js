@@ -64,7 +64,7 @@ export default class Authors extends Component {
     } else {
       return (
         <div>
-          {this.props.letter}
+          Loading author for '{this.props.letter}'...
         </div>
       )
     }

@@ -1,16 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchAuthorItems, importAuthor } from "../../actions";
+import { fetchAuthorItems, importAuthor, checkAuthor } from "../../actions";
 
 import Collapse from "react-bootstrap/lib/Collapse";
 import Card from "react-bootstrap/lib/Card";
-import axios from "axios";
 import Items from "./Items";
 import ImportButtons from "./ImportButtons";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import Alert from "react-bootstrap/lib/Alert";
 import { ActionCable } from "react-actioncable-provider";
-import Config from "../../config";
 
 class Author extends Component {
   constructor(props) {
@@ -53,12 +51,13 @@ class Author extends Component {
   handleImporting = (e) => {
     this.stopEvents(e);
     this.setState(
-      { isImporting: true },
+      { isImporting: true, message: "" },
       () => {
         this.props.importAuthor(this.props.author.id)
           .then(() => this.setState({
+            hideAlert: false,
             isImporting: false,
-            hasError: (this.props.data.error === undefined)
+            hasError: (this.props.data.error !== undefined)
           }))
       }
     );
@@ -67,35 +66,19 @@ class Author extends Component {
   stopEvents(e) {
     e.preventDefault();
     e.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation(); // stop it toggling the author
   }
 
   handleChecking = (e) => {
     this.stopEvents(e);
-    this.setState({ isChecking: true }, () => {
-      axios
-        .post(`${Config.sitekey}/authors/check/${this.props.author.id}`,
-          {},
-          {
-            headers: {
-              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-              'Content-Type': 'application/json',
-            }
-          })
-        .then(res => {
-          this.setState({
-            hasError: false,
-            message: res.data.message
-          });
-        })
-        .catch(err => {
-            this.setState({
-              hasError: true,
-              message: err.statusText
-            })
-          }
-        )
-        .then(() => this.setState({ isChecking: false }));
+    this.setState(
+      { isChecking: true, message: "" },
+      () => {
+      this.props.checkAuthor(this.props.author.id)
+        .then(() => this.setState({
+          hideAlert: false,
+          isChecking: false,
+          hasError: (this.props.data.error !== undefined)
+        }));
     });
   };
 
@@ -109,7 +92,7 @@ class Author extends Component {
 
   handleBroadcast = (broadcast) => {
     if (broadcast.author_id === this.props.author.id.toString()) {
-      this.setState({ isImporting: broadcast.isImporting })
+      this.setState({ isImporting: broadcast.isImporting, isChecking: broadcast.isChecking })
     }
   };
 
@@ -131,15 +114,17 @@ class Author extends Component {
   render() {
     // Extract data from the state
     const { open, isImporting, isChecking } = this.state;
+    const author = this.props.author;
     const items = this.state.data && this.state.data.items ? this.state.data.items : {};
     const importData = this.state.data && this.state.data.import ? this.state.data.import : {};
 
-    const { messages, author_imported: isImported, works, bookmarks } = importData;
+    const { messages, author_imported, works, bookmarks } = importData;
+    const isImported = author_imported || author.imported;
 
     // Some utility variables for simplicity
-    const key = `author-${this.props.author.id}`;
-    const headerClass = isImporting ? "importing" : "";
-    const cardClass = isImported ? "imported" : "";
+    const key = `author-${author.id}`;
+    const headerClass = (isImporting ? " importing" : "") + (isChecking ? " checking" : "");
+    const cardClass = `author ${isImported ? "imported" : ""} ${author.do_not_import ? "do_not_import" : ""}`;
 
     return (
       <Card key={key} id={key} className={cardClass}>
@@ -151,7 +136,7 @@ class Author extends Component {
           <ActionCable ref='importsChannel' channel={{ channel: 'ImportsChannel', room: '1' }}
                        onReceived={this.handleBroadcast}/>
           <ButtonToolbar className="justify-content-between">
-            {this.props.author.name}
+            <Card.Title>{this.props.author.name}</Card.Title>
             <ImportButtons isChecking={isChecking} onChecking={this.handleChecking} onDNI={this.handleDNI}
                            isImporting={isImporting} isImported={isImported} onImporting={this.handleImporting}/>
           </ButtonToolbar>
@@ -172,4 +157,4 @@ function mapStateToProps({ authorItems }, ownProps) {
   return { data: authorItems[ ownProps.author.id ] };
 }
 
-export default connect(mapStateToProps, { fetchAuthorItems, importAuthor })(Author);
+export default connect(mapStateToProps, { fetchAuthorItems, importAuthor, checkAuthor })(Author);

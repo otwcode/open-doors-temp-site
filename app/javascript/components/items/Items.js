@@ -1,10 +1,13 @@
 import React, { Component } from "react";
+
 import Card from "react-bootstrap/lib/Card";
 import Collapse from "react-bootstrap/lib/Collapse";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Alert from "react-bootstrap/lib/Alert";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
+import Button from "react-bootstrap/lib/Button";
+
 import { sitekey } from "../../config";
 
 class Item extends Component {
@@ -27,7 +30,7 @@ class Item extends Component {
 
   msgAlert = (key, messages, success) => {
     const hasError = !success;
-    const msg = messages ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : "";
+    const msg = messages && messages.length > 0 ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : "";
     return msg ?
       <Alert key={`${key}-msg`} variant={hasError ? "danger" : "success"} className="alert-dismissible" hidden={this.state.hideAlert}>
         {msg}
@@ -43,9 +46,11 @@ class Item extends Component {
     const isStory = this.props.isStory;
     const key = isStory ? `story-${item.id}` : `link-${item.id}`;
     const headerClass = this.props.isImporting ? "importing" : "";
-    const { messages, success, archive_url } = this.props.importResult ? this.props.importResult : {};
+    const cardClass = item.imported ? "imported" : "";
+    const { messages, success, ao3_url } = this.props.importResult ? this.props.importResult : {};
+    const archive_url = ao3_url || item.ao3_url;
     return (
-        <Card id="blurb">
+        <Card id={key} key={key} className={cardClass}>
           <Card.Header onClick={this.handleItemClick}
                        aria-controls="blurb"
                        aria-expanded={open}
@@ -56,8 +61,9 @@ class Item extends Component {
                   overlay={
                     <Tooltip id="tooltip">id: {item.id}</Tooltip>
                   }>
-                <span>{this.props.item.title}</span>
+                <Card.Subtitle>{this.props.item.title}</Card.Subtitle>
               </OverlayTrigger>
+              { archive_url ? <Button variant="outline-info" size="sm" className="import-button" href={archive_url}>AO3</Button> : ""}
             </ButtonToolbar>
             {this.msgAlert(key, messages, success)}
           </Card.Header>

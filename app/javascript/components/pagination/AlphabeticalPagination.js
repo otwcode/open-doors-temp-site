@@ -56,7 +56,7 @@ export default class AlphabeticalPagination extends React.Component {
 
     return (
       <div className="text-center">
-        <Pagination className="justify-content-center">
+        <Pagination className="flex-wrap justify-content-center">
           <Pagination.Prev disabled={prev < 0} href={prevLink}/>
           {listItems}
           <Pagination.Next disabled={next > letters.length - 1} href={nextLink}/>
