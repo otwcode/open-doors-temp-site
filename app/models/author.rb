@@ -74,15 +74,7 @@ class Author < ApplicationRecord
       response = items_responses(ao3_response)
     end
 
-    # Is the author now fully imported?
-    imported = all_imported?
-    response[:author_imported] = imported
-    response[:author_id] = id
-
-    # Update audit and return response
-    imported_status = "Import request processed. #{imported ? 'Author is now fully imported.' : 'Author still has some items to import.'}"
-    update_attributes!(imported: imported, audit_comment: imported_status)
-    response
+    author_response(client, response)
   end
 
   def check(client, collection_name, host)
@@ -91,18 +83,23 @@ class Author < ApplicationRecord
     ao3_response = client.search(works: works, bookmarks: bookmarks)
     response = items_responses(ao3_response)
 
-    # Is the author now fully imported?
-    imported = items_all_imported?
-    response[:author_imported] = imported
-    response[:author_id] = id
-
-    # Update audit and return response
-    imported_status = "Check request processed. #{imported ? 'Author is already fully imported.' : 'Author still has some items to import.'}"
-    update_attributes!(imported: imported, audit_comment: imported_status)
-    response
+    author_response(client, response)
   end
 
   private
+
+  def author_response(client, response)
+    # Is the author now fully imported?
+    imported = all_imported?
+    response[:author_imported] = imported
+    response[:author_id] = id
+    response[:remote_host] = client.config.archive_host
+
+    # Update audit and return response
+    imported_status = "Import request processed. #{imported ? 'Author is now fully imported.' : 'Author still has some items to import.'}"
+    update_attributes!(imported: imported, audit_comment: imported_status)
+    response
+  end
 
   def items_responses(ao3_response)
     response = {}
