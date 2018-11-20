@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe StatsController, type: :controller do
 
   it "redirects to login if not logged in" do
-    get :show, params: {id: 1}
+    get :stats, params: {id: 1}
     assert_redirected_to :login
   end
 
@@ -14,7 +14,7 @@ RSpec.describe StatsController, type: :controller do
     end
 
     it "shows the stats page" do
-      get :show
+      get :stats
       assert_response :success
     end
   end
