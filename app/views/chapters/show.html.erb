@@ -1,80 +1,97 @@
-<%
-  is_first_chapter = @chapter.position <= 1
-  story = @chapter.story
+<%= react_component("navigation/Navigation", {
+    data: {
+        logo_path: asset_path("Opendoors.png"),
+        letter: params[:letter] || 'A',
+        config: @api_config.merge(@archive_config),
+        current_user: current_user&.name || '',
+    },
+    page: params[:page] || '1',
+    config_path: archive_config_path(@archive_config)
+}) %>
 
-  def tag_html(tag_name, tag)
-    if tag
-      "<dt class=\"col-sm-2\">#{tag_name}:</dt> <dd class=\"col-sm-10\">#{tag}</dd>"
-    else
-      "<dt class=\"col-sm-2\">No #{tag_name.downcase}</dt> <dd class=\"col-sm-10\">-</dd>"
+<div class="container">
+  <%
+    is_first_chapter = @chapter.position <= 1
+    story = @chapter.story
+
+    def tag_html(tag_name, tag)
+      puts tag
+      if tag && !tag.blank?
+        "<br/><b>#{tag_name}:</b> #{tag}"
+      else
+        "<br/><b>No #{tag_name.downcase}</b>"
+      end
     end
-  end
-%>
+  %>
 
-<% content_for :title, story.title + " - Chapter #{@chapter.position}" %>
+  <% content_for :title, story.title + " - Chapter #{@chapter.position}" %>
 
-<!-- Body Content -->
-<h2>
-  <span class="badge badge-info"><%= story.id %></span>
-  <%= story.title %> <small>by <%= story.author.name %><%= story.coauthor? ? " and #{story.coauthor}" : "" %></small>
-</h2>
-<h3><span class="badge badge-info"><%= @chapter.id %></span> <%= @chapter.title %></h3>
+  <!-- Body Content -->
+  <h2>
+    <span class="badge badge-info"><%= story.id %></span>
+    <%= story.title %>
+    <small>by <a href="<%= "#{authors_path}?letter=#{story.author.name[0].upcase}" %>"><%= story.author.name %></a><%= story.coauthor? ? " and #{story.coauthor.name}" : "" %></small>
+  </h2>
+  <h3><span class="badge badge-info"><%= @chapter.id %></span> <%= @chapter.title %></h3>
 
-<% if story.imported && story.ao3_url %>
-  <div class="alert alert-success" role="alert">
-    Story imported to <a href="<%= story.ao3_url %>" target="_blank"><%= story.ao3_url %></a>
-  </div>
-<% end %>
-
-<div class="invisible"><b>Title:</b> <%= story.title %></div>
-
-<dl class="row bg-faded">
-
-  <% if is_first_chapter && @config.present? %>
-    <dt class="col-sm-2">Note:</dt><br />
-    <dd style="border: 1px silver solid;">
-      <%= @config.ODNote %>
-      <% if story.notes %>
-        <br /><br /><span>Author's notes:</span> <%= story.notes %>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <dt class="col-sm-2">Summary:</dt> <dd class="col-sm-10"><%= raw story.summary %></dd>
-
-  <%= raw tag_html("Rating", story.rating) %>
-  <%= raw tag_html("Warnings", story.warnings) %>
-  <%= raw tag_html("Categories", story.categories) %>
-  <%= raw tag_html("Fandoms", story.fandoms) %>
-  <%= raw tag_html("Relationships", story.relationships) %>
-  <%= raw tag_html("Characters", story.characters) %>
-  <%= raw tag_html("Tags", story.tags) %>
-
-  <!--// DON'T INDENT <dd> start tag - THIS *ALWAYS* GETS SCRAPED-->
-  <!-- First chapter in single chapter work or non-first in multichapter -> updated date -->
-  <dt class="col-sm-2">Date:</dt> <dd class="col-sm-10"><%=
-  if (is_first_chapter && story.chapters.size == 1) || (!is_first_chapter && story.chapters.size > 1)
-    (story.updated || story.date || datetime.now).to_s(:iso_date)
-  elsif is_first_chapter && story.chapters.size > 1
-    (story.date || story.updated || datetime.now).to_s(:iso_date)
-  end
-  %></dd>
-
-  <dt class="col-sm-2">Chapter Title:</dt> <dd class="col-sm-10"><%= @chapter.title %></dd>
-  <dt class="col-sm-2">Chapter Number:</dt> <dd class="col-sm-10"><%= @chapter.position %></dd>
-
-  <% if @chapter.date.present? %>
-    <dt class="col-sm-2">Chapter posted</dt> <dd class="col-sm-10"><%= @chapter.date.to_s(:iso_date) %></dd>
-  <% end %>
-</dl>
-
-<div class="chapter-content" style="white-space: pre-line">
-  <% if @chapter.notes.present? %>
-    <div class="form-group">
-      <label class="col-sm-2">Author's notes:</label> <%= raw @chapter.notes %>
+  <% if story.imported && story.ao3_url %>
+    <div class="alert alert-success" role="alert">
+      Story imported to <a href="<%= story.ao3_url %>" target="_blank"><%= story.ao3_url %></a>
     </div>
-  <hr />
   <% end %>
-  <%= raw @chapter.text %>
-</div>
 
+  <div class="invisible"><b>Title:</b> <%= story.title %></div>
+
+  <div class="card">
+    <div class="card-text">
+      <% if is_first_chapter && @config.present? %>
+        <b>Note:</b><br/>
+        <div style="border: 1px silver solid;">
+          <%= @config.ODNote %>
+          <% if story.notes %>
+            <br/><br/><span>Author's notes:</span> <%= story.notes %>
+          <% end %>
+        </div>
+      <% end %>
+
+      <b>Summary:</b> <%= raw story.summary %>
+
+      <%= raw tag_html("Rating", story.rating) %>
+      <%= raw tag_html("Warnings", story.warnings) %>
+      <%= raw tag_html("Categories", story.categories) %>
+      <%= raw tag_html("Fandoms", story.fandoms) %>
+      <%= raw tag_html("Relationships", story.relationships) %>
+      <%= raw tag_html("Characters", story.characters) %>
+      <%= raw tag_html("Tags", story.tags) %>
+
+      <!--// DON'T INDENT <dd> start tag - THIS *ALWAYS* GETS SCRAPED-->
+      <!-- First chapter in single chapter work or non-first in multichapter -> updated date -->
+      <br/>
+      <b>Date:</b> <%=
+      if (is_first_chapter && story.chapters.size == 1) || (!is_first_chapter && story.chapters.size > 1)
+        (story.updated || story.date || datetime.now).to_s(:iso_date)
+      elsif is_first_chapter && story.chapters.size > 1
+        (story.date || story.updated || datetime.now).to_s(:iso_date)
+      end
+    %>
+      <br/>
+      <b>Chapter Title:</b> <%= @chapter.title %>
+      <br/><b>Chapter Number:</b> <%= @chapter.position %>
+
+      <% if @chapter.date.present? %>
+        <br/><b>Chapter posted:</b> <%= @chapter.date.to_s(:iso_date) %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="chapter-content" style="white-space: pre-line">
+    <% if @chapter.notes.present? %>
+      <div class="form-group">
+        <label class="col-sm-2">Author's notes:</label> <%= raw @chapter.notes %>
+      </div>
+      <hr/>
+    <% end %>
+    <%= raw @chapter.text %>
+  </div>
+
+</div>
