@@ -69,7 +69,9 @@ class Item extends Component {
                   }>
                 <Card.Subtitle>{this.props.item.title}</Card.Subtitle>
               </OverlayTrigger>
-              { archive_url ? <Button variant="outline-info" size="sm" className="import-button" href={archive_url}>AO3</Button> : ""}
+              { archive_url ?
+                <Button variant="outline-info" size="sm" className="import-button" href={archive_url} target="_blank">AO3</Button>
+                : ""}
             </ButtonToolbar>
             {this.msgAlert(key, messages, success)}
           </Card.Header>

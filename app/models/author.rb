@@ -18,7 +18,7 @@ class Author < ApplicationRecord
   validates_presence_of :name
 
   def all_imported?
-    imported || do_not_import || items_all_imported?
+    do_not_import || items_all_imported?
   end
 
   def coauthored_stories
