@@ -28,6 +28,8 @@ module Item
       search_results = response.delete(:search_results)
       archive_url = search_results ? search_results[0]["archive_url"] : response[:archive_url]
       response[:ao3_url] = archive_url
+      # TODO fix when AO3-5572 is fixed
+      response[:messages] = [response[:messages]] if response[:messages].is_a?(String)
       if item.ao3_url != archive_url || (item.ao3_url == archive_url && !item.imported)
         response[:messages] << "Archive URL updated to #{archive_url}."
         item.update_attributes!(
@@ -63,6 +65,7 @@ module Item
       audit.save!
     end
     response[:author_id] = item.author.id
+    response[:messages] = response[:messages].reject { |m| m == "" }
     result = {}
     result[item.id] = response
     result
