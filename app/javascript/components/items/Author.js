@@ -119,6 +119,7 @@ class Author extends Component {
     const importData = this.state.data && this.state.data.import ? this.state.data.import : {};
 
     const { messages, author_imported, works, bookmarks } = importData;
+    console.log(author_imported);
     const isImported = author_imported || author.imported;
 
     // Some utility variables for simplicity
