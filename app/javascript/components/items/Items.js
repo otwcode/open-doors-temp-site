@@ -30,7 +30,13 @@ class Item extends Component {
 
   msgAlert = (key, messages, success) => {
     const hasError = !success;
-    const msg = messages && messages.length > 0 ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : "";
+    // TODO fix this when AO3-5572 is done
+    let msg = undefined;
+    if (typeof(messages) === "string") {
+      msg = messages;
+    } else if (messages) {
+      msg = messages.length > 0 ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : "";
+    }
     return msg ?
       <Alert key={`${key}-msg`} variant={hasError ? "danger" : "success"} className="alert-dismissible" hidden={this.state.hideAlert}>
         {msg}
