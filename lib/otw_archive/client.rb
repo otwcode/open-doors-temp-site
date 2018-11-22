@@ -31,7 +31,6 @@ module OtwArchive
         end
         
         Rails.logger.info "\n>>> Processed import responses: \n#{JSON.pretty_generate(responses.as_json)}"
-
       rescue StandardError => e
         Rails.logger.error "\n>>> Error: #{e}"
         Rails.logger.error e.backtrace.join("\n")
@@ -58,6 +57,9 @@ module OtwArchive
         begin
           @http ||= HttpClient.new(@config.archive_host, @config.token)
           resp = @http.post_request("#{type}/search", request_body)
+
+          resp[:body][:messages] << resp[:status] if resp[:body][:messages].all? { |m| m == "" }
+          resp[:body][:messages] = resp[:body][:messages].reject { |m| m == "" }
 
           responses << resp
         rescue StandardError => e
