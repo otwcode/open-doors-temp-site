@@ -37,15 +37,19 @@ export default class App extends Component {
               <Row>
                 <Router>
                   <Switch>
-                    <Route path={`/${sitekey}`} exact render={() => <AuthorsPage data={this.props} />} />
-                    <Route path={`/${sitekey}/authors`} render={() => <AuthorsPage data={this.props} />} />
-                    <Route path={`/${sitekey}/stats`} render={() => <StatsPage/>} />
+                    <Route path={`/${sitekey}`} exact
+                           render={() => <AuthorsPage data={this.props} user={this.state.current_user} />} />
+                    <Route path={`/${sitekey}/authors`}
+                           render={() => <AuthorsPage data={this.props} />} />
+                    <Route path={`/${sitekey}/stats`}
+                           render={() => <StatsPage/>} />
                     <Route component={() => <h1>Not found</h1>} />
                   </Switch>
                 </Router>
+                { this.props.current_user ?
                 <Col xs lg={2}>
                   <MessageBoard type="info"/>
-                </Col>
+                </Col> : "" }
               </Row>
             </Container>
           </ActionCableProvider>

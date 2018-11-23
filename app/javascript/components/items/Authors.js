@@ -56,7 +56,7 @@ export default class Authors extends Component {
             const authorState = this.state ? this.state[ a.id ] : { imported: false };
             const author = (authorState) ? Object.assign(a, { imported: authorState.imported }) : a;
             return (
-              <Author key={a.id} author={author} response={this.state[ a.id ]}/>
+              <Author key={a.id} author={author} response={this.state[ a.id ]} user={this.props.user} />
             )
           })}
         </div>
