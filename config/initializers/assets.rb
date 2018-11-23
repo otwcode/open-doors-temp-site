@@ -11,5 +11,5 @@ Rails.application.configure do
   # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
   # Rails.application.config.assets.precompile += %w( search.js )
 
-  config.assets.precompile += []
+  # config.assets.precompile += []
 end
