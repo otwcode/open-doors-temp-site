@@ -119,7 +119,6 @@ class Author extends Component {
     const importData = this.state.data && this.state.data.import ? this.state.data.import : {};
 
     const { messages, author_imported, works, bookmarks } = importData;
-    console.log(author_imported);
     const isImported = author_imported || author.imported;
 
     // Some utility variables for simplicity
@@ -131,21 +130,23 @@ class Author extends Component {
       <Card key={key} id={key} className={cardClass}>
         <a name={this.props.author.name.replace(' ', '_').toLowerCase()}/>
         <Card.Header onClick={this.handleAuthorClick}
-                     aria-controls="example-collapse-text"
+                     aria-controls={`${key}-collapse`}
                      aria-expanded={open}
                      className={headerClass}>
           <ActionCable ref='importsChannel' channel={{ channel: 'ImportsChannel', room: '1' }}
                        onReceived={this.handleBroadcast}/>
           <ButtonToolbar className="justify-content-between">
             <Card.Title>{this.props.author.name}</Card.Title>
+            { this.props.user ?
             <ImportButtons isChecking={isChecking} onChecking={this.handleChecking} onDNI={this.handleDNI}
                            isImporting={isImporting} isImported={isImported} onImporting={this.handleImporting}/>
+              : "" }
           </ButtonToolbar>
           {this.msgAlert(key, messages)}
         </Card.Header>
 
         <Collapse in={this.state.open}>
-          <Card.Body id="example-collapse-text">
+          <Card.Body id={`${key}-collapse`}>
             <Items key={`${key}-items`} data={items} works={works} bookmarks={bookmarks}/>
           </Card.Body>
         </Collapse>

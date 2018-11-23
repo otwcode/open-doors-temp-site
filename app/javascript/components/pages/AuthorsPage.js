@@ -50,7 +50,7 @@ export default class AuthorsPage extends Component {
         {alphabeticalPagination}
         {numberPagination}
 
-        <Authors letter={this.state.letter} />
+        <Authors letter={this.state.letter} user={this.props.user} />
 
         {numberPagination}
         {alphabeticalPagination}
