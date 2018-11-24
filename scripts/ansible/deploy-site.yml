@@ -45,12 +45,12 @@
   # Config
   - name: Create site config file
     template:
-     src: "{{ playbook_dir }}/ansible/config.yml.j2"
+     src: "{{ playbook_dir }}/templates/config.yml.j2"
      dest: "{{ deploy_path }}/config/config.yml"
 
   - name: Copy secrets
     copy:
-      src: "{{ playbook_dir }}/../config/secrets.yml"
+      src: "{{ playbook_dir }}/../../config/secrets.yml"
       dest: "{{ deploy_path }}/config/secrets.yml"
 
   # Install
@@ -76,12 +76,12 @@
 
   - name: Create Webpacker config file
     template:
-     src: "{{ playbook_dir }}/ansible/templates/webpacker.yml.j2"
+     src: "{{ playbook_dir }}/templates/webpacker.yml.j2"
      dest: "{{ deploy_path }}/config/webpacker.yml"
 
   - name: Create Front-end app config file
     template:
-     src: "{{ playbook_dir }}/ansible/templates/config.js.j2"
+     src: "{{ playbook_dir }}/templates/config.js.j2"
      dest: "{{ deploy_path }}/app/javascript/config.js"
      
   - name: Create log, pid and socket folders for Unicorn
@@ -128,15 +128,20 @@
 
   - name: Create database config file
     template:
-     src: "{{ playbook_dir }}/ansible/templates/database.yml.j2"
+     src: "{{ playbook_dir }}/templates/database.yml.j2"
      dest: "{{ deploy_path }}/config/database.yml"
     tags:
       - database
 
+  - name: Check if DB exists (2 = no)
+    shell: mysql --host=127.0.0.1 --user={{ mysql_user }} --password={{ mysql_pw }} -e 'SHOW DATABASES;' | grep -c {{ sitekey }}
+    register: dbstatus
+
   - name: Copy MySQL script
     template:
-      src: "{{ playbook_dir }}/ansible/templates/archive_config.sql.j2"
+      src: "{{ playbook_dir }}/templates/archive_config.sql.j2"
       dest: "{{ deploy_path }}/archive_config.sql"
+    when: dbstatus.rc == 2
     tags:
       - database
 
@@ -148,6 +153,7 @@
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
     register: create_database
+    when: dbstatus.rc == 2
     tags:
       - database
 
@@ -159,7 +165,7 @@
       login_user: "{{ mysql_user }}"
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
-    when: create_database
+    when: dbstatus.rc == 2
     tags:
       - database
     
@@ -187,7 +193,7 @@
       
   - name: Create Unicorn script
     template:
-      src: "{{ playbook_dir }}/provision/etc/init.d/unicorn_app.j2"
+      src: "{{ playbook_dir }}/../provision/etc/init.d/unicorn_app.j2"
       dest: "/etc/init.d/unicorn_{{ sitekey }}"
       mode: 0755
 
