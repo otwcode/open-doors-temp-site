@@ -1,3 +1,4 @@
+# Essential information
 sitekey: << unique name for the site used as database name and url path >>
 name: << Site name (displayed on website) >>
 

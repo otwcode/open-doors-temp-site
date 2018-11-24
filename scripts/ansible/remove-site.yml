@@ -1,0 +1,71 @@
+---
+- name: Deploy Open Doors temporary site for '{{ sitekey }}'
+  hosts: all
+  remote_user: "{{ remote_user }}"
+  become: yes
+
+  vars:
+    deploy_path: "{{ remote_path }}/{{ sitekey }}"
+    unicorn_script: unicorn_{{ sitekey }}
+
+  tasks:
+  - name: Stop app if already running
+    service:
+      name: "{{ unicorn_script }}"
+      state: stopped
+    ignore_errors: yes
+
+  - name: Perform database dump
+    mysql_db:
+      state: dump
+      name: "{{ sitekey }}"
+      target: "{{ deploy_path }}/{{ sitekey }}.sql"
+      login_user: "{{ mysql_user }}"
+      login_password: "{{ mysql_pw }}"
+      login_unix_socket: "{{ mysql_socket }}"
+    register: dump_database
+
+  - name: Archive app directory with database dump
+    archive:
+      path: "{{ deploy_path }}"
+      dest: "{{ remote_path }}/{{ sitekey }}-temp-site.zip"
+
+  - name: Download zip file
+    fetch:
+      src: "{{ remote_path }}/{{ sitekey }}-temp-site.zip"
+      dest: "{{ playbook_dir }}/../../"
+      flat: yes
+    register: downloaded
+
+  - name: Delete app directory
+    file:
+      path: "{{ deploy_path }}"
+      state: absent
+    when: downloaded
+
+  - name: Delete remote copy of zip file
+    file:
+      path: "{{ remote_path }}/{{ sitekey }}-temp-site.zip"
+      state: absent
+    when: downloaded
+
+  - name: Remove Bundle directory
+    file:
+      path: "{{ remote_path }}/../bundler/{{ repo_version }}"
+      state: absent
+    when: downloaded
+
+  - name: Delete MySQL database
+    mysql_db:
+      name: "{{ sitekey }}"
+      state: absent
+      login_user: "{{ mysql_user }}"
+      login_password: "{{ mysql_pw }}"
+      login_unix_socket: "{{ mysql_socket }}"
+    when: dump_database
+
+  - name: Restart Nginx
+    service:
+      name: nginx
+      state: restarted
+      enabled: yes

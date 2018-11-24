@@ -76,12 +76,12 @@
 
   - name: Create Webpacker config file
     template:
-     src: "{{ playbook_dir }}/ansible/webpacker.yml.j2"
+     src: "{{ playbook_dir }}/ansible/templates/webpacker.yml.j2"
      dest: "{{ deploy_path }}/config/webpacker.yml"
 
   - name: Create Front-end app config file
     template:
-     src: "{{ playbook_dir }}/ansible/config.js.j2"
+     src: "{{ playbook_dir }}/ansible/templates/config.js.j2"
      dest: "{{ deploy_path }}/app/javascript/config.js"
      
   - name: Create log, pid and socket folders for Unicorn
@@ -128,14 +128,14 @@
 
   - name: Create database config file
     template:
-     src: "{{ playbook_dir }}/ansible/database.yml.j2"
+     src: "{{ playbook_dir }}/ansible/templates/database.yml.j2"
      dest: "{{ deploy_path }}/config/database.yml"
     tags:
       - database
 
   - name: Copy MySQL script
     template:
-      src: "{{ playbook_dir }}/ansible/archive_config.sql.j2"
+      src: "{{ playbook_dir }}/ansible/templates/archive_config.sql.j2"
       dest: "{{ deploy_path }}/archive_config.sql"
     tags:
       - database
