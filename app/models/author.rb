@@ -31,7 +31,7 @@ class Author < ApplicationRecord
 
   def all_items_as_json
     {
-      stories: stories_with_chapters.as_json(include: { chapters: { only: [:id, :title] } }),
+      stories: stories_with_chapters.as_json(include: { chapters: { only: [:id, :title, :position] } }),
       story_links: story_links,
       coauthored: coauthored_stories
     }
