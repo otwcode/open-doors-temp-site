@@ -13,6 +13,14 @@ class StoryLink < ApplicationRecord
     !self.imported && !self.do_not_import
   end
 
+  def as_json(options = {})
+    hash = super
+    hash.merge!(
+      date: date.strftime("%Y-%m-%d"),
+      updated: date.strftime("%Y-%m-%d")
+    )
+  end
+
   def to_bookmark(archivist, collection)
     Request::Bookmark.new(
       archivist,

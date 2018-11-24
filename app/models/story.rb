@@ -17,6 +17,17 @@ class Story < ApplicationRecord
     !self.imported && !self.do_not_import
   end
 
+  def as_json(options = {})
+    hash = super(include: { chapters: { only: [:id, :title, :position] } })
+    hash.merge!(
+      date: date.strftime("%Y-%m-%d"),
+      updated: date.strftime("%Y-%m-%d"),
+      chapters: chapters.map { |c|
+        c.as_json(only: [:id, :title, :position]).merge!(title: (c.title.blank? ? "Chapter #{c.position}" : c.title))
+      }
+    )
+  end
+
   def to_work(collection, host)
     Request::Work.new(
       title,
