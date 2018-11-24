@@ -96,8 +96,7 @@ class Item extends Component {
                 <ol>
                   {
                     item.chapters.map((chapter) => {
-                      const title = chapter.title && chapter.title.length > 0 ? chapter.title : `Chapter ${chapter.position}`;
-                      return <li key={`chapter-${chapter.id}`}><a href={`/${sitekey}/chapters/${chapter.id}`}>{title}</a></li>
+                      return <li key={`chapter-${chapter.id}`}><a href={`/${sitekey}/chapters/${chapter.id}`}>{chapter.title}</a></li>
                     })
                   }
                 </ol> : ''
