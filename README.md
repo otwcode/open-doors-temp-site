@@ -16,12 +16,16 @@ perform the import in stages, verifying imported works as they go along. This re
 used to create those sites.
 
 # Running it locally
+This is Ruby on Rails site with a React front-end mounted by the `react-rails` gem.
+
 Requirements:
-- Ruby 2.3
+- Ruby 2.3 
 - MySQL 5.7
 - Bundler
 - Node 8.11 https://nodejs.org/en/blog/release/v8.11.1/
 - Yarn https://yarnpkg.com/lang/en/docs/install/
+
+Note: for ease of local development, the Ruby and MySQL versions should be kept in step with the []otwarchive project](https://github.com/otwcode/otwarchive)
 
 See [Rails Getting Started Guide](http://guides.rubyonrails.org/getting_started.html) for instructions on installing and configuring Rails.
 
@@ -34,35 +38,45 @@ $ bin/rails server
 
 In your browser, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
 
-## Generate new React component
-
-```bash
-rails g react:component HelloWorld greeting:string
-```
-
-See https://github.com/reactjs/react-rails
-
-# Deployment
+# Deploying a site
 Before you proceed, you will need to install Ansible (https://www.ansible.com/).
 
-1. Create a file called `hosts` with the following contents:
-```
-[otw]
-[[SERVER_NAME]] ansible_ssh_user=[[SERVER_USER]]
-```
-Where `SERVER_NAME` and `SERVER_USER` are the server DNS host and ssh user for the web server. 
+1. In the `scripts/ansible` directory, create a file called `hosts` with the following contents:
+    ```
+    [otw]
+    [[SERVER_NAME]] ansible_ssh_user=[[SERVER_USER]]
+    ```
+    Where `SERVER_NAME` and `SERVER_USER` are the server DNS host and ssh user for the web server. You can optionally include the local path to your private SSH key. 
 
-1. Make a copy of `variables.yml.example` as `variables.yml` and fill it in with the details 
-of the site you're creating.
+1. Make a copy of `scripts/variables.yml.example` as `scripts/variables.yml` and fill it in with the details 
+of the site you're creating. The `sitekey` must be a string with no spaces: this will be used as the installation 
+directory, database name and site path.
 
 1. Make a copy of `config/secrets.yml.example` as `config/secrets.yml` (you'll probably need to have one for development 
-anyway - make sure it has a valid `production` section)
+anyway - make sure it has a valid `production` section). Note: `secrets.yml` is included in the `.gitignore` to prevent 
+it being accidentally uploaded to Github. 
 
 1. Run 
-```bash
-$ cd <root of this repo>
-$ ansible-playbook scripts/deploy-site.yml -i scripts/hosts --extra-vars "@scripts/variables.yml"
-```
+    ```bash
+    $ cd open-doors-temp-site/
+    $ ./scripts/deploy-site-from-variables.sh
+    ```
+
+Note: the bash script is just provided as a convenience to load parameters from `variables.yml`. If you are working on 
+multiple sites, you might want to have different variable files and an edited copy of the bash script for each one.
+
+# Archiving a site
+When you are finished with the site and it has been fully imported, you can archive it using the following procedure:
+
+1. Edit your `scripts/variables.yml` to include the details for your site.
+1. Run
+    ```bash
+    $ cd open-doors-temp-site/
+    $ ./scripts/remove-site-from-variables.sh
+    ```
+
+If all goes well, this will bundle the MySQL tables and app directory into a zip file and download it to the root of the 
+repository on your local machine.
 
 # Vagrant deployment
 To test the Ansible provisioning and deployment using Vagrant:
@@ -70,7 +84,7 @@ To test the Ansible provisioning and deployment using Vagrant:
 1. Make a copy of `variables.yml.example` as `variables.yml` and fill it in with the details 
    of the site you're creating.
    
-1.  navigate to the root of the project and then type:
+1. Navigate to the root of the project and then type:
 
 ```bash
 $ cd <root of this repo>
@@ -85,7 +99,7 @@ The same provisioning script used to set up the remote server will be used to pr
 To deploy a site manually:
  
 ```bash
-$ ansible-playbook scripts/deploy-site.yml -u ubuntu -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory --extra-vars "@scripts/variables.yml"
+$ ansible-playbook scripts/ansible/deploy-site.yml -u ubuntu -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory --extra-vars "@scripts/variables.yml"
 ```
 
 # Server provisioning
@@ -96,3 +110,7 @@ To set up a new server from scratch on Ubuntu 16, including fresh installations 
 $ cd <root of this repo>
 $ ansible-playbook scripts/provision-server.yml -i scripts/hosts --extra-vars "@scripts/variables.yml"
 ```
+
+
+# Known Issues
+1. Webpacker compilation fails with no explanation on Linode: this is probably due to lack of memory for the compilcation - stop one of the other sites to resolve this.
