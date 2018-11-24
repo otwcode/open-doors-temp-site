@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
 import promise from "redux-promise";
 import reducers from "../reducers/index";
 
