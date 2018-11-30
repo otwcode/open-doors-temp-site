@@ -40,7 +40,7 @@ describe AuthorsController, type: :controller do
   end
   
   it "initiates an import for the given author" do
-    post :import_author, params: {author_id: author1.id}
+    post :import_author, params: { author_id: author1.id }
     expect(response.status).to be 200
     parsed_body = JSON.parse(response.body).symbolize_keys
     expect(parsed_body[:status]).to eq "Ok"

@@ -49,14 +49,14 @@ class Story < ApplicationRecord
     )
   end
 
-  def to_work(collection, host)
+  def to_work(archive_config, host)
     Request::Work.new(
       title,
       author.name,
       author.email,
       (coauthor.nil? ? "" : coauthor.name),
       (coauthor.nil? ? "" : coauthor.email),
-      collection,
+      archive_config.collection_name,
       fandoms,
       warnings,
       characters,
@@ -64,7 +64,7 @@ class Story < ApplicationRecord
       relationships,
       categories,
       tags,
-      notes,
+      "#{archive_config.stories_note}\n#{notes}",
       id,
       summary,
       chapters.map { |c| chapter_url(c, host: host) }

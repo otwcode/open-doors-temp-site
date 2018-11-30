@@ -6,9 +6,8 @@ class ItemsController < ApplicationController
   include Item
 
   def initialize
-    archive_config = ArchiveConfig.archive_config
-    api_settings = Rails.application.secrets[:ao3api][archive_config.host.to_sym]
-    import_config = OtwArchive::ImportConfig.new(api_settings[:url], api_settings[:key], "testy")
+    api_settings = Rails.application.secrets[:ao3api][@archive_config.host.to_sym]
+    import_config = OtwArchive::ImportConfig.new(api_settings[:url], api_settings[:key], @archive_config)
     @client = OtwArchive::Client.new(import_config)
     super
   end
@@ -32,13 +31,13 @@ class ItemsController < ApplicationController
         if type == "story"
           {
             works: [
-              item.to_work(@archive_config.collection_name, request.host_with_port)
+              item.to_work(@archive_config, request.host_with_port)
             ]
           }
         else
           {
             bookmarks: [
-              item.to_bookmark(@client.config.archivist, @archive_config.collection_name)
+              item.to_bookmark(@archive_config)
             ]
           }
         end
@@ -145,13 +144,13 @@ class ItemsController < ApplicationController
       if type == "story"
         {
           works: [
-            item.to_work(@archive_config.collection_name, request.host_with_port)
+            item.to_work(@archive_config, request.host_with_port)
           ]
         }
       else
         {
           bookmarks: [
-            item.to_bookmark(@client.config.archivist, @archive_config.collection_name)
+            item.to_bookmark(@archive_config)
           ]
         }
       end

@@ -1,6 +1,8 @@
 module OtwArchive
   module Request
     class Bookmark
+      attr_reader :id, :notes
+
       def initialize(pseud_id, id, url, author, title, summary, fandom_string, rating_string, category_string,
                      relationship_string, character_string, collection_names, notes, tag_string, private, rec)
         @pseud_id = pseud_id
