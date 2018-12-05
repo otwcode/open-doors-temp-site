@@ -60,6 +60,11 @@
       owner: "{{ remote_user }}"
       group: "{{ remote_group }}"
       state: directory
+
+  - name: Update bundler
+    command: gem install bundler
+    args:
+      chdir: "{{ deploy_path }}"
       
   - name: Update bundle
     command: bundle update
