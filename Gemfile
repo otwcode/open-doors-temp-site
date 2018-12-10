@@ -19,8 +19,8 @@ gem 'faraday_middleware'
 gem 'audited', '~> 4.4'
 
 # Use React for the front end
-gem 'webpacker'
 gem 'react-rails'
+gem 'webpacker'
 
 
 # Use Redis adapter to run Action Cable in production
@@ -35,6 +35,7 @@ group :development do
   gem 'web-console', '>= 3.3.0'
   # gem 'listen', '~> 3.0.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'derailed_benchmarks'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end

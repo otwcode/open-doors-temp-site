@@ -13,7 +13,7 @@
     - name: Install Python 2 for Ansible < 2.3
       raw: sudo apt-get -y install python-simplejson
 
-    - name: "Create a secondary, non-root user"
+    - name: Create a secondary, non-root user
       user:
         name: "{{ remote_user }}"
         password: "{{ remote_pw_hash }}"
@@ -67,10 +67,25 @@
       - python
       - python-mysqldb
       - redis
-      - ruby
-      - ruby-dev
+      - software-properties-common
       - zlib1g-dev
-      
+
+  - name: Update apt-get for RVM
+    command: sudo apt-add-repository -y ppa:rael-gc/rvm
+
+  - name: Update apt-get for RVM
+    command: sudo apt-get update
+
+  - name: Install RVM
+    apt:
+      name: rvm
+
+  - name: Add normal user to rvm group
+    user:
+      name: '{{ remote_user }}'
+      groups: rvm
+      append: yes
+
   - name: Download Node for React front-end
     command: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
   
@@ -110,10 +125,10 @@
       - nokogiri
       - unicorn
 
-  - name: Install Rails 5.1
+  - name: Install Rails 5.2
     gem:
       name: rails
-      version: 5.1
+      version: 5.2
       state: present
       user_install: false
 
