@@ -15,6 +15,12 @@
       state: stopped
     ignore_errors: yes
 
+  - name: Stop app if already running
+    service:
+      name: "{{ unicorn_script }}"
+      state: disabled
+    ignore_errors: yes
+
   - name: Perform database dump
     mysql_db:
       state: dump
@@ -49,11 +55,10 @@
       state: absent
     when: downloaded
 
-  - name: Remove Bundle directory
+  - name: Delete service
     file:
-      path: "{{ remote_path }}/../bundler/{{ repo_version }}"
+      path: "/etc/init.d/unicorn_{{ sitekey }}"
       state: absent
-    when: downloaded
 
   - name: Delete MySQL database
     mysql_db:
