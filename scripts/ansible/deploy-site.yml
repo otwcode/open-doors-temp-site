@@ -53,7 +53,10 @@
       src: "{{ playbook_dir }}/../../config/secrets.yml"
       dest: "{{ deploy_path }}/config/secrets.yml"
 
-  # Install
+  # Install Bundle
+#  - name: Alias Bundler
+#    command: rvm alias create default ruby-2.3.7
+
   - name: Create Bundle directory 
     file:
       path: "{{ remote_path }}/../bundler/{{ repo_version }}"
@@ -61,23 +64,23 @@
       group: "{{ remote_group }}"
       state: directory
 
-  - name: Update bundler
-    command: gem install bundler
-    args:
-      chdir: "{{ deploy_path }}"
-    become: false
+#  - name: Update bundler
+#    command: gem install bundler
+#    args:
+#      chdir: "{{ deploy_path }}"
+#    become: false
 
-  - name: Update bundle
-    command: bundle update
-    args:
-      chdir: "{{ deploy_path }}"
-    become: false
+#  - name: Update bundle
+#    command: bundle update
+#    args:
+#      chdir: "{{ deploy_path }}"
+#    become: no
 
-  - name: Install bundle
-    command: bundle install --deployment --path={{ remote_path }}/../bundler/{{ repo_version }}
-    args:
-      chdir: "{{ deploy_path }}"
-    become: false
+#  - name: Install bundle
+#    command: bundle install --deployment --path={{ remote_path }}/../bundler/{{ repo_version }}
+#    args:
+#      chdir: "{{ deploy_path }}"
+#    become: false
 
   - debug: 
       msg: ~~~~~~~  FRONT END ~~~~~~~~~~
