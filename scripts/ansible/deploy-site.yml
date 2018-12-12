@@ -1,13 +1,14 @@
 ---
 - name: Deploy Open Doors temporary site for '{{ sitekey }}'
   hosts: all
-  remote_user: "{{ remote_user }}"
+  remote_user: "{{ opendoors_user }}"
   become: yes
 
   vars:
     repo: https://github.com/otwcode/open-doors-temp-site.git
     deploy_path: "{{ remote_path }}/{{ sitekey }}"
     unicorn_script: unicorn_{{ sitekey }}
+    bundle_with_path: /usr/share/rvm/gems/ruby-2.3.7/wrappers/bundle
 
   tasks:
   - name: Stop app if already running
@@ -24,7 +25,7 @@
   - name: Create directory on Open Doors site
     file:
       path: "{{ deploy_path }}"
-      owner: "{{ remote_user }}"
+      owner: "{{ opendoors_user }}"
       group: "{{ remote_group }}"
       state: directory
 
@@ -36,6 +37,7 @@
       accept_hostkey: yes
       update: yes
       version: "{{ repo_version }}"
+    become: false
 
   - name: Remove .git directory so the repo can't be inadvertently updated
     file:
@@ -54,33 +56,33 @@
       dest: "{{ deploy_path }}/config/secrets.yml"
 
   # Install Bundle
-#  - name: Alias Bundler
-#    command: rvm alias create default ruby-2.3.7
+  - name: Alias Ruby
+    command: /usr/share/rvm/bin/rvm alias create default ruby-2.3.7
 
   - name: Create Bundle directory 
     file:
       path: "{{ remote_path }}/../bundler/{{ repo_version }}"
-      owner: "{{ remote_user }}"
+      owner: "{{ opendoors_user }}"
       group: "{{ remote_group }}"
       state: directory
 
-#  - name: Update bundler
-#    command: gem install bundler
-#    args:
-#      chdir: "{{ deploy_path }}"
-#    become: false
+  - name: Update bundler
+    command: gem install bundler
+    args:
+      chdir: "{{ deploy_path }}"
+    become: false
 
-#  - name: Update bundle
-#    command: bundle update
-#    args:
-#      chdir: "{{ deploy_path }}"
-#    become: no
+  - name: Update bundle
+    command: bundle update
+    args:
+      chdir: "{{ deploy_path }}"
+    become: false
 
-#  - name: Install bundle
-#    command: bundle install --deployment --path={{ remote_path }}/../bundler/{{ repo_version }}
-#    args:
-#      chdir: "{{ deploy_path }}"
-#    become: false
+  - name: Install bundle
+    command: bundle install --deployment --path={{ remote_path }}/../bundler/{{ repo_version }}
+    args:
+      chdir: "{{ deploy_path }}"
+    become: false
 
   - debug: 
       msg: ~~~~~~~  FRONT END ~~~~~~~~~~
@@ -98,7 +100,7 @@
   - name: Create log, pid and socket folders for Unicorn
     file:
       dest: "{{ deploy_path }}/{{ item }}"
-      owner: "{{ remote_user }}"
+      owner: "{{ opendoors_user }}"
       group: "{{ remote_group }}"
       state: directory
     with_items:
@@ -107,6 +109,7 @@
       - runtime/pids
       - node_modules
       - tmp
+    become: false
 
   - name: Chmod log and node_modules directory
     file:
@@ -127,7 +130,7 @@
       chdir: "{{ deploy_path }}"
 
   - name: Precompile assets
-    command: bundle exec rake assets:precompile
+    command: /usr/share/rvm/gems/ruby-2.3.7/wrappers/bundle exec rake assets:precompile
     become: false
     args:
       chdir: "{{ deploy_path }}"
@@ -137,6 +140,11 @@
   - debug: 
       msg: ~~~~~~~  DATABASE ~~~~~~~~~~
 
+#  - name: Create .my.cnf for root
+#    copy:
+#      content: "[client]\nuser={{ mysql_user }}\npassword={{ mysql_pw }}\nhost=127.0.0.1"
+#      dest: "/home/root/.my.cnf"
+
   - name: Create database config file
     template:
      src: "{{ playbook_dir }}/templates/database.yml.j2"
@@ -145,14 +153,17 @@
       - database
 
   - name: Check if DB exists (2 = no)
-    shell: mysql --host=127.0.0.1 --user={{ mysql_user }} --password={{ mysql_pw }} -e 'SHOW DATABASES;' | grep -c {{ sitekey }}
+    shell: mysql -e 'SHOW DATABASES;' | grep -c {{ sitekey }}
     register: dbstatus
+    ignore_errors: yes
+    tags:
+      - database
 
   - name: Copy MySQL script
     template:
       src: "{{ playbook_dir }}/templates/archive_config.sql.j2"
       dest: "{{ deploy_path }}/archive_config.sql"
-    when: dbstatus.rc == 2
+    when: dbstatus.rc == 1
     tags:
       - database
 
@@ -164,7 +175,7 @@
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
     register: create_database
-    when: dbstatus.rc == 2
+    when: dbstatus.rc == 1
     tags:
       - database
 
@@ -176,12 +187,12 @@
       login_user: "{{ mysql_user }}"
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
-    when: dbstatus.rc == 2
+    when: dbstatus.rc == 1
     tags:
       - database
     
   - name: Run migrations 
-    command: bundle exec rake db:migrate
+    command: "{{ bundle_with_path }} exec rake db:migrate"
     args:
       chdir: "{{ deploy_path }}"
     environment:
@@ -190,7 +201,7 @@
       - database
 
   - name: Create Open Doors user for the site
-    command: bundle exec rake users:create_user["Open Doors","{{ opendoors_site_user_email }}","{{ opendoors_site_user_pw }}"]
+    command: "{{ bundle_with_path }} exec rake users:create_user[\"Open Doors\",\"{{ opendoors_site_user_email }}\",\"{{ opendoors_site_user_pw }}\"]"
     args:
       chdir: "{{ deploy_path }}"
     environment:
