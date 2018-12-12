@@ -1,7 +1,7 @@
 ---
 - name: Deploy Open Doors temporary site for '{{ sitekey }}'
   hosts: all
-  remote_user: "{{ remote_user }}"
+  remote_user: "{{ opendoors_user }}"
   become: yes
 
   vars:
