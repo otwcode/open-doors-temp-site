@@ -1,13 +1,4 @@
-<%= react_component("navigation/Navigation", {
-    data: {
-        logo_path: asset_path("Opendoors.png"),
-        letter: params[:letter] || 'A',
-        config: @api_config.merge(@archive_config),
-        current_user: current_user&.name || '',
-    },
-    page: params[:page] || '1',
-    config_path: archive_config_path(@archive_config)
-}) %>
+<%= render partial: "shared/navigation" %>
 
 <div class="container">
   <%
