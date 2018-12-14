@@ -40,7 +40,7 @@ export default class App extends Component {
                     <Route path={`/${sitekey}`} exact
                            render={() => <AuthorsPage data={this.props} user={this.state.current_user} />} />
                     <Route path={`/${sitekey}/authors`}
-                           render={() => <AuthorsPage data={this.props} />} />
+                           render={() => <AuthorsPage data={this.props} user={this.state.current_user} />} />
                     <Route path={`/${sitekey}/stats`}
                            render={() => <StatsPage/>} />
                     <Route component={() => <h1>Not found</h1>} />

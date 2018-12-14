@@ -96,12 +96,12 @@ ActiveRecord::Schema.define(version: 0) do
   end
 
   create_table "story_links", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "title", default: "", null: false, collation: "latin1_swedish_ci"
+    t.string "title", default: "", null: false
     t.text "summary"
     t.text "notes"
     t.integer "author_id", default: 0
-    t.string "rating", default: "", null: false, collation: "latin1_swedish_ci"
-    t.date "date"
+    t.string "rating", default: "", null: false
+    t.datetime "date"
     t.datetime "updated"
     t.string "categories", limit: 45
     t.string "tags", default: "", null: false

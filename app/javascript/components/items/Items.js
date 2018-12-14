@@ -90,13 +90,19 @@ class Item extends Component {
               }
               <br/>
 
-              <b>Summary: </b><span dangerouslySetInnerHTML={{ __html: item.summary }}/><br/>
+              <b>Summary: </b><span dangerouslySetInnerHTML={{ __html: item.summary }}/>
+              {item.summaryTooLong ?
+                <span className="badge badge-danger">{item.summaryLength}</span> : ""}<br/>
 
               {(isStory) ?
                 <ol>
                   {
                     item.chapters.map((chapter) => {
-                      return <li key={`chapter-${chapter.id}`}><a href={`/${sitekey}/chapters/${chapter.id}`}>{chapter.title}</a></li>
+                      return (
+                        <li key={`chapter-${chapter.id}`}><a href={`/${sitekey}/chapters/${chapter.id}`}>{chapter.title}</a>
+                          {chapter.textTooLong ?
+                          <span className="badge badge-danger">{chapter.textLength}</span> : ""}
+                        </li>)
                     })
                   }
                 </ol> : ''

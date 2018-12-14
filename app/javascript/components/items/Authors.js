@@ -8,9 +8,15 @@ import { sitekey } from "../../config";
 export default class Authors extends Component {
   constructor(props) {
     super(props);
-    this.state = { authors: [] };
-    this.fetchAuthors(this.props.letter);
+    this.state = { authors: this.props.authors };
   };
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.authors !== state.authors) {
+      return { authors: props.authors };
+    }
+    return null;
+  }
 
   onReceived = (message) => {
     if (message.response && this.state.authors.some(a => a.id.toString() === message.response.author_id)) {
@@ -21,28 +27,6 @@ export default class Authors extends Component {
         }
       })
     }
-  };
-
-  componentWillUpdate = (newProps) => {
-    if (this.props.letter !== newProps.letter) {
-      this.fetchAuthors(newProps.letter);
-    }
-  };
-
-  fetchAuthors = (letter, page) => {
-    axios.get(`/${sitekey}/authors/letters/${letter}${page ? '?page=' + page : ''}`,
-      { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-      .then(res => {
-        this.setState({ authors: res.data });
-      })
-      .catch(err => {
-        return {
-          authors: {
-            status: err.response.statusText,
-            error: `Could not retrieve authors for letter ${letter}`
-          }
-        }
-      });
   };
 
   render() {

@@ -1,67 +1,72 @@
-<h1>Edit archive config</h1>
+<%= render partial: "shared/navigation" %>
+<div class="container">
+  <h1>Edit archive config</h1>
 
-<%= form_for(@archive_config) do |f| %>
-  <% if @archive_config.errors.any? %>
-    <div id="alert alert-danger error_explanation">
-      <h2><%= pluralize(@archive_config.errors.count, "error") %> stopped this archive config from being saved:</h2>
+  <%= form_for(@archive_config) do |f| %>
+    <% if @archive_config.errors.any? %>
+      <div id="alert alert-danger error_explanation">
+        <h2><%= pluralize(@archive_config.errors.count, "error") %> stopped this archive config from being saved:</h2>
 
-      <ul>
-        <% @archive_config.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+        <ul>
+          <% @archive_config.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="field form-group">
+      <% host_list = ENV['RAILS_ENV'] == "production" ? [:ariana, :test, :live] : [:local, :ariana, :test, :live] %>
+      <%= f.label :host %>
+      <%= f.select :host, host_list, {}, class: "form-control" %>
+      <small id="hostHelp" class="form-text">Warning: changing this will clear imported and do not import flags and AO3
+        urls from all stories and story links
+      </small>
+    </div>
+
+    <div class="field form-group">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
+
+    <div class="field form-group">
+      <%= f.label :fandom %>
+      <%= f.text_field :fandom, class: "form-control" %>
+    </div>
+
+    <div class="field form-group">
+      <%= f.label :stories_note %>
+      <%= f.text_area :stories_note, class: "form-control" %>
+    </div>
+
+    <div class="field form-group">
+      <%= f.label :bookmarks_note %>
+      <%= f.text_area :bookmarks_note, class: "form-control" %>
+    </div>
+
+    <div class="field form-group">
+      <%= f.label :send_email %>
+      <%= f.check_box :send_email %>
+    </div>
+
+    <div class="field form-group">
+      <%= f.label :post_preview %>
+      <%= f.check_box :post_preview %>
+    </div>
+
+    <div class="field form-group">
+      <%= f.label :archivist %>
+      <%= f.text_field :archivist, class: "form-control" %>
+    </div>
+
+    <div class="field form-group">
+      <%= f.label :collection_name %>
+      <%= f.text_field :collection_name, class: "form-control" %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit "Update archive config", class: "btn btn-primary" %>
+      <%= link_to "Back to archive config", @archive_config, class: "btn btn-info" %>
     </div>
   <% end %>
-
-  <div class="field form-group">
-    <% host_list = ENV['RAILS_ENV'] == "production" ? [:ariana, :test, :live] : [:local, :ariana, :test, :live]  %>
-    <%= f.label :host %>
-    <%= f.select :host, host_list, {}, class: "form-control" %>
-    <small id="hostHelp" class="form-text">Warning: changing this will clear imported and do not import flags and AO3 urls from all stories and story links</small>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :name %>
-    <%= f.text_field :name, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :fandom %>
-    <%= f.text_field :fandom, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :stories_note %>
-    <%= f.text_area :stories_note, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :bookmarks_note %>
-    <%= f.text_area :bookmarks_note, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :send_email %>
-    <%= f.check_box :send_email %>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :post_preview %>
-    <%= f.check_box :post_preview %>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :archivist %>
-    <%= f.text_field :archivist, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :collection_name %>
-    <%= f.text_field :collection_name, class: "form-control" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Update archive config", class: "btn btn-primary" %>
-    <%= link_to "Back to archive config", @archive_config, class: "btn btn-info" %>
-  </div>
-<% end %>
+</div>
