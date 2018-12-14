@@ -18,12 +18,19 @@ class Story < ApplicationRecord
   end
 
   def as_json(options = {})
-    hash = super(include: { chapters: { only: [:id, :title, :position] } })
+    hash = super(include: { chapters: { only: [:id, :title, :position, :text] } })
     hash.merge!(
       date: date.strftime("%Y-%m-%d"),
       updated: date.strftime("%Y-%m-%d"),
+      summaryLength: summary.size,
+      summaryTooLong: summary.size > 1250,
       chapters: chapters.map { |c|
-        c.as_json(only: [:id, :title, :position]).merge!(title: (c.title.blank? ? "Chapter #{c.position}" : c.title))
+        c.as_json(only: [:id, :title, :position])
+          .merge!(
+            title: (c.title.blank? ? "Chapter #{c.position}" : c.title),
+            textLength: c.text.size,
+            textTooLong: c.text.size > 510_000 # Same as Archive MAX_LENGTH
+          ).except!(:content)
       }
     )
   end

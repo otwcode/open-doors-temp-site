@@ -4,8 +4,8 @@ class Author < ApplicationRecord
   audited comment_required: true
   has_associated_audits
 
-  has_many :stories, (-> { order(Arel.sql('lower(title)')) })
-  has_many :story_links, (-> { order Arel.sql('lower(title)') })
+  has_many :stories, (-> { order(Arel.sql('lower(stories.title)')) })
+  has_many :story_links, (-> { order Arel.sql('lower(story_links.title)') })
   default_scope { order Arel.sql('lower(name)') }
   # All items
   scope :with_stories, (-> { joins(:stories).where("stories.id IS NOT NULL") })
@@ -21,12 +21,27 @@ class Author < ApplicationRecord
     do_not_import || items_all_imported?
   end
 
+  def item_errors
+    errors = []
+    stories_with_chapters.each { |s|
+      if s.summary.length > 1250
+        errors << "Summary for story '#{s.title}' is too long (#{s.summary.length})"
+      end
+      s.chapters.map { |c|
+        if c.text.length > 510_000
+          errors << "Chapter #{c.position} in story '#{s.title}' is too long (#{c.text.length})"
+        end
+      }
+    }
+    errors
+  end
+
   def coauthored_stories
     Story.where(coauthor_id: id)
   end
 
   def stories_with_chapters
-    Story.where(author_id: id).joins(:chapters).group(:id)
+    stories.joins(:chapters).group(:id)
   end
 
   def all_items_as_json
@@ -50,7 +65,8 @@ class Author < ApplicationRecord
         name: a.name,
         imported: a.imported,
         s_to_import: a.stories.where(imported: false).count,
-        l_to_import: a.story_links.where(imported: false).count
+        l_to_import: a.story_links.where(imported: false).count,
+        errors: a.item_errors
       }
     end.group_by { |a| a[:name][0].upcase }
   end

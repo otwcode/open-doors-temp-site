@@ -111,6 +111,13 @@ class Author extends Component {
       <span/>;
   };
 
+  authorClass(isImported, author) {
+    const imported = isImported ? "imported" : "";
+    const dni = author.do_not_import ? "do_not_import" : "";
+    const errors = author.errors && author.errors.length > 0 ? "error" : "";
+    return `author ${imported} ${dni} ${errors}`;
+  }
+
   render() {
     // Extract data from the state
     const { open, isImporting, isChecking } = this.state;
@@ -128,7 +135,6 @@ class Author extends Component {
 
     return (
       <Card key={key} id={key} className={cardClass}>
-        <a name={this.props.author.name.replace(' ', '_').toLowerCase()}/>
         <Card.Header onClick={this.handleAuthorClick}
                      aria-controls={`${key}-collapse`}
                      aria-expanded={open}
@@ -136,11 +142,12 @@ class Author extends Component {
           <ActionCable ref='importsChannel' channel={{ channel: 'ImportsChannel', room: '1' }}
                        onReceived={this.handleBroadcast}/>
           <ButtonToolbar className="justify-content-between">
-            <Card.Title>{this.props.author.name}</Card.Title>
+            <Card.Title>{author.name}</Card.Title>
             { this.props.user ?
             <ImportButtons isChecking={isChecking} onChecking={this.handleChecking} onDNI={this.handleDNI}
                            isImporting={isImporting} isImported={isImported} onImporting={this.handleImporting}/>
               : "" }
+            {author.errors.length > 0 && <ul>{author.errors.map(e => <li>{e}</li>)}</ul>}
           </ButtonToolbar>
           {this.msgAlert(key, messages)}
         </Card.Header>
