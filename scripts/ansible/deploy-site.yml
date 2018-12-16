@@ -70,12 +70,18 @@
   - name: Alias Ruby
     command: /usr/share/rvm/bin/rvm alias create default ruby-2.3.7
 
+  - name: Permissions on bundle cache
+    file:
+      path: /home/{{ opendoors_user }}/.gem/ruby/2.3.0/cache
+      mode: 0777
+
   - name: Create Bundle directory 
     file:
       path: "{{ remote_path }}/../bundler/{{ repo_version }}"
       owner: "{{ opendoors_user }}"
       group: "{{ remote_group }}"
       state: directory
+    become: false
 
   - name: Install bundler gem
     command: gem install bundler
