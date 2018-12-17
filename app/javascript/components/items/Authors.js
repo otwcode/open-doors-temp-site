@@ -2,8 +2,6 @@ import React, { Component } from "react";
 
 import { ActionCable } from "react-actioncable-provider";
 import Author from "./Author";
-import axios from "axios";
-import { sitekey } from "../../config";
 
 export default class Authors extends Component {
   constructor(props) {

@@ -21,19 +21,8 @@ class Author < ApplicationRecord
     do_not_import || items_all_imported?
   end
 
-  def item_errors
-    errors = []
-    stories_with_chapters.each { |s|
-      if s.summary.length > 1250
-        errors << "Summary for story '#{s.title}' is too long (#{s.summary.length})"
-      end
-      s.chapters.map { |c|
-        if c.text.length > 510_000
-          errors << "Chapter #{c.position} in story '#{s.title}' is too long (#{c.text.length})"
-        end
-      }
-    }
-    errors
+  def items_errors
+    stories_with_chapters.map(&:item_errors).reject(&:empty?)
   end
 
   def coauthored_stories
@@ -66,7 +55,7 @@ class Author < ApplicationRecord
         imported: a.imported,
         s_to_import: a.stories.where(imported: false).count,
         l_to_import: a.story_links.where(imported: false).count,
-        errors: a.item_errors
+        errors: a.items_errors
       }
     end.group_by { |a| a[:name][0].upcase }
   end

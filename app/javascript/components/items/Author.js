@@ -63,10 +63,10 @@ class Author extends Component {
     );
   };
 
-  stopEvents(e) {
+  stopEvents = (e) => {
     e.preventDefault();
     e.stopPropagation();
-  }
+  };
 
   handleChecking = (e) => {
     this.stopEvents(e);
@@ -111,12 +111,14 @@ class Author extends Component {
       <span/>;
   };
 
-  authorClass(isImported, author) {
+  authorClass = (isImported, author) => {
+    if (author) {
     const imported = isImported ? "imported" : "";
     const dni = author.do_not_import ? "do_not_import" : "";
     const errors = author.errors && author.errors.length > 0 ? "error" : "";
     return `author ${imported} ${dni} ${errors}`;
-  }
+    } else return "author";
+  };
 
   render() {
     // Extract data from the state
@@ -131,10 +133,9 @@ class Author extends Component {
     // Some utility variables for simplicity
     const key = `author-${author.id}`;
     const headerClass = (isImporting ? " importing" : "") + (isChecking ? " checking" : "");
-    const cardClass = `author ${isImported ? "imported" : ""} ${author.do_not_import ? "do_not_import" : ""}`;
 
     return (
-      <Card key={key} id={key} className={cardClass}>
+      <Card key={key} id={key} className={this.authorClass(isImported, author)}>
         <Card.Header onClick={this.handleAuthorClick}
                      aria-controls={`${key}-collapse`}
                      aria-expanded={open}
@@ -147,7 +148,7 @@ class Author extends Component {
             <ImportButtons isChecking={isChecking} onChecking={this.handleChecking} onDNI={this.handleDNI}
                            isImporting={isImporting} isImported={isImported} onImporting={this.handleImporting}/>
               : "" }
-            {author.errors.length > 0 && <ul>{author.errors.map(e => <li>{e}</li>)}</ul>}
+            {author.errors.length > 0 && <ul>{author.errors.map((e, i) => <li key={i}>{e}</li>)}</ul>}
           </ButtonToolbar>
           {this.msgAlert(key, messages)}
         </Card.Header>
