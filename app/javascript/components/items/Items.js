@@ -19,6 +19,11 @@ class Item extends Component {
     };
   }
 
+  stopEvents = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   handleItemClick = () => {
     this.setState({ open: !this.state.open })
   };
@@ -28,18 +33,18 @@ class Item extends Component {
     this.setState({ hideAlert: true });
   };
 
-  msgAlert = (key, messages, success) => {
-    const hasError = !success;
+  msgAlert = (key, messages, success, errors) => {
+    const hasError = !success || errors.length > 0;
     // TODO fix this when AO3-5572 is done
-    let msg = undefined;
+    let msg = errors;
     if (typeof(messages) === "string") {
-      msg = messages;
+      msg.append(messages);
     } else if (messages) {
-      msg = messages.length > 0 ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : "";
+      msg.concat(messages);
     }
-    return msg ?
+    return msg.length > 0 ?
       <Alert key={`${key}-msg`} variant={hasError ? "danger" : "success"} className="alert-dismissible" hidden={this.state.hideAlert}>
-        {msg}
+        {<ul>{msg.map((item, idx) => <li key={idx}>{item}</li>)}</ul>}
         <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={this.handleAlertDismiss}>
           <span aria-hidden="true">&times;</span>
         </button>
@@ -47,16 +52,23 @@ class Item extends Component {
       <span/>;
   };
 
+  itemClass = (item) => {
+    if (item) {
+      const imported = item.imported ? "imported" : "";
+      const dni = item.do_not_import ? "do_not_import" : "";
+      const errors = item.errors && item.errors.length > 0 ? "error" : "";
+      return `item ${imported} ${dni} ${errors}`;
+    } else return "item";
+  };
+
   render() {
-    const item = this.props.item;
-    const isStory = this.props.isStory;
+    const { item, isStory, isImporting } = this.props;
     const key = isStory ? `story-${item.id}` : `link-${item.id}`;
-    const headerClass = this.props.isImporting ? "importing" : "";
-    const cardClass = item.imported ? "imported" : "";
+    const headerClass = isImporting ? "importing" : "";
     const { messages, success, ao3_url } = this.props.importResult ? this.props.importResult : {};
     const archive_url = ao3_url || item.ao3_url;
     return (
-        <Card id={key} key={key} className={cardClass}>
+        <Card id={key} key={key} className={this.itemClass(item)}>
           <Card.Header onClick={this.handleItemClick}
                        aria-controls="blurb"
                        aria-expanded={open}
@@ -73,7 +85,7 @@ class Item extends Component {
                 <Button variant="outline-info" size="sm" className="import-button" href={archive_url} target="_blank">AO3</Button>
                 : ""}
             </ButtonToolbar>
-            {this.msgAlert(key, messages, success)}
+            {this.msgAlert(key, messages, success, item.errors)}
           </Card.Header>
           <Collapse in={this.state.open}>
             <Card.Body>

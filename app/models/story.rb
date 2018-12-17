@@ -17,9 +17,23 @@ class Story < ApplicationRecord
     !self.imported && !self.do_not_import
   end
 
+  def item_errors
+    errors = []
+    if summary.length > 1250
+      errors << "Summary for story '#{title}' is too long (#{summary.length})"
+    end
+    chapters.map { |c|
+      if c.text.length > 510_000
+        errors << "Chapter #{c.position} in story '#{title}' is too long (#{c.text.length})"
+      end
+    }
+    errors
+  end
+
   def as_json(options = {})
     hash = super(include: { chapters: { only: [:id, :title, :position, :text] } })
     hash.merge!(
+      errors: item_errors,
       date: date.strftime("%Y-%m-%d"),
       updated: date.strftime("%Y-%m-%d"),
       summaryLength: summary.size,
