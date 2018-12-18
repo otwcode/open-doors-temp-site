@@ -30,9 +30,9 @@ class StoryLink < ApplicationRecord
     )
   end
 
-  def to_bookmark(archivist, collection)
+  def to_bookmark(archive_config)
     Request::Bookmark.new(
-      archivist,
+      archive_config.archivist,
       id,
       url,
       author.name,
@@ -43,8 +43,8 @@ class StoryLink < ApplicationRecord
       categories,
       relationships,
       characters,
-      collection,
-      notes,
+      archive_config.collection_name,
+      "#{archive_config.bookmarks_note}\n#{notes}",
       tags,
       false,
       false

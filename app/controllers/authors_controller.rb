@@ -35,7 +35,7 @@ class AuthorsController < ApplicationController
       broadcast = { author_id: id, isImporting: true, message: "#{current_user&.name}: Starting import for #{author.name}" }
       ActionCable.server.broadcast 'imports_channel', broadcast
 
-      response = author.import(@client, @archive_config.collection_name, request.host_with_port)
+      response = author.import(@client, request.host_with_port)
 
       message = "#{current_user&.name || 'Anonymous'}: Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
 
@@ -89,7 +89,7 @@ class AuthorsController < ApplicationController
     message = { author_id: author.id, message: "Checking #{author.name}" }
     ActionCable.server.broadcast 'imports_channel', message
 
-    response = author.check(@client, @archive_config.collection_name, request.host_with_port)
+    response = author.check(@client, request.host_with_port)
 
     message = { author_id: author.id, message: "Checked #{author.name}. response: #{response}" }
     ActionCable.server.broadcast 'imports_channel', message
@@ -119,7 +119,7 @@ class AuthorsController < ApplicationController
   def otw_client
     archive_config = ArchiveConfig.archive_config
     api_settings = Rails.application.secrets[:ao3api][archive_config.host.to_sym]
-    import_config = OtwArchive::ImportConfig.new(api_settings[:url], api_settings[:key], "testy")
+    import_config = OtwArchive::ImportConfig.new(api_settings[:url], api_settings[:key], archive_config = archive_config)
     OtwArchive::Client.new(import_config)
   end
 
