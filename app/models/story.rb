@@ -19,11 +19,11 @@ class Story < ApplicationRecord
 
   def item_errors
     errors = []
-    if summary.length > 1250
+    if summary && summary&.length > SUMMARY_LENGTH
       errors << "Summary for story '#{title}' is too long (#{summary.length})"
     end
     chapters.map { |c|
-      if c.text.length > 510_000
+      if c.text && c.text.length > CHAPTER_LENGTH
         errors << "Chapter #{c.position} in story '#{title}' is too long (#{c.text.length})"
       end
     }
@@ -34,10 +34,10 @@ class Story < ApplicationRecord
     hash = super(include: { chapters: { only: [:id, :title, :position, :text] } })
     hash.merge!(
       errors: item_errors,
-      date: date.strftime("%Y-%m-%d"),
-      updated: date.strftime("%Y-%m-%d"),
-      summaryLength: summary.size,
-      summaryTooLong: summary.size > 1250,
+      date: date&.strftime("%Y-%m-%d"),
+      updated: date&.strftime("%Y-%m-%d"),
+      summaryLength: summary&.size,
+      summaryTooLong: summary && summary.size > 1250,
       chapters: chapters.map { |c|
         c.as_json(only: [:id, :title, :position])
           .merge!(
