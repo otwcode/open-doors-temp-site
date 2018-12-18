@@ -75,8 +75,6 @@ class ItemsController < ApplicationController
     # Is the author now fully imported?
     final_response[0][:author_imported] = item.author.all_imported?
 
-    puts "item import: #{final_response.inspect}"
-
     render json: final_response, content_type: 'text/json'
   end
 
