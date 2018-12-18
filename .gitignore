@@ -43,3 +43,8 @@ bower.json
 /node_modules
 yarn-debug.log*
 .yarn-integrity
+
+# Ansible files
+variables.yml
+*.retry
+hosts

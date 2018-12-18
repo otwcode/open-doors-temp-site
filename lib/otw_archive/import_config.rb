@@ -1,21 +1,19 @@
 module OtwArchive
   class ImportConfig
 
-    attr_reader :archive_host, :token, :archivist, :post_without_preview, :restricted, :override_tags, :detect_tags,
-                :send_claim_emails, :encoding
+    attr_reader :archive_host, :token, :restricted, :override_tags, :detect_tags,
+                :encoding, :archive_config
 
-    def initialize(archive_host, token, archivist, post_without_preview = true, restricted = true,
-                   override_tags = true, detect_tags = false, send_claim_emails = false, encoding = "UTF-8")
-      protocol =  isHttp?(archive_host) ? "http" : "https"
+    def initialize(archive_host, token, restricted = true, override_tags = true, detect_tags = false,
+                   encoding = "UTF-8", archive_config)
+      protocol = isHttp?(archive_host) ? "http" : "https"
       @archive_host = "#{protocol}://#{archive_host}"
       @token = token
-      @archivist = archivist
-      @post_without_preview = post_without_preview
       @restricted = restricted
       @override_tags = override_tags
       @detect_tags = detect_tags
-      @send_claim_emails = send_claim_emails
       @encoding = encoding
+      @archive_config = archive_config
     end
     
     def isHttp?(archive_host)

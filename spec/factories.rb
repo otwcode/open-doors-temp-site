@@ -9,6 +9,11 @@ FactoryBot.define do
     chapters { create_list(:chapter, 2, story_id: id, audit_comment: "A story") }
   end
 
+  factory :story_link do
+    author
+    id { generate :id }
+  end
+
   factory :author do
     id { generate :id }
     sequence(:name) { |n| "Author name #{n}" }
