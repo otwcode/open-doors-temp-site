@@ -41,9 +41,9 @@ class Author < ApplicationRecord
     }
   end
 
-  def works_and_bookmarks(archivist, collection_name, host)
-    works = stories.map { |s| s.to_work(collection_name, host) }
-    bookmarks = story_links.map { |b| b.to_bookmark(archivist, collection_name) }
+  def works_and_bookmarks(archive_config, host)
+    works = stories.map { |s| s.to_work(archive_config, host) }
+    bookmarks = story_links.map { |b| b.to_bookmark(archive_config) }
     [works, bookmarks]
   end
 
@@ -60,7 +60,7 @@ class Author < ApplicationRecord
     end.group_by { |a| a[:name][0].upcase }
   end
 
-  def import(client, collection_name, host)
+  def import(client, host)
     if do_not_import
       response =
         {
@@ -70,7 +70,7 @@ class Author < ApplicationRecord
           bookmarks: []
         }
     else
-      works, bookmarks = works_and_bookmarks(client.config.archivist, collection_name, host)
+      works, bookmarks = works_and_bookmarks(client.config.archive_config, host)
 
       # Perform Archive request
       ao3_response = client.import(works: works, bookmarks: bookmarks)
@@ -82,8 +82,8 @@ class Author < ApplicationRecord
     author_response(client, response)
   end
 
-  def check(client, collection_name, host)
-    works, bookmarks = works_and_bookmarks(client.config.archivist, collection_name, host)
+  def check(client, host)
+    works, bookmarks = works_and_bookmarks(client.config.archive_config, host)
 
     ao3_response = client.search(works: works, bookmarks: bookmarks)
     response = items_responses(ao3_response)
