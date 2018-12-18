@@ -18,7 +18,7 @@ describe Author, type: :model do
     WebMock.reset!
   end
 
-  # it "imports a single author and its items" do
+  # it "imports a single author and its items - live local test" do
   #   import_config = OtwArchive::ImportConfig.new("localhost:3000", "e1b6298a6209dd65e5df95b83b10c0f1", "ariana_paris")
   #   client = OtwArchive::Client.new(import_config)
   #   response = author1.import(client, "testing_collection", "localhost:3000")
