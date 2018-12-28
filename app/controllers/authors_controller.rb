@@ -37,25 +37,25 @@ class AuthorsController < ApplicationController
 
       response = author.import(@client, request.host_with_port)
 
-      message = "#{current_user&.name || 'Anonymous'}: Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
+      broadcast = "#{current_user&.name || 'Anonymous'}: Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
 
       broadcast = {
         author_id: id,
         is_ok: ["ok"].include?(response[:status]),
-        message: message,
+        message: broadcast,
         isImporting: false,
         response: response
       }
       ActionCable.server.broadcast 'imports_channel', broadcast
     rescue StandardError => e
-      message = {
+      broadcast = {
         author_id: id,
         is_ok: false,
         message: "#{current_user&.name}: Error importing #{author.name} with error: #{e.message}.",
         isImporting: false,
         response: response
       }
-      ActionCable.server.broadcast 'imports_channel', message
+      ActionCable.server.broadcast 'imports_channel', broadcast
     end
     render json: response, content_type: "application/json"
   end
@@ -85,15 +85,35 @@ class AuthorsController < ApplicationController
   end
 
   def check
-    author = Author.find(params[:author_id])
-    message = { author_id: author.id, message: "Checking #{author.name}" }
-    ActionCable.server.broadcast 'imports_channel', message
+    id = params[:author_id]
+    author = Author.find(id)
+    response = {}
+    begin
+      broadcast = { author_id: id, isChecking: true, message: "#{current_user&.name}: Checking #{author.name}" }
+      ActionCable.server.broadcast 'imports_channel', broadcast
 
-    response = author.check(@client, request.host_with_port)
+      response = author.check(@client, request.host_with_port)
 
-    message = { author_id: author.id, message: "Checked #{author.name}. response: #{response}" }
-    ActionCable.server.broadcast 'imports_channel', message
+      message = "#{current_user&.name || 'Anonymous'}: Processed check for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
 
+      broadcast = {
+        author_id: id,
+        is_ok: ["ok"].include?(response[:status]),
+        message: message,
+        isChecking: false,
+        response: response
+      }
+      ActionCable.server.broadcast 'imports_channel', broadcast
+    rescue StandardError => e
+      broadcast = {
+        author_id: id,
+        is_ok: false,
+        message: "#{current_user&.name}: Error checking #{author.name} with error: #{e.message}.",
+        isImporting: false,
+        response: response
+      }
+      ActionCable.server.broadcast 'imports_channel', broadcast
+    end
     render json: response, content_type: "application/json"
   end
 
