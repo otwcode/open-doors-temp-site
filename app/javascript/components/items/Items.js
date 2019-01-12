@@ -34,18 +34,22 @@ class Item extends Component {
   };
 
   msgAlert = (key, messages, success, errors) => {
+    console.log(key);
+    console.log(errors);
     const hasError = !success || errors.length > 0;
     // TODO fix this when AO3-5572 is done
     let msg = errors;
-    if (typeof(messages) === "string") {
+    if (typeof (messages) === "string") {
       msg.append(messages);
     } else if (messages) {
       msg.concat(messages);
     }
     return msg.length > 0 ?
-      <Alert key={`${key}-msg`} variant={hasError ? "danger" : "success"} className="alert-dismissible" hidden={this.state.hideAlert}>
+      <Alert key={`${key}-msg`} variant={hasError ? "danger" : "success"} className="alert-dismissible"
+             hidden={this.state.hideAlert}>
         {<ul>{msg.map((item, idx) => <li key={idx}>{item}</li>)}</ul>}
-        <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={this.handleAlertDismiss}>
+        <button type="button" className="close" data-dismiss="alert" aria-label="Close"
+                onClick={this.handleAlertDismiss}>
           <span aria-hidden="true">&times;</span>
         </button>
       </Alert> :
@@ -68,60 +72,68 @@ class Item extends Component {
     const { messages, success, ao3_url } = this.props.importResult ? this.props.importResult : {};
     const archive_url = ao3_url || item.ao3_url;
     return (
-        <Card id={key} key={key} className={this.itemClass(item)}>
-          <Card.Header onClick={this.handleItemClick}
-                       aria-controls="blurb"
-                       aria-expanded={open}
-                       className={headerClass}>
-            <ButtonToolbar className="justify-content-between">
-              <OverlayTrigger
-                  placement="bottom"
-                  overlay={
-                    <Tooltip id="tooltip">id: {item.id}</Tooltip>
-                  }>
-                <Card.Subtitle>{this.props.item.title}</Card.Subtitle>
-              </OverlayTrigger>
-              { archive_url ?
-                <Button variant="outline-info" size="sm" className="import-button" href={archive_url} target="_blank">AO3</Button>
-                : ""}
-            </ButtonToolbar>
-            {this.msgAlert(key, messages, success, item.errors)}
-          </Card.Header>
-          <Collapse in={this.state.open}>
-            <Card.Body>
-              <b>Rating:</b> {item.rating || "None"}<br/>
-              <b>Warnings:</b> {item.warnings || "None"}<br/>
-              <b>Categories:</b> {item.categories || "None"}<br/>
-              <b>Fandoms:</b> {item.fandoms || "None"}<br/>
-              <b>Relationships:</b> {item.relationships || "None"}<br/>
-              <b>Characters:</b> {item.characters || "None"}<br/>
-              <b>Tags:</b> {item.tags || "None"}<br/>
-              <b>Date:</b> {item.date || "No date"}
-              {isStory &&
-              <span>- <b>Updated:</b> {item.updated || "No update date set"}</span>
-              }
-              <br/>
+      <Card id={key} key={key} className={this.itemClass(item)}>
+        <Card.Header onClick={this.handleItemClick}
+                     aria-controls="blurb"
+                     aria-expanded={open}
+                     className={headerClass}>
+          <ButtonToolbar className="justify-content-between">
+            <OverlayTrigger
+              placement="bottom"
+              overlay={
+                <Tooltip id="tooltip">id: {item.id}</Tooltip>
+              }>
+              <Card.Subtitle className="itemTitle">
+                {this.props.item.title}
+              </Card.Subtitle>
+            </OverlayTrigger>
+            {isStory ? '' :
+              <Button variant="outline-primary" size="sm" href={item.url}
+                      className="button-import" title="visit link" target="_blank">
+                <i className="fa fa-external-link"/> Visit link</Button>}
+            {archive_url ?
+              <Button variant="outline-info" size="sm" className="import-button" href={archive_url}
+                      target="_blank">AO3</Button>
+              : ""}
+          </ButtonToolbar>
+          {this.msgAlert(key, messages, success, item.errors)}
+        </Card.Header>
+        <Collapse in={this.state.open}>
+          <Card.Body>
+            <b>Rating:</b> {item.rating || "None"}<br/>
+            <b>Warnings:</b> {item.warnings || "None"}<br/>
+            <b>Categories:</b> {item.categories || "None"}<br/>
+            <b>Fandoms:</b> {item.fandoms || "None"}<br/>
+            <b>Relationships:</b> {item.relationships || "None"}<br/>
+            <b>Characters:</b> {item.characters || "None"}<br/>
+            <b>Tags:</b> {item.tags || "None"}<br/>
+            <b>Date:</b> {item.date || "No date"}
+            {isStory &&
+            <span> - <b>Updated:</b> {item.updated || "No update date set"}</span>
+            }
+            <br/>
 
-              <b>Summary: </b><span dangerouslySetInnerHTML={{ __html: item.summary }}/>
-              {item.summaryTooLong ?
-                <span className="badge badge-danger">{item.summaryLength}</span> : ""}<br/>
+            <b>Summary: </b><span dangerouslySetInnerHTML={{ __html: item.summary }}/>
+            {item.summaryTooLong ?
+              <span className="badge badge-danger">{item.summaryLength}</span> : ""}<br/>
 
-              {(isStory) ?
-                <ol>
-                  {
-                    item.chapters.map((chapter) => {
-                      return (
-                        <li key={`chapter-${chapter.id}`}><a href={`/${sitekey}/chapters/${chapter.id}`}>{chapter.title}</a>
-                          {chapter.textTooLong ?
+            {(isStory) ?
+              <ol>
+                {
+                  item.chapters.map((chapter) => {
+                    return (
+                      <li key={`chapter-${chapter.id}`}><a
+                        href={`/${sitekey}/chapters/${chapter.id}`}>{chapter.title}</a>
+                        {chapter.textTooLong ?
                           <span className="badge badge-danger">{chapter.textLength}</span> : ""}
-                        </li>)
-                    })
-                  }
-                </ol> : ''
-              }
-            </Card.Body>
-          </Collapse>
-        </Card>
+                      </li>)
+                  })
+                }
+              </ol> : ''
+            }
+          </Card.Body>
+        </Collapse>
+      </Card>
     )
   }
 }
@@ -146,7 +158,9 @@ export default class Items extends Component {
                 <div>
                   <Card.Title>Stories</Card.Title>
                   {stories.map((s) => {
-                    const importResult = this.props.works ? this.props.works[s.id] : undefined;
+                    console.log(s);
+                    console.log(this.props);
+                    const importResult = this.props.works ? this.props.works[ s.id ] : undefined;
                     return <Item key={`story-${s.id}`} item={s} isStory={true} importResult={importResult}/>
                   })}
                 </div> : ''
@@ -156,7 +170,7 @@ export default class Items extends Component {
                 <div>
                   <Card.Title>Story Links</Card.Title>
                   {links.map((s) => {
-                    const importResult = this.props.bookmarks ? this.props.bookmarks[s.id] : undefined;
+                    const importResult = this.props.bookmarks ? this.props.bookmarks[ s.id ] : undefined;
                     return <Item key={`link-${s.id}`} item={s} isStory={false} importResult={importResult}/>
                   })}
                 </div> : ''

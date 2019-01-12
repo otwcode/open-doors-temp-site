@@ -9,4 +9,21 @@ describe StoryLink, type: :model do
     bookmark = story_link.to_bookmark(config)
     expect(bookmark.notes).to eq "Bookmark note\nOriginal Notes"
   end
+
+  it 'returns a summary too long error in json object' do
+    stub_const("SUMMARY_LENGTH", 4)
+    story = StoryLink.new(
+      title: "title",
+      fandoms: "Foo",
+      summary: "Longer than 4 characters")
+    expect(story.as_json[:errors]).to eq ["Summary for story link 'title' is too long (24)"]
+  end
+
+  it 'returns a fandom is missing error in json object' do
+    story = StoryLink.new(
+      title: "title",
+      fandoms: nil)
+    expect(story.as_json[:errors]).to eq ["Fandom for story link 'title' is missing"]
+  end
+
 end
