@@ -62,6 +62,11 @@ $clearColor: #906b59;
   margin-top: .5em;
 }
 
+.card-subtitle {
+  @extend .card-subtitle;
+  margin-top: 10px;
+}
+
 .importing {
   @extend .progress-bar-striped;
   @extend .progress-bar-animated;

@@ -2,6 +2,7 @@ class Story < ApplicationRecord
   include OtwArchive
   include OtwArchive::Request
   include Rails.application.routes.url_helpers
+  include Item
 
   audited comment_required: true, associated_with: :author
 
@@ -17,25 +18,12 @@ class Story < ApplicationRecord
     !self.imported && !self.do_not_import
   end
 
-  def item_errors
-    errors = []
-    if summary && summary&.length > SUMMARY_LENGTH
-      errors << "Summary for story '#{title}' is too long (#{summary.length})"
-    end
-    chapters.map { |c|
-      if c.text && c.text.length > CHAPTER_LENGTH
-        errors << "Chapter #{c.position} in story '#{title}' is too long (#{c.text.length})"
-      end
-    }
-    errors
-  end
-
   def as_json(options = {})
     hash = super(include: { chapters: { only: [:id, :title, :position, :text] } })
     hash.merge!(
       errors: item_errors,
-      date: date&.strftime("%Y-%m-%d"),
-      updated: date&.strftime("%Y-%m-%d"),
+      date: convert_date(date),
+      updated: convert_date(updated),
       summaryLength: summary&.size,
       summaryTooLong: summary && summary.size > 1250,
       chapters: chapters.map { |c|

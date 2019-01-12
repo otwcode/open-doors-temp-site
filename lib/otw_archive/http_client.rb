@@ -45,10 +45,18 @@ module OtwArchive
         Rails.logger.info JSON.pretty_generate(response.body.as_json) unless response.body.nil?
 
         success = response.status < 400 && response.status >= 200
-        reason_phrase = response.reason_phrase.empty? ? (success ? "Ok" : "Error") : response.reason_phrase
-        
-        body = response.body.is_a?(String) ? { messages: [response.body] } : response.body&.symbolize_keys
-        
+        reason_phrase = if response.reason_phrase.empty?
+                          (success ? "Ok" : "Error")
+                        else
+                          response.reason_phrase
+                        end
+
+        body = if response.body.is_a?(String)
+                 { messages: [response.body] }
+               else
+                 response.body&.symbolize_keys
+               end
+
         {
           success: success,
           status: reason_phrase,
@@ -59,7 +67,7 @@ module OtwArchive
         {
           success: false,
           status: :error,
-          body: { messages: [e.message] } 
+          body: { messages: [e.message] }
         }
       rescue StandardError => e
         Rails.logger.error e.inspect

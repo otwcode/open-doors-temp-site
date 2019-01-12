@@ -8,11 +8,35 @@ module Item
   OK_STATUSES = %w[ok created already_imported found].freeze
   NOT_FOUND_STATUSES = ["not_found"].freeze
   ERROR_STATUSES = %w[unprocessable_entity bad_request].freeze
-  
+
   def reset_flags
     Story.update_all(do_not_import: false, imported: false, ao3_url: nil)
     StoryLink.update_all(do_not_import: false, imported: false, ao3_url: nil)
     Author.update_all(do_not_import: false, imported: false)
+  end
+
+  def convert_date(date)
+    date&.strftime("%Y-%m-%d")
+  end
+
+  def item_errors
+    type = self.class.name.underscore.humanize(capitalize: false)
+    item = self
+    errors = []
+    if item.summary && item.summary&.length > SUMMARY_LENGTH
+      errors << "Summary for #{type} '#{item.title}' is too long (#{item.summary.length})"
+    end
+    if item.attributes.has_key? :chapters
+      item.chapters.map { |c|
+        if c.text && c.text.length > CHAPTER_LENGTH
+          errors << "Chapter #{c.position} in story '#{item.title}' is too long (#{c.text.length})"
+        end
+      }
+    end
+    if item.fandoms.blank?
+      errors << "Fandom for story link '#{item.title}' is missing"
+    end
+    errors
   end
 
   def self.update_item(type, response)
