@@ -21,8 +21,20 @@ class Author < ApplicationRecord
     do_not_import || items_all_imported?
   end
 
+  def author_errors
+    errors = []
+    if stories.size > NUMBER_OF_ITEMS
+      errors << "Author '#{name}' has more than #{stories.size} stories - the Archive can only import #{NUMBER_OF_ITEMS} at a time"
+    end
+    if story_links.size > NUMBER_OF_ITEMS
+      errors << "Author '#{name}' has more than #{story_links.size} stories - the Archive can only import #{NUMBER_OF_ITEMS} at a time"
+    end
+  end
+
   def items_errors
-    stories_with_chapters.map(&:item_errors).reject(&:empty?)
+    story_errors = stories_with_chapters.map(&:item_errors).reject(&:empty?)
+    link_errors = story_links.map(&:item_errors).reject(&:empty?)
+    [story_errors, link_errors].compact.reduce([], :|)
   end
 
   def coauthored_stories
@@ -55,7 +67,7 @@ class Author < ApplicationRecord
         imported: a.imported,
         s_to_import: a.stories.where(imported: false).count,
         l_to_import: a.story_links.where(imported: false).count,
-        errors: a.items_errors
+        errors: [a.author_errors, a.items_errors].compact.reduce([], :|)
       }
     end.group_by { |a| a[:name][0].upcase }
   end

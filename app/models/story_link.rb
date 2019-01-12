@@ -1,6 +1,7 @@
 class StoryLink < ApplicationRecord
   include OtwArchive
   include OtwArchive::Request
+  include Item
 
   belongs_to :author
   audited comment_required: true, associated_with: :author
@@ -13,20 +14,12 @@ class StoryLink < ApplicationRecord
     !self.imported && !self.do_not_import
   end
 
-  def item_errors
-    errors = []
-    if summary.length > 1250
-      errors << "Summary for story link '#{title}' is too long (#{summary.length})"
-    end
-    errors
-  end
-
   def as_json(options = {})
     hash = super
     hash.merge!(
       errors: item_errors,
-      date: date.strftime("%Y-%m-%d"),
-      updated: date.strftime("%Y-%m-%d")
+      date: convert_date(date),
+      updated: convert_date(date)
     )
   end
 
