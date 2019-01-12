@@ -15,7 +15,7 @@ class Story < ApplicationRecord
   end
 
   def to_be_imported
-    !self.imported && !self.do_not_import
+    !(self.imported || self.do_not_import)
   end
 
   def as_json(options = {})
