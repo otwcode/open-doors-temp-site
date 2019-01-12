@@ -123,6 +123,7 @@ class Author < ApplicationRecord
     has_success = ao3_response[0][:success]
 
     bookmarks_responses = ao3_response[1] ? ao3_response[1][:body][:bookmarks] : ao3_response[0][:body][:bookmarks]
+
     response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
 
     response[:works] = ao3_response[0][:body][:works] ? update_items(ao3_response[0][:body][:works], :story) : []

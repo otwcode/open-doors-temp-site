@@ -34,8 +34,6 @@ class Item extends Component {
   };
 
   msgAlert = (key, messages, success, errors) => {
-    console.log(key);
-    console.log(errors);
     const hasError = !success || errors.length > 0;
     // TODO fix this when AO3-5572 is done
     let msg = errors;
@@ -158,8 +156,6 @@ export default class Items extends Component {
                 <div>
                   <Card.Title>Stories</Card.Title>
                   {stories.map((s) => {
-                    console.log(s);
-                    console.log(this.props);
                     const importResult = this.props.works ? this.props.works[ s.id ] : undefined;
                     return <Item key={`story-${s.id}`} item={s} isStory={true} importResult={importResult}/>
                   })}

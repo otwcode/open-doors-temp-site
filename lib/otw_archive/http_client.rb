@@ -33,8 +33,6 @@ module OtwArchive
       Rails.logger.info "\n----------END post_request----------"
 
       begin
-        message = { story_id: 1, message: "Importing data", data: request.as_json }
-        ActionCable.server.broadcast 'imports_channel', message
         response = @conn.post path, request.to_json
 
         Rails.logger.info "\n----------raw response----------"

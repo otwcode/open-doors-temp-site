@@ -32,30 +32,18 @@ class AuthorsController < ApplicationController
     author = Author.find(id)
     response = {}
     begin
-      broadcast = { author_id: id, isImporting: true, message: "#{current_user&.name}: Starting import for #{author.name}" }
-      ActionCable.server.broadcast 'imports_channel', broadcast
+      broadcast_message("Starting import for #{author.name}", id, processing_status = "importing")
 
       response = author.import(@client, request.host_with_port)
 
-      broadcast = "#{current_user&.name || 'Anonymous'}: Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
-
-      broadcast = {
-        author_id: id,
-        is_ok: ["ok"].include?(response[:status]),
-        message: broadcast,
-        isImporting: false,
-        response: response
-      }
-      ActionCable.server.broadcast 'imports_channel', broadcast
+      message = "Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
+      broadcast_message(message, id, response, processing_status = "imported")
     rescue StandardError => e
-      broadcast = {
-        author_id: id,
-        is_ok: false,
-        message: "#{current_user&.name}: Error importing #{author.name} with error: #{e.message}.",
-        isImporting: false,
-        response: response
-      }
-      ActionCable.server.broadcast 'imports_channel', broadcast
+      broadcast_message("Error importing #{author.name} with error: #{e.message}.", id, response, processing_status = "")
+      Rails.logger.error("\n-----------------\nERROR in import_author")
+      Rails.logger.error(e.message)
+      Rails.logger.error(response)
+      Rails.logger.error("------------------")
     end
     render json: response, content_type: "application/json"
   end
@@ -89,30 +77,17 @@ class AuthorsController < ApplicationController
     author = Author.find(id)
     response = {}
     begin
-      broadcast = { author_id: id, isChecking: true, message: "#{current_user&.name}: Checking #{author.name}" }
-      ActionCable.server.broadcast 'imports_channel', broadcast
+      broadcast_message("Checking #{author.name}", id, processing_status: "checking")
 
       response = author.check(@client, request.host_with_port)
 
-      message = "#{current_user&.name || 'Anonymous'}: Processed check for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
-
-      broadcast = {
-        author_id: id,
-        is_ok: ["ok"].include?(response[:status]),
-        message: message,
-        isChecking: false,
-        response: response
-      }
-      ActionCable.server.broadcast 'imports_channel', broadcast
+      message = "Processed check for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
+      broadcast_message(message, id, response: response)
     rescue StandardError => e
-      broadcast = {
-        author_id: id,
-        is_ok: false,
-        message: "#{current_user&.name}: Error checking #{author.name} with error: #{e.message}.",
-        isImporting: false,
-        response: response
-      }
-      ActionCable.server.broadcast 'imports_channel', broadcast
+      Rails.logger.error("\n-----------------\nError in authors_controller > check")
+      Rails.logger.error(e)
+      Rails.logger.error(e.backtrace.join("\n"))
+      broadcast_message("Error checking #{author.name} with error: #{e.message}.", id, response: response)
     end
     render json: response, content_type: "application/json"
   end
@@ -133,9 +108,35 @@ class AuthorsController < ApplicationController
       @api_response = response[0][:messages]
     end
   end
-  
+
   private
-  
+
+  def broadcast_message(message, id, processing_status: "", response: {})
+    status = ["importing", "imported", "checking"].include? processing_status ? processing_status : ""
+    status_hash = case status
+                    when "importing"
+                      { isImporting: true }
+                    when "imported"
+                      { isImported: true }
+                    when "checking"
+                      { isChecking: true }
+                    else
+                      { isImporting: false, isChecking: false }
+                  end
+    ok_status = if response.any? && response.has_key?(:success)
+                  response[:success]
+                else
+                  false
+                end
+    broadcast = {
+      author_id: id,
+      is_ok: ok_status,
+      message: "#{DateTime.now} - #{current_user&.name || 'Anonymous'}: #{message}",
+      response: response
+    }.merge!(status_hash)
+    ActionCable.server.broadcast 'imports_channel', broadcast
+  end
+
   def otw_client
     archive_config = ArchiveConfig.archive_config
     api_settings = Rails.application.secrets[:ao3api][archive_config.host.to_sym]
