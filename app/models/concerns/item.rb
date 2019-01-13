@@ -26,7 +26,7 @@ module Item
     if item.summary && item.summary&.length > SUMMARY_LENGTH
       errors << "Summary for #{type} '#{item.title}' is too long (#{item.summary.length})"
     end
-    if item.attributes.has_key? :chapters
+    if item.respond_to?(:chapters)
       item.chapters.map { |c|
         if c.text && c.text.length > CHAPTER_LENGTH
           errors << "Chapter #{c.position} in story '#{item.title}' is too long (#{c.text.length})"

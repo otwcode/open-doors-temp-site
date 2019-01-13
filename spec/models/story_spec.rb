@@ -28,8 +28,8 @@ describe Story, type: :model do
     story = Story.new(
       title: "title",
       fandoms: "Foo",
-      chapters: [Chapter.new(text: "some text")])
-    expect(story.as_json[:errors]).to eq ["Chapter in story 'title' is too long (9)"]
+      chapters: [Chapter.new(position: 1, text: "some text")])
+    expect(story.as_json[:errors]).to eq ["Chapter 1 in story 'title' is too long (9)"]
   end
 
   it 'returns a fandom is missing error in json object' do

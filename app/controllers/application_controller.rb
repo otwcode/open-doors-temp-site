@@ -17,10 +17,17 @@ class ApplicationController < ActionController::Base
     redirect_to :login unless current_user || request.xhr?
   end
 
+  def log_error(e, location, response)
+    Rails.logger.error("\n-----------------\nERROR in #{location}")
+    Rails.logger.error("response: #{response}")
+    Rails.logger.error(e.message)
+    Rails.logger.error(e.backtrace[0...15].join("\n"))
+    Rails.logger.error("------------------")
+  end
+
   # Return a standard HTTP + Json envelope for errors that drop through other handling
   def render_standard_error_response(exception)
-    Rails.logger.error(exception)
-    Rails.logger.error(exception.backtrace)
+    log_error(exception, "render_standard_error_response", {})
     type = exception.class
     message = "An error occurred: #{exception.message}"
     render status: :internal_server_error,
