@@ -32,18 +32,15 @@ class AuthorsController < ApplicationController
     author = Author.find(id)
     response = {}
     begin
-      broadcast_message("Starting import for #{author.name}", id, processing_status = "importing")
+      broadcast_message("Starting import for #{author.name}", id, processing_status: "importing")
 
       response = author.import(@client, request.host_with_port)
 
       message = "Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
-      broadcast_message(message, id, response, processing_status = "imported")
+      broadcast_message(message, id, response: response, processing_status: "imported")
     rescue StandardError => e
-      broadcast_message("Error importing #{author.name} with error: #{e.message}.", id, response, processing_status = "")
-      Rails.logger.error("\n-----------------\nERROR in import_author")
-      Rails.logger.error(e.message)
-      Rails.logger.error(response)
-      Rails.logger.error("------------------")
+      log_error(e, "authors_controller > import_author", response)
+      broadcast_message("Error importing #{author.name} with error: #{e.message}.", id, response: response, processing_status: "")
     end
     render json: response, content_type: "application/json"
   end
@@ -84,9 +81,7 @@ class AuthorsController < ApplicationController
       message = "Processed check for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
       broadcast_message(message, id, response: response)
     rescue StandardError => e
-      Rails.logger.error("\n-----------------\nError in authors_controller > check")
-      Rails.logger.error(e)
-      Rails.logger.error(e.backtrace.join("\n"))
+      log_error(e, "authors_controller > check", response)
       broadcast_message("Error checking #{author.name} with error: #{e.message}.", id, response: response)
     end
     render json: response, content_type: "application/json"
