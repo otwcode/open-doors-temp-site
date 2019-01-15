@@ -39,6 +39,12 @@
       version: "{{ repo_version }}"
     become: false
 
+  - name: Retrieve last commit date for repo version
+    command: git log -1 --format=%cd origin/{{ repo_version }}
+    args:
+      chdir: "{{ deploy_path }}"
+    register: footer_version
+
   - name: Remove .git directory so the repo can't be inadvertently updated
     file:
       path: "{{ deploy_path }}/.git"
