@@ -1,5 +1,5 @@
 ---
-- name: Deploy Open Doors temporary site for '{{ sitekey }}'
+- name: Remove Open Doors temporary site for '{{ sitekey }}'
   hosts: all
   remote_user: "{{ opendoors_user }}"
   become: yes
@@ -15,12 +15,6 @@
       state: stopped
     ignore_errors: yes
 
-  - name: Stop app if already running
-    service:
-      name: "{{ unicorn_script }}"
-      state: disabled
-    ignore_errors: yes
-
   - name: Perform database dump
     mysql_db:
       state: dump
@@ -30,6 +24,7 @@
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
     register: dump_database
+    ignore_errors: yes
 
   - name: Archive app directory with database dump
     archive:

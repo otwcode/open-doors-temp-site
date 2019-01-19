@@ -40,7 +40,7 @@
     become: false
 
   - name: Retrieve last commit date for repo version
-    command: git log -1 --format=%cd origin/{{ repo_version }}
+    command: git log -1 --format=" - commit %h - %cd" --date=short origin/{{ repo_version }}
     args:
       chdir: "{{ deploy_path }}"
     register: footer_version
@@ -158,20 +158,12 @@
     tags:
       - database
 
-  - name: Check if DB exists (2 = no)
-    shell: mysql -e 'SHOW DATABASES;' | grep -c {{ sitekey }}
-    register: dbstatus
-    ignore_errors: yes
-    tags:
-      - database
-
-  - name: Copy MySQL script
-    template:
-      src: "{{ playbook_dir }}/templates/archive_config.sql.j2"
-      dest: "{{ deploy_path }}/archive_config.sql"
-    when: dbstatus.rc == 1
-    tags:
-      - database
+#  - name: Check if DB exists (2 = no)
+#    shell: mysql -e 'SHOW DATABASES;' | grep -c {{ sitekey }}
+#    register: dbstatus
+#    ignore_errors: yes
+#    tags:
+#      - database
 
   - name: Create MySQL database
     mysql_db:
@@ -181,7 +173,14 @@
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
     register: create_database
-    when: dbstatus.rc == 1
+    tags:
+      - database
+
+  - name: Copy MySQL script
+    template:
+      src: "{{ playbook_dir }}/templates/archive_config.sql.j2"
+      dest: "{{ deploy_path }}/archive_config.sql"
+    when: create_database.changed
     tags:
       - database
 
@@ -193,7 +192,7 @@
       login_user: "{{ mysql_user }}"
       login_password: "{{ mysql_pw }}"
       login_unix_socket: "{{ mysql_socket }}"
-    when: dbstatus.rc == 1
+    when: create_database.changed
     tags:
       - database
     
