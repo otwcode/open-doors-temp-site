@@ -47,8 +47,8 @@ class Author < ApplicationRecord
 
   def all_items_as_json
     {
-      stories: stories_with_chapters,
-      story_links: story_links,
+      stories: stories_with_chapters.all.index_by { |s| s.id},
+      story_links: story_links.all.index_by { |b| b.id },
       coauthored: coauthored_stories
     }
   end
@@ -91,7 +91,10 @@ class Author < ApplicationRecord
       response = items_responses(ao3_response)
     end
 
-    author_response(client, response)
+    final_response = author_response(client, response)
+    Rails.logger.info("........ author model > import ............")
+    Rails.logger.info(final_response)
+    final_response
   end
 
   def check(client, host)
@@ -100,7 +103,10 @@ class Author < ApplicationRecord
     ao3_response = client.search(works: works, bookmarks: bookmarks)
     response = items_responses(ao3_response)
 
-    author_response(client, response)
+    final_response = author_response(client, response)
+    Rails.logger.info("........ author model > check ............")
+    Rails.logger.info(final_response)
+    final_response
   end
 
   private

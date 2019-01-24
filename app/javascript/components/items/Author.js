@@ -9,6 +9,7 @@ import ImportButtons from "./ImportButtons";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import Alert from "react-bootstrap/lib/Alert";
 import { ActionCable } from "react-actioncable-provider";
+import { logStateAndProps } from "../../utils/logging";
 
 class Author extends Component {
   constructor(props) {
@@ -19,33 +20,25 @@ class Author extends Component {
       message: "",
       hasError: false,
       isImporting: false,
-      isChecking: false,
-      data: {
-        import: { author_imported: this.props.author.imported },
-        items: {}
-      }
+      isChecking: false
     };
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.message !== prevProps.message) {
-      this.setState(Object.assign(this.state, {
-        message: this.props.response.message,
-        hasError: this.props.response.has_error,
-        isImported: this.props.author.imported
-      }))
-    }
+    logStateAndProps("Author componentDidUpdate", this.props.author.name, this);
     if (this.props.data !== prevProps.data) {
-      this.setState(Object.assign(this.state, { data: this.props.data }));
+      this.setState(Object.assign(this.state, {
+        messages: this.props.data.messages,
+        hasError: !this.props.data.success,
+        isImported: this.props.data.author_imported,
+        data: this.props.data
+      }))
     }
   }
 
   handleAuthorClick = () => {
     this.setState({ open: !this.state.open });
-    // Get stories and bookmarks asynchronously
-    if (!this.state.data.items || Object.keys(this.state.data.items).length === 0) {
-      this.props.fetchAuthorItems(this.props.author.id);
-    }
+    this.props.fetchAuthorItems(this.props.author.id);
   };
 
   handleImporting = (e) => {
@@ -57,7 +50,7 @@ class Author extends Component {
           .then(() => this.setState({
             hideAlert: false,
             isImporting: false,
-            hasError: (this.props.data.error !== undefined)
+            hasError: !this.props.data.success
           }))
       }
     );
@@ -74,11 +67,13 @@ class Author extends Component {
       { isChecking: true, message: "" },
       () => {
       this.props.checkAuthor(this.props.author.id)
-        .then(() => this.setState({
-          hideAlert: false,
-          isChecking: false,
-          hasError: (this.props.data.error !== undefined)
-        }));
+        .then(() => {
+          this.setState({
+            hideAlert: false,
+            isChecking: false,
+            hasError: !this.props.data.success
+          })
+        });
     });
   };
 
@@ -121,13 +116,14 @@ class Author extends Component {
   };
 
   render() {
+    logStateAndProps("Author", this.props.author.name, this);
+
     // Extract data from the state
     const { open, isImporting, isChecking } = this.state;
     const author = this.props.author;
-    const items = this.state.data && this.state.data.items ? this.state.data.items : {};
-    const importData = this.state.data && this.state.data.import ? this.state.data.import : {};
+    const importData = this.props.data ? this.props.data : {};
 
-    const { messages, author_imported, works, bookmarks } = importData;
+    const { items, messages, author_imported } = importData;
     const isImported = author_imported || author.imported;
 
     // Some utility variables for simplicity
@@ -155,7 +151,7 @@ class Author extends Component {
 
         <Collapse in={this.state.open}>
           <Card.Body id={`${key}-collapse`}>
-            <Items key={`${key}-items`} data={items} works={works} bookmarks={bookmarks}/>
+            <Items key={`${key}-items`} data={items} />
           </Card.Body>
         </Collapse>
       </Card>

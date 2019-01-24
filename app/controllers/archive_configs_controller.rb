@@ -15,7 +15,7 @@ class ArchiveConfigsController < ApplicationController
   def update
     notice = "Archive config was successfully updated."
     host = params[:archive_config][:host]
-    new_host = host.to_sym != @active_host
+    new_host = host != @active_host
     
     if @archive_config.update(archive_config_params)
       if new_host
