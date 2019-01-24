@@ -15,8 +15,8 @@ module OtwArchive
         conn.authorization :Token, token: token
         conn.headers["Content-Type"] = "application/json"
 
-        conn.options[:open_timeout] = 2000
-        conn.options[:timeout] = 3_000 # 5 minutes
+        conn.options[:open_timeout] = 300 # 5 minutes
+        conn.options[:timeout] = 3_000 # 50 minutes
         conn.request :json
 
         conn.response :json, content_type: /\bjson$/
@@ -27,20 +27,12 @@ module OtwArchive
     end
 
     def post_request(path, request = {})
-      Rails.logger.info "\n----------post_request----------\n"
-      Rails.logger.info "\n>>Request in post_request as_json:"
-      Rails.logger.info JSON.pretty_generate(request.as_json)
-      Rails.logger.info "\n----------END post_request----------"
+      log_request(request, path)
 
       begin
         response = @conn.post path, request.to_json
 
-        Rails.logger.info "\n----------raw response----------"
-        Rails.logger.info response.success?
-        Rails.logger.info response.reason_phrase
-        Rails.logger.info response.status
-        Rails.logger.info response.headers
-        Rails.logger.info JSON.pretty_generate(response.body.as_json) unless response.body.nil?
+        log_raw_response(response, path)
 
         success = response.status < 400 && response.status >= 200
         reason_phrase = if response.reason_phrase.empty?
@@ -75,6 +67,24 @@ module OtwArchive
           body: { messages: [e.message] }
         }
       end
+    end
+
+    private
+
+    def log_raw_response(response, path)
+      Rails.logger.info "\n----------START raw response FROM #{path}----------
+                        \n success: #{response.success?}
+                        \n reason_phrase: #{response.reason_phrase}
+                        \n status: #{response.status}
+                        \n headers: #{response.headers}
+                        #{JSON.pretty_generate(response.body.as_json) unless response.body.nil?}"
+    end
+
+    def log_request(request, path)
+      Rails.logger.info "\n----------START post_request TO #{path}----------\n
+                        \n>>Request in post_request as_json:\n
+                        \n#{JSON.pretty_generate(request.as_json)}\n
+                        \n---------END post_request----------"
     end
   end # HttpClient
 end # OtwArchive

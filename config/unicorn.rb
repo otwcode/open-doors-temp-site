@@ -8,9 +8,9 @@ shared_dir = "/var/www/sites/#{APP_CONFIG[:sitekey]}"
 working_directory app_dir
 
 # Set unicorn options
-worker_processes 1
+worker_processes 2
 preload_app true
-timeout 30
+timeout 300
 
 # Path for the Unicorn socket
 listen "#{shared_dir}/runtime/sockets/unicorn.sock", backlog: 64

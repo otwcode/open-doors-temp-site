@@ -37,11 +37,14 @@ class AuthorsController < ApplicationController
       response = author.import(@client, request.host_with_port)
 
       message = "Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
-      broadcast_message(message, id, response: response, processing_status: "imported")
+      processing_status = response[:author_imported] ? "imported" : "none"
+      broadcast_message(message, id, response: response, processing_status: processing_status)
     rescue StandardError => e
       log_error(e, "authors_controller > import_author", response)
-      broadcast_message("Error importing #{author.name} with error: #{e.message}.", id, response: response, processing_status: "")
+      broadcast_message("Error importing #{author.name} with error: #{e.message}.", id, response: response, processing_status: "none")
     end
+    Rails.logger.info("-------- authors_controller > import response ------")
+    Rails.logger.info(response)
     render json: response, content_type: "application/json"
   end
 
@@ -84,6 +87,8 @@ class AuthorsController < ApplicationController
       log_error(e, "authors_controller > check", response)
       broadcast_message("Error checking #{author.name} with error: #{e.message}.", id, response: response)
     end
+    Rails.logger.info("-------- authors_controller > check response ------")
+    Rails.logger.info(response)
     render json: response, content_type: "application/json"
   end
 
@@ -106,8 +111,9 @@ class AuthorsController < ApplicationController
 
   private
 
-  def broadcast_message(message, id, processing_status: "", response: {})
-    status = ["importing", "imported", "checking"].include? processing_status ? processing_status : ""
+  def broadcast_message(message, id, processing_status: "none", response: {})
+    Rails.logger.info("processing_status: #{processing_status}")
+    status = (["importing", "imported", "checking"].include? processing_status) ? processing_status : ""
     status_hash = case status
                     when "importing"
                       { isImporting: true }
@@ -129,7 +135,7 @@ class AuthorsController < ApplicationController
       message: "#{DateTime.now} - #{current_user&.name || 'Anonymous'}: #{message}",
       response: response
     }.merge!(status_hash)
-    ActionCable.server.broadcast 'imports_channel', broadcast
+    # ActionCable.server.broadcast 'imports_channel', broadcast
   end
 
   def otw_client
