@@ -59,7 +59,7 @@ module Item
         item.update_attributes!(
           imported: true,
           ao3_url: archive_url,
-          audit_comment: response[:messages].join(" ")
+          audit_comment: response[:messages][0]
         )
       else
         response[:messages] << "Item is already imported at #{archive_url}."
@@ -71,7 +71,7 @@ module Item
         item.update_attributes!(
           imported: false,
           ao3_url: nil,
-          audit_comment: response[:messages].join(" ")
+          audit_comment: response[:messages][0]
         )
       else
         response[:success] = true
@@ -84,7 +84,7 @@ module Item
         auditable_type: item.class.name,
         associated_id: item.author.id,
         associated_type: item.author.class.name,
-        comment: "#{response[:status].humanize}: #{response[:messages].join(' ')}".truncate(254)
+        comment: "#{response[:status].humanize}: #{response[:messages][0]}".truncate(254)
       )
       audit.save!
     end

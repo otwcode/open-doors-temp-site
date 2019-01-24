@@ -23,13 +23,22 @@ export function fetchStats() {
 
 // -------------- AUTHORS -------------------
 const authorReq = (authorID, type, req) => {
-  const messageFromData = (data) => {
-    if (typeof(data) === 'object' && data.messages) {
-      return data.messages
-    } else if (typeof(data) === 'string') {
-      data.split('\n').slice(0, 3)
+  const messageFromData = (err) => {
+    if (err.response) {
+      const data = err.response.data;
+      if (typeof (data) === 'object') {
+        if (data.messages) {
+          return data.messages;
+        } else if (data.error) {
+          return data.messages;
+        }
+      } else if (typeof (data) === 'string') {
+        data.split('\n').slice(0, 3)
+      } else {
+        JSON.stringify(data)
+      }
     } else {
-      JSON.stringify(data)
+      JSON.stringify(err)
     }
   };
   return req.then(res => {
@@ -40,17 +49,19 @@ const authorReq = (authorID, type, req) => {
     }
   })
     .catch(err => {
-      const message = messageFromData(err.response.data);
+      const message = messageFromData(err);
       return {
         [ authorID ]: {
           [ type ]: {
             status: err.response.statusText,
-            error: message
+            messages: [ JSON.stringify(err) ],
+            remote_host: err.request ? err.request.url : "unknown"
           }
         }
       }
     })
-};
+  }
+;
 
 export function fetchAuthorItems(authorID) {
   const req = authorReq(authorID, 'items', getReq(`items/author/${authorID}`));
@@ -67,12 +78,12 @@ export function importAuthor(authorID) {
       .post(`/${sitekey}/authors/import/${authorID}`,
         {},
         {
+          timeout: 5 * 60 * 1000, // 5 minutes
           headers: {
             'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             'Content-Type': 'application/json',
           }
         }));
-
   return {
     type: IMPORT_AUTHOR,
     payload: req

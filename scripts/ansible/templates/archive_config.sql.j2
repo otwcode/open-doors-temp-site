@@ -23,7 +23,7 @@ INSERT IGNORE INTO `archive_configs`
    `archivist`, `collection_name`, `host`)
   VALUES
   (1, "{{ sitekey }}", "{{ name }}", "Testing", "OD STORY NOTE", "OD BOOKMARK NOTE", 0, 0,
-   "testy", "COLLECTION_NAME", "ariana");
+   "testy", "opendoorstestcollection", "ariana");
 
 --
 -- Table structure for table `audits`
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `audits` (
   `action` varchar(255) DEFAULT NULL,
   `audited_changes` text,
   `version` int(11) DEFAULT '0',
-  `comment` varchar(255) DEFAULT NULL,
+  `comment` varchar(2048) DEFAULT NULL,
   `remote_address` varchar(255) DEFAULT NULL,
   `request_uuid` varchar(255) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
