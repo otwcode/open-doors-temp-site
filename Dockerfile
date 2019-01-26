@@ -27,19 +27,20 @@ RUN apk add --update --no-cache \
 # and set it as the working directory
 RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
+EXPOSE 3011
 
 # Add our Gemfile
 # and install gems
 
 ADD Gemfile* $APP_HOME/
-RUN bundle install
+RUN bundle install --without test --path vendor/cache
 
 # Copy over our application code
 ADD . $APP_HOME
-RUN npm install --only=production
-RUN yarn install
+RUN npm install --only=production && yarn install
 RUN bundle exec rake assets:precompile
 
 # Run our app
-EXPOSE 3000
-CMD bundle exec rails s -b '0.0.0.0'
+RUN chmod +x $APP_HOME/docker-start.sh
+CMD $APP_HOME/docker-start.sh
+CMD bundle exec rails s -b 0.0.0.0 -p 3011

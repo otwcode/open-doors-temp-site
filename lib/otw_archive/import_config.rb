@@ -17,7 +17,7 @@ module OtwArchive
     end
     
     def isHttp?(archive_host)
-      archive_host.include?("ariana.archiveofourown.org") || archive_host.include?("localhost")
+      archive_host.include?("ariana.archiveofourown.org") || archive_host.include?("localhost") || archive_host.include?("host.docker.internal")
     end
   end
 end # OtwArchive

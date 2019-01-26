@@ -19,4 +19,5 @@ test:
 
 production:
   <<: *default
+  host: host.docker.internal
   database: <%= APP_CONFIG[:sitekey] %>
