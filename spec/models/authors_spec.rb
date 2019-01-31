@@ -19,14 +19,6 @@ describe Author, type: :model do
     WebMock.reset!
   end
 
-  # it "imports a single author and its items - live local test" do
-  #   import_config = OtwArchive::ImportConfig.new("localhost:3000", "e1b6298a6209dd65e5df95b83b10c0f1", archive_config)
-  #   client = OtwArchive::Client.new(import_config)
-  #   response = author1.import(client, "localhost:3000")
-  #   # expect(response[:status]).to eq ""
-  #   expect(response[:messages]).to eq "ok"
-  # end
-
   it "returns the remote error message if there is an authorisation problem" do
     import_config = OtwArchive::ImportConfig.new("unauthorized", 999, archive_config)
     client = OtwArchive::Client.new(import_config)
@@ -44,4 +36,37 @@ describe Author, type: :model do
     expect(response[:messages][0]).to eq "The \"archivist\" field must specify the name of an Archive user with archivist privileges."
   end
 
+  describe "all_imported?" do
+    let(:story) {Story.new(imported: false, do_not_import: false)}
+    let(:story_link) { StoryLink.new(imported: false, do_not_import: false) }
+    let(:imported_story) { Story.new(imported: true, do_not_import: false) }
+    let(:imported_story_link) { StoryLink.new(imported: true, do_not_import: false) }
+    let(:do_not_import_story) { Story.new(imported: false, do_not_import: true) }
+    let(:do_not_import_story_link) { StoryLink.new(imported: false, do_not_import: true) }
+
+    it "returns true if both stories and story links are empty" do
+      imported_author = Author.new(stories: [], story_links: [])
+      expect(imported_author.all_imported?).to eq true
+    end
+    it "returns true if all stories are imported or marked as do not import and story links are empty" do
+      imported_author = Author.new(stories: [imported_story, do_not_import_story], story_links: [])
+      expect(imported_author.all_imported?).to eq true
+    end
+    it "returns true if stories are empty and all story links are imported or marked as do not import" do
+      imported_author = Author.new(stories: [], story_links: [imported_story_link, do_not_import_story_link])
+      expect(imported_author.all_imported?).to eq true
+    end
+    it "returns false if only some stories are imported or marked as do not import and story links are empty" do
+      imported_author = Author.new(stories: [story, imported_story], story_links: [])
+      expect(imported_author.all_imported?).to eq false
+    end
+    it "returns false if stories are empty and only some story links are imported or marked as do not import" do
+      imported_author = Author.new(stories: [], story_links: [story_link, do_not_import_story_link])
+      expect(imported_author.all_imported?).to eq false
+    end
+    it "returns false if no stories and no story links are imported or marked as do not import" do
+      imported_author = Author.new(stories: [story], story_links: [story_link])
+      expect(imported_author.all_imported?).to eq false
+    end
+  end
 end
