@@ -47,6 +47,7 @@ class Author < ApplicationRecord
 
   def all_items_as_json
     {
+      author_imported: all_imported?,
       stories: stories_with_chapters.all.index_by { |s| s.id},
       story_links: story_links.all.index_by { |b| b.id },
       coauthored: coauthored_stories
@@ -114,6 +115,9 @@ class Author < ApplicationRecord
   def author_response(client, response)
     # Is the author now fully imported?
     imported = all_imported?
+    Rails.logger.info("........ author model > author_response ............")
+    Rails.logger.info("imported: #{imported}")
+
     response[:author_imported] = imported
     response[:author_id] = id
     response[:remote_host] = client.config.archive_host
@@ -143,7 +147,9 @@ class Author < ApplicationRecord
     responses = {}
     if items_responses.present?
       items_responses.each do |item_response|
-        responses.merge!(Item.update_item(type, item_response.symbolize_keys))
+        update = Item.update_item(type, item_response.symbolize_keys)
+        Rails.logger.info(update)
+        responses.merge!(update)
       end
     end
     responses
@@ -155,9 +161,17 @@ class Author < ApplicationRecord
 
   # True if items are blank, or items are present and none remain to be imported
   def items_all_imported?
-    stories_all_imported = stories.blank? || (stories.present? && stories.none?(&:to_be_imported))
-    story_links_all_imported = story_links.blank? || (story_links.present? && story_links.none?(&:to_be_imported))
+    stories.reload # :/
+    story_links.reload
+    stories_all_imported = stories.blank? || (stories.present? && stories.all? { |s| s.imported || s.do_not_import })
+    story_links_all_imported = story_links.blank? || (story_links.present? && story_links.all? { |s| s.imported || s.do_not_import })
 
+    Rails.logger.info("============
+items_all_imported? for #{id}
+stories_all_imported: all?(imported || do_not_import): #{stories.all? { |s| s.imported || s.do_not_import }}
+imported stories: #{stories.inspect}
+story_links_all_imported: #{story_links_all_imported}
+==============")
     (stories_all_imported && story_links_all_imported)
   end
 end

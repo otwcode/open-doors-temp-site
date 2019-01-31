@@ -20,7 +20,8 @@ class Author extends Component {
       message: "",
       hasError: false,
       isImporting: false,
-      isChecking: false
+      isChecking: false,
+      isImported: this.props.author.imported
     };
   }
 
@@ -50,6 +51,7 @@ class Author extends Component {
           .then(() => this.setState({
             hideAlert: false,
             isImporting: false,
+            isImported: this.props.data.author_imported,
             hasError: !this.props.data.success
           }))
       }
@@ -71,6 +73,7 @@ class Author extends Component {
           this.setState({
             hideAlert: false,
             isChecking: false,
+            isImported: this.props.data.author_imported,
             hasError: !this.props.data.success
           })
         });
@@ -119,12 +122,10 @@ class Author extends Component {
     logStateAndProps("Author", this.props.author.name, this);
 
     // Extract data from the state
-    const { open, isImporting, isChecking } = this.state;
+    const { open, isImporting, isChecking, isImported } = this.state;
     const author = this.props.author;
     const importData = this.props.data ? this.props.data : {};
-
     const { items, messages, author_imported } = importData;
-    const isImported = author_imported || author.imported;
 
     // Some utility variables for simplicity
     const key = `author-${author.id}`;
