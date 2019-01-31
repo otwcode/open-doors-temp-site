@@ -56,18 +56,22 @@ module Item
       response[:messages] = [response[:messages]] if response[:messages].is_a?(String)
       if item.ao3_url != archive_url || (item.ao3_url == archive_url && !item.imported)
         response[:messages] << "Archive URL updated to #{archive_url}."
+        response[:imported] = true
         item.update_attributes!(
           imported: true,
           ao3_url: archive_url,
           audit_comment: response[:messages][0]
         )
+        Rails.logger.info(item.inspect)
       else
         response[:messages] << "Item is already imported at #{archive_url}."
+        response[:imported] = true
       end
     elsif response[:status].in? NOT_FOUND_STATUSES
       if item.imported || item.ao3_url.present?
         response[:success] = false
         response[:messages] << "Item has been deleted or target site has changed."
+        response[:imported] = false
         item.update_attributes!(
           imported: false,
           ao3_url: nil,

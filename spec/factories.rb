@@ -7,16 +7,19 @@ FactoryBot.define do
     author
     id { generate :id }
     chapters { create_list(:chapter, 2, story_id: id, audit_comment: "A story") }
+    audit_comment {"Test"}
   end
 
   factory :story_link do
     author
     id { generate :id }
+    audit_comment {"Test"}
   end
 
   factory :author do
     id { generate :id }
     sequence(:name) { |n| "Author name #{n}" }
+    audit_comment {"Test"}
 
     # user_with_posts will create post data after the user has been created
     factory :author_with_stories do

@@ -65,7 +65,6 @@ const authorReq = (authorID, type, req) => {
 
 export function fetchAuthorItems(authorID) {
   const req = authorReq(authorID, 'items', getReq(`items/author/${authorID}`));
-  console.log(req);
   return {
     type: GET_AUTHOR_ITEMS,
     payload: req

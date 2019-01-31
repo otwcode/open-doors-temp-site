@@ -78,32 +78,32 @@ class ItemsController < ApplicationController
     render json: final_response, content_type: 'text/json'
   end
 
-  def mark
-    respond_to :json
-    type = params[:type]
-    id = params[:id]
-
-    item = find_item(id, type)
-    author = item.author
-
-    imported_status = "set #{type} '#{item.title}' by #{author.name} to #{item.imported ? "" : "NOT "}imported."
-    item.update_attributes!(imported: !item.imported, audit_comment: imported_status)
-
-    response = []
-    response << { status: :ok,
-                  mark: item.imported,
-                  messages: ["Successfully #{imported_status}"] }
-
-
-    # Is the author now fully imported?
-    response[0][:author_imported] = item.author.all_imported?
-
-    if request.xhr?
-      render json: response, content_type: "text/json"
-    else
-      @api_response = response[0][:messages]
-    end
-  end
+  # def mark
+  #   respond_to :json
+  #   type = params[:type]
+  #   id = params[:id]
+  #
+  #   item = find_item(id, type)
+  #   author = item.author
+  #
+  #   imported_status = "set #{type} '#{item.title}' by #{author.name} to #{item.imported ? "" : "NOT "}imported."
+  #   item.update_attributes!(imported: !item.imported, audit_comment: imported_status)
+  #
+  #   response = []
+  #   response << { status: :ok,
+  #                 mark: item.imported,
+  #                 messages: ["Successfully #{imported_status}"] }
+  #
+  #
+  #   # Is the author now fully imported?
+  #   response[0][:author_imported] = item.author.all_imported?
+  #
+  #   if request.xhr?
+  #     render json: response, content_type: "text/json"
+  #   else
+  #     @api_response = response[0][:messages]
+  #   end
+  # end
 
   def dni
     respond_to :json

@@ -8,7 +8,7 @@ describe AuthorsController, type: :controller do
   include WebMockHelper
   
   let!(:archive_config) { create(:archive_config) }
-  let!(:author1) { create(:author_with_stories, audit_comment: "Test") }
+  let!(:author1) { create(:author_with_stories) }
   let!(:story1) { create(:story, author_id: author1.id, audit_comment: "Test") }
 
   setup do
