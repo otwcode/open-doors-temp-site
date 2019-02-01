@@ -113,11 +113,10 @@ class Author < ApplicationRecord
   private
 
   def author_response(client, response)
+    stories.reload # :/
+    story_links.reload
     # Is the author now fully imported?
     imported = all_imported?
-    Rails.logger.info("........ author model > author_response ............")
-    Rails.logger.info("imported: #{imported}")
-
     response[:author_imported] = imported
     response[:author_id] = id
     response[:remote_host] = client.config.archive_host
@@ -161,17 +160,8 @@ class Author < ApplicationRecord
 
   # True if items are blank, or items are present and none remain to be imported
   def items_all_imported?
-    stories.reload # :/
-    story_links.reload
     stories_all_imported = stories.blank? || (stories.present? && stories.all? { |s| s.imported || s.do_not_import })
     story_links_all_imported = story_links.blank? || (story_links.present? && story_links.all? { |s| s.imported || s.do_not_import })
-
-    Rails.logger.info("============
-items_all_imported? for #{id}
-stories_all_imported: all?(imported || do_not_import): #{stories.all? { |s| s.imported || s.do_not_import }}
-imported stories: #{stories.inspect}
-story_links_all_imported: #{story_links_all_imported}
-==============")
     (stories_all_imported && story_links_all_imported)
   end
 end

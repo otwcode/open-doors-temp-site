@@ -10,7 +10,6 @@ module OtwArchive
 
     def initialize(host_url, token, api_path = API_PATH)
       base_uri = "#{host_url}/#{api_path}"
-      Rails.logger.info base_uri
       @conn = Faraday.new(base_uri, headers: { accept: "application/json" }) do |conn|
         conn.authorization :Token, token: token
         conn.headers["Content-Type"] = "application/json"
@@ -73,17 +72,17 @@ module OtwArchive
 
     def log_raw_response(response, path)
       Rails.logger.info "\n----------START raw response FROM #{path}----------
-                        \n success: #{response.success?}
-                        \n reason_phrase: #{response.reason_phrase}
-                        \n status: #{response.status}
-                        \n headers: #{response.headers}
+                         success: #{response.success?}
+                         reason_phrase: #{response.reason_phrase}
+                         status: #{response.status}
+                         headers: #{response.headers}
                         #{JSON.pretty_generate(response.body.as_json) unless response.body.nil?}"
     end
 
     def log_request(request, path)
-      Rails.logger.info "\n----------START post_request TO #{path}----------\n
-                        \n>>Request in post_request as_json:\n
-                        \n#{JSON.pretty_generate(request.as_json)}\n
+      Rails.logger.info "\n----------START post_request TO #{path}----------
+                        >>Request in post_request as_json:
+                        \n#{JSON.pretty_generate(request.as_json)}
                         \n---------END post_request----------"
     end
   end # HttpClient

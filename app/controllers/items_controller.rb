@@ -158,8 +158,6 @@ class ItemsController < ApplicationController
 
     response = @client.search(item_request)
 
-    Rails.logger.info("response: #{response}")
-
     item_response = response[0][ao3_type][0]
     final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
 
