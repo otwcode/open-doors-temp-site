@@ -66,7 +66,7 @@ class Item extends Component {
 
   render() {
     const { item, isStory, isImporting } = this.props;
-    logStateAndProps("Item", item.name, this);
+    // logStateAndProps("Item", item.name, this);
     const key = isStory ? `story-${item.id}` : `link-${item.id}`;
     const headerClass = isImporting ? "importing" : "";
     const { messages, success, ao3_url } = item;
@@ -139,7 +139,7 @@ class Item extends Component {
 
 export default class Items extends Component {
   render() {
-    logStateAndProps("Items", "", this);
+    // logStateAndProps("Items", "", this);
     if (this.props.data) {
       if (this.props.data.error) {
         return (
