@@ -34,7 +34,7 @@ export default class Authors extends Component {
 
   render() {
     const authors = this.state.authors.length > 0 ? this.state.authors : undefined;
-    logStateAndProps("Authors", "", this);
+    // logStateAndProps("Authors", "", this);
     if (authors) {
       return (
         <div>

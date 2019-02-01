@@ -119,7 +119,7 @@ class Author extends Component {
   };
 
   render() {
-    logStateAndProps("Author", this.props.author.name, this);
+    // logStateAndProps("Author", this.props.author.name, this);
 
     // Extract data from the state
     const { open, isImporting, isChecking, isImported } = this.state;

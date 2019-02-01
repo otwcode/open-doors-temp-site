@@ -112,7 +112,6 @@ class AuthorsController < ApplicationController
   private
 
   def broadcast_message(message, id, processing_status: "none", response: {})
-    Rails.logger.info("processing_status: #{processing_status}")
     status = (["importing", "imported", "checking"].include? processing_status) ? processing_status : ""
     status_hash = case status
                     when "importing"
