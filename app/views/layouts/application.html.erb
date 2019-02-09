@@ -4,6 +4,7 @@
   <title><%= APP_CONFIG[:name] %><%= content_for?(:title) ? " - #{yield(:title)}" : "" %></title>
   <%= csrf_meta_tags %>
   <%= favicon_link_tag %>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
