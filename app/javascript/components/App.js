@@ -47,7 +47,7 @@ export default class App extends Component {
                   </Switch>
                 </Router>
                 { this.props.current_user ?
-                <Col xs lg={2}>
+                <Col xs sm lg={3}>
                   <MessageBoard type="info"/>
                 </Col> : "" }
               </Row>

@@ -72,7 +72,7 @@
       group: "{{ remote_group }}"
       state: directory
 
-  - name: Install bundler
+  - name: Install bundler gem
     command: gem install bundler
     args:
       chdir: "{{ deploy_path }}"

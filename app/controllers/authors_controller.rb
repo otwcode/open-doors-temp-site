@@ -134,7 +134,7 @@ class AuthorsController < ApplicationController
       message: "#{DateTime.now} - #{current_user&.name || 'Anonymous'}: #{message}",
       response: response
     }.merge!(status_hash)
-    # ActionCable.server.broadcast 'imports_channel', broadcast
+    ActionCable.server.broadcast 'imports_channel', broadcast
   end
 
   def otw_client

@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { ActionCable } from "react-actioncable-provider";
 import Author from "./Author";
 import { logStateAndProps } from "../../utils/logging";
+import { sitekey } from "../../config";
 
 export default class Authors extends Component {
   constructor(props) {
@@ -35,10 +36,12 @@ export default class Authors extends Component {
   render() {
     const authors = this.state.authors.length > 0 ? this.state.authors : undefined;
     // logStateAndProps("Authors", "", this);
+
     if (authors) {
       return (
         <div>
-          <ActionCable ref='importsChannel' channel={{ channel: 'ImportsChannel', room: '1' }}
+          <ActionCable ref='importsChannel'
+                       channel={{ channel: 'ImportsChannel', room: sitekey }}
                        onReceived={this.onReceived}/>
           {authors.map(a => {
             const authorState = this.state ? this.state[ a.id ] : { imported: false };
