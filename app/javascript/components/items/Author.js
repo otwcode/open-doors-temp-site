@@ -10,6 +10,7 @@ import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import Alert from "react-bootstrap/lib/Alert";
 import { ActionCable } from "react-actioncable-provider";
 import { logStateAndProps } from "../../utils/logging";
+import { sitekey } from "../../config";
 
 class Author extends Component {
   constructor(props) {
@@ -137,7 +138,7 @@ class Author extends Component {
                      aria-controls={`${key}-collapse`}
                      aria-expanded={open}
                      className={headerClass}>
-          <ActionCable ref='importsChannel' channel={{ channel: 'ImportsChannel', room: '1' }}
+          <ActionCable ref='importsChannel' channel={{ channel: 'ImportsChannel', room: sitekey }}
                        onReceived={this.handleBroadcast}/>
           <ButtonToolbar className="justify-content-between">
             <Card.Title>{author.name}</Card.Title>
