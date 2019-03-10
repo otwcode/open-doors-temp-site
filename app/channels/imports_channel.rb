@@ -1,6 +1,6 @@
 class ImportsChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "imports_channel"
+    stream_from BROADCAST_CHANNEL
   end
 
   def unsubscribed

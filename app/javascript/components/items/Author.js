@@ -138,7 +138,7 @@ class Author extends Component {
                      aria-controls={`${key}-collapse`}
                      aria-expanded={open}
                      className={headerClass}>
-          <ActionCable ref='importsChannel' channel={{ channel: 'ImportsChannel', room: sitekey }}
+          <ActionCable ref='importsChannel' channel={{ channel: sitekey, room: sitekey }}
                        onReceived={this.handleBroadcast}/>
           <ButtonToolbar className="justify-content-between">
             <Card.Title>{author.name}</Card.Title>
