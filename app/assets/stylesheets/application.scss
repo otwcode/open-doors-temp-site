@@ -79,10 +79,6 @@ $clearColor: #906b59;
   background-color: $checkColor;
 }
 
-.message-board {
-  min-width: 150px;
-}
-
 .alert {
   margin-top: 10px;
 }
@@ -186,4 +182,52 @@ footer {
   background-color: #0275d8;
   margin-top: 20px;
   padding: 10px;
+}
+
+
+// MESSAGE BOARD
+/* Mixins*/
+@mixin transition($transition-property, $transition-time, $method) {
+  -webkit-transition: $transition-property $transition-time $method;
+  -moz-transition: $transition-property $transition-time $method;
+  -ms-transition: $transition-property $transition-time $method;
+  -o-transition: $transition-property $transition-time $method;
+  transition: $transition-property $transition-time $method;
+}
+
+/* MESSAGE BOARD */
+#message-board {
+  margin-top: 10px;
+}
+.board {
+  @include transition(all, .2s, linear);
+}
+
+.board-button {
+  margin-top: 1.821em;
+  width: 90px;
+  padding: 8px 12px;
+  border-radius: 5px 5px 0 0;
+  right: 0;
+  margin-right: -24px;
+  transform: rotate(-90deg);
+}
+
+.board-messages {
+  font-size: $small-font-size;
+  color: $navbar-light-color;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid $blue;
+  overflow-y: auto;
+  margin: 0px 5px 5px 0px;
+  padding: 8px;
+  float: right;
+  width: 250px;
+  min-height: 100%;
+  border-radius: 0px 5px 5px 5px;
+
+  & ul {
+    padding-inline-start: 15px;
+  }
 }
