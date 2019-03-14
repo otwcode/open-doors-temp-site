@@ -33,7 +33,7 @@ export default class App extends Component {
           <Navigation data={this.props}/>
           <SiteInfo config={this.state.config}/>
           <ActionCableProvider url={`ws://${window.location.host}/${sitekey}/cable`}>
-            <Container>
+            <Container fluid={true}>
               <Row>
                 <Router>
                   <Switch>
@@ -46,10 +46,7 @@ export default class App extends Component {
                     <Route component={() => <h1>Not found</h1>} />
                   </Switch>
                 </Router>
-                { this.props.current_user ?
-                <Col xs sm lg={3}>
-                  <MessageBoard type="info"/>
-                </Col> : "" }
+                { this.props.current_user ? <MessageBoard type="info"/> : "" }
               </Row>
             </Container>
           </ActionCableProvider>

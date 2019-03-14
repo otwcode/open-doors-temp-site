@@ -1,16 +1,15 @@
 import React, { Component } from "react";
-import * as ReactDOM from "react-dom";
-import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
 import { ActionCable } from "react-actioncable-provider";
 import { sitekey } from "../config";
+import Collapse from "react-bootstrap/lib/Collapse";
 
 export default class MessageBoard extends Component {
   constructor(props) {
     super(props);
     this.state = {
       messages: this.props.messages || [],
-      hideAlert: true,
+      open: false,
       boardHeight: window.innerHeight - 35
     };
   }
@@ -28,42 +27,43 @@ export default class MessageBoard extends Component {
     })
   };
 
-  // These three make the view scroll
-  // scrollToBottom = () => {
-  //   const messagesContainer = ReactDOM.findDOMNode(this.messagesContainer);
-  //   messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  // };
-
   componentDidMount() {
-    // this.scrollToBottom();
     this.handleResize();
     window.addEventListener('resize', this.handleResize)
   }
 
   componentDidUpdate() {
-    // this.scrollToBottom();
     window.removeEventListener('resize', this.handleResize)
   }
 
   // Handle the alert toggle
   handleAlertDismiss = (e) => {
-    this.setState({ hideAlert: !(this.state.hideAlert) });
+    this.setState({ open: !(this.state.open) });
   };
 
   render() {
     return (
-      <div className="message-board">
+      <div id="message-board">
         <ActionCable ref='importsChannel'
                      channel={{ channel: 'ImportsChannel', room: sitekey }}
                      onReceived={this.onReceived}/>
-        <Button className="btn-sm" variant="outline-primary" onClick={this.handleAlertDismiss}>Activity stream</Button>
-        <Alert key="messages"
-               variant={this.props.type} 
-               style={{ fontSize: 'x-small', maxHeight: this.state.boardHeight, overflowY: 'scroll', }}
-               ref={(el) => { this.messagesContainer = el; }}
-               hidden={this.state.hideAlert}>
-          {this.state.messages.map((m, idx) => <span key={`msg${idx}`}>{m}<br/></span>)}
-        </Alert>
+        <Button className="btn btn-sm board-button"
+                variant="outline-primary"
+                onClick={this.handleAlertDismiss}
+                aria-controls="board"
+                aria-expanded={open}>
+          <i className="fa fa-list"></i>
+          &nbsp;Activity
+        </Button>
+        <Collapse id="board" in={this.state.open} dimension="width" className="board">
+          <div className="board-messages"
+               ref={(el) => { this.messagesContainer = el; }}>
+            Activity since you loaded this site in reverse order.
+            <ul>
+            {this.state.messages.map((m, idx) => <li key={`msg${idx}`}>{m}<br/></li>)}
+            </ul>
+          </div>
+        </Collapse>
       </div>
     )
   }
