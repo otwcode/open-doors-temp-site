@@ -7,6 +7,11 @@
   vars:
     deploy_path: "{{ remote_path }}/{{ sitekey }}"
     unicorn_script: unicorn_{{ sitekey }}
+    zip_file_name: "{{ sitekey }}-temp-site.zip"
+    zip_file_dest: "{{ playbook_dir }}/../../"
+    dropbox_dest: "/{{ ansible_date_time.year }}/{{ sitekey }}/{{ zip_file_name}}"
+    dropbox_arg: "{\"path\":\"{{ dropbox_dest }}\", \"mode\": \"overwrite\"}"
+    dropbox_arg_encoded: "{{ dropbox_arg }}"
 
   tasks:
   - name: Stop app if already running
@@ -29,12 +34,12 @@
   - name: Archive app directory with database dump
     archive:
       path: "{{ deploy_path }}"
-      dest: "{{ remote_path }}/{{ sitekey }}-temp-site.zip"
+      dest: "{{ remote_path }}/{{ zip_file_name }}"
 
   - name: Download zip file
     fetch:
-      src: "{{ remote_path }}/{{ sitekey }}-temp-site.zip"
-      dest: "{{ playbook_dir }}/../../"
+      src: "{{ remote_path }}/{{ zip_file_name }}"
+      dest: "{{ zip_file_dest }}"
       flat: yes
     register: downloaded
 
@@ -69,3 +74,15 @@
       name: nginx
       state: restarted
       enabled: yes
+
+  - name: Copy archive to Dropbox
+    uri:
+      method: POST
+      url: "https://content.dropboxapi.com/2/files/upload"
+      headers:
+        Authorization: "Bearer {{ dropbox_token }}"
+        Dropbox-API-Arg: "{{ dropbox_arg | to_json }}"
+        Content-Type: "application/octet-stream"
+      src: "{{ zip_file_dest }}/{{ zip_file_name }}"
+      remote_src: no
+    when: downloaded
