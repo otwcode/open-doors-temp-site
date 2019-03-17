@@ -14,12 +14,12 @@ export default class AuthorsPage extends Component {
 
   handleLetterChange = (letter) => {
     history.pushState(null, `Authors for ${letter}`, authors_path(letter));
-    this.setState({ letter: letter });
+    this.setState({ letter: letter, selectedAuthor: undefined });
   };
 
   handlePageChange = (page) => {
     history.pushState(null, `Authors for ${letter}`, authors_path(this.state.letter, page));
-    this.setState({ page: page });
+    this.setState({ page: page, selectedAuthor: undefined });
   };
 
   handleAuthorSelect = (key) => {
