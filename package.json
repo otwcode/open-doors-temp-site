@@ -1,9 +1,10 @@
 {
+  "license": "GPL-2.0-only",
   "dependencies": {
-    "@rails/webpacker": "3.5",
+    "@rails/webpacker": "4.0.2",
     "axios": "^0.18.0",
     "babel-preset-react": "^6.24.1",
-    "bootstrap": ">=4.3.1",
+    "bootstrap": "4.3.1",
     "jquery": "^3.3.1",
     "jquery-ujs": "^1.2.2",
     "popper.js": "^1.14.3",
@@ -11,7 +12,7 @@
     "react": "^16.4.1",
     "react-actioncable-provider": "^1.0.3",
     "react-bootstrap": "1.0.0-beta.1",
-    "react-dom": "^16.4.1",
+    "react-dom": "^16.4.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react_ujs": "^2.4.4",
