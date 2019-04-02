@@ -11,6 +11,7 @@ describe Story, type: :model do
     config = create(:archive_config, stories_note: "Story note")
     work = story1.to_work(config, "test")
     expect(work.notes).to eq "Story note\nOriginal Notes"
+    expect(work.language_code).to eq "en"
   end
 
   it 'returns a summary too long error in json object' do
