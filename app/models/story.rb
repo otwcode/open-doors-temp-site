@@ -50,6 +50,7 @@ class Story < ApplicationRecord
       characters,
       rating,
       relationships,
+      language_code,
       categories,
       tags,
       "#{archive_config.stories_note}\n#{notes}",
