@@ -106,6 +106,7 @@ class Item extends Component {
             <b>Relationships:</b> {item.relationships || "None"}<br/>
             <b>Characters:</b> {item.characters || "None"}<br/>
             <b>Tags:</b> {item.tags || "None"}<br/>
+            <b>Language code:</b> {item.language_code || "en"}<br/>
             <b>Date:</b> {item.date || "No date"}
             {isStory &&
             <span> - <b>Updated:</b> {item.updated || "No update date set"}</span>

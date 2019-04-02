@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "fandoms", default: ""
     t.string "characters", default: ""
     t.string "relationships", default: ""
+    t.string "language_code", default: "en"
     t.string "url"
     t.boolean "imported", default: false, null: false
     t.boolean "do_not_import", default: false, null: false
@@ -109,6 +110,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "fandoms", default: ""
     t.string "characters", default: ""
     t.string "relationships", default: ""
+    t.string "language_code", default: "en"
     t.string "url"
     t.boolean "imported", default: false, null: false
     t.boolean "do_not_import", default: false, null: false

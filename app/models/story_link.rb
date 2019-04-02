@@ -36,6 +36,7 @@ class StoryLink < ApplicationRecord
       categories,
       relationships,
       characters,
+      language_code,
       archive_config.collection_name,
       "#{archive_config.bookmarks_note}\n#{notes}",
       tags,
