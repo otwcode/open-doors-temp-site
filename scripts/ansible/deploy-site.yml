@@ -146,24 +146,12 @@
   - debug: 
       msg: ~~~~~~~  DATABASE ~~~~~~~~~~
 
-#  - name: Create .my.cnf for root
-#    copy:
-#      content: "[client]\nuser={{ mysql_user }}\npassword={{ mysql_pw }}\nhost=127.0.0.1"
-#      dest: "/home/root/.my.cnf"
-
   - name: Create database config file
     template:
      src: "{{ playbook_dir }}/templates/database.yml.j2"
      dest: "{{ deploy_path }}/config/database.yml"
     tags:
       - database
-
-#  - name: Check if DB exists (2 = no)
-#    shell: mysql -e 'SHOW DATABASES;' | grep -c {{ sitekey }}
-#    register: dbstatus
-#    ignore_errors: yes
-#    tags:
-#      - database
 
   - name: Create MySQL database
     mysql_db:
