@@ -39,6 +39,21 @@ module Item
     errors
   end
 
+  def self.items_responses(ao3_response)
+    response = {}
+    has_success = ao3_response[0][:success]
+
+    bookmarks_responses = ao3_response[1] ? ao3_response[1][:body][:bookmarks] : ao3_response[0][:body][:bookmarks]
+
+    response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
+
+    response[:works] = ao3_response[0][:body][:works] ? update_items(ao3_response[0][:body][:works], :story) : []
+    response[:messages] = ao3_response[0][:body][:messages]
+    response[:status] = ao3_response[0][:status] || "ok"
+    response[:success] = has_success
+    response
+  end
+
   def self.update_item(type, response)
     item = nil
     if type == :story
@@ -102,5 +117,17 @@ module Item
     result = {}
     result[item.id] = response
     result
+  end
+
+  def self.update_items(items_responses, type)
+    responses = {}
+    if items_responses.present?
+      items_responses.each do |item_response|
+        update = Item.update_item(type, item_response.symbolize_keys)
+        Rails.logger.info(update)
+        responses.merge!(update)
+      end
+    end
+    responses
   end
 end

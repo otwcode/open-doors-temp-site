@@ -5,7 +5,7 @@ import { fetchAuthorItems, importAuthor, checkAuthor } from "../../actions";
 import Collapse from "react-bootstrap/Collapse";
 import Card from "react-bootstrap/Card";
 import Items from "./Items";
-import ImportButtons from "./ImportButtons";
+import ImportButtons from "../buttons/ImportButtons";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import Alert from "react-bootstrap/Alert";
 import { ActionCable } from "react-actioncable-provider";
@@ -146,6 +146,7 @@ class Author extends Component {
             <ImportButtons isChecking={isChecking}
                            isImporting={isImporting}
                            isImported={isImported}
+                           importText="Import All"
                            onChecking={this.handleChecking}
                            onDNI={this.handleDNI}
                            onImporting={this.handleImporting}/>

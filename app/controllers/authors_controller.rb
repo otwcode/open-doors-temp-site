@@ -97,7 +97,7 @@ class AuthorsController < ApplicationController
       ApplicationHelper.broadcast_message(
         "Error checking #{author.name} with error: #{e.message}.",
         id,
-        current_user,
+       current_user,
         response: response,
         type: "author")
     end
