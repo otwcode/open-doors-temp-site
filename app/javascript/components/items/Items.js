@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-import Card from "react-bootstrap/lib/Card";
-import Alert from "react-bootstrap/lib/Alert";
+import Card from "react-bootstrap/Card";
+import Alert from "react-bootstrap/Alert";
 import Item from "./Item";
 
 export default class Items extends Component {
