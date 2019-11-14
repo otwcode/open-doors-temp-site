@@ -21,7 +21,7 @@
     "react_ujs": "^2.4.4",
     "redux": "^4.0.1",
     "redux-promise": "^0.6.0",
-    "yarn": "^1.17.3",
+    "yarn": "^1.19.1",
     "lodash": "latest"
   },
   "devDependencies": {
