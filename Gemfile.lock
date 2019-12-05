@@ -135,7 +135,7 @@ GEM
     nokogiri (1.10.5-x64-mingw32)
       mini_portile2 (~> 2.4.0)
     public_suffix (3.0.3)
-    puma (3.12.0)
+    puma (3.12.2)
     rack (2.0.6)
     rack-proxy (0.6.5)
       rack
@@ -275,7 +275,7 @@ DEPENDENCIES
   faraday
   faraday_middleware
   mysql2 (>= 0.3.18, < 0.5)
-  puma (~> 3.8)
+  puma (~> 3.12)
   rails (~> 5.2.2.1)
   rails-controller-testing
   react-rails
