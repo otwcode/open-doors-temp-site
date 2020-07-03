@@ -22,6 +22,11 @@ module OtwArchive
 
         conn.use FaradayMiddleware::FollowRedirects
         conn.adapter Faraday.default_adapter
+
+        # Disable SSL certificate verification for Staging only
+        if host_url.include?("test.archiveofourown.org")
+          conn.ssl[:verify] = false
+        end
       end
     end
 
