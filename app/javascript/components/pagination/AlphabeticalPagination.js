@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import OverlayTrigger from "react-bootstrap/es/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Pagination from "react-bootstrap/lib/Pagination";
-import Dropdown from "react-bootstrap/lib/Dropdown";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+import Pagination from "react-bootstrap/Pagination";
+import Dropdown from "react-bootstrap/Dropdown";
 import { authors_path } from "../../config";
 
 export default class AlphabeticalPagination extends React.Component {

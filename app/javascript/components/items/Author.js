@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchAuthorItems, importAuthor, checkAuthor } from "../../actions";
 
-import Collapse from "react-bootstrap/lib/Collapse";
-import Card from "react-bootstrap/lib/Card";
+import Collapse from "react-bootstrap/Collapse";
+import Card from "react-bootstrap/Card";
 import Items from "./Items";
 import ImportButtons from "./ImportButtons";
-import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
-import Alert from "react-bootstrap/lib/Alert";
+import ButtonToolbar from "react-bootstrap/ButtonToolbar";
+import Alert from "react-bootstrap/Alert";
 import { ActionCable } from "react-actioncable-provider";
 import { logStateAndProps } from "../../utils/logging";
 import { sitekey } from "../../config";

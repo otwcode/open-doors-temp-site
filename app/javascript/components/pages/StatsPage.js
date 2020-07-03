@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 
-import Col from "react-bootstrap/lib/Col";
-import Card from "react-bootstrap/lib/Card";
-import CardDeck from "react-bootstrap/lib/CardDeck";
+import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
+import CardDeck from "react-bootstrap/CardDeck";
 import { Link } from "react-router-dom";
 
 import { fetchStats } from "../../actions";

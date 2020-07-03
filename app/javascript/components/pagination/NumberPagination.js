@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Pagination from "react-bootstrap/lib/Pagination";
+import Pagination from "react-bootstrap/Pagination";
 import { authors_path } from "../../config";
 
 export default class NumberPagination extends Component {

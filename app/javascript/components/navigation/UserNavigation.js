@@ -1,6 +1,6 @@
 import React from "react"
-import NavDropdown from "react-bootstrap/lib/NavDropdown";
-import Nav from "react-bootstrap/lib/Nav";
+import NavDropdown from "react-bootstrap/NavDropdown";
+import Nav from "react-bootstrap/Nav";
 import { sitekey } from "../../config";
 
 class UserNavigation extends React.Component {

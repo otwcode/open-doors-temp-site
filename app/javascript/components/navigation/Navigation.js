@@ -1,9 +1,9 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
 import UserNavigation from "./UserNavigation"
-import Navbar from "react-bootstrap/lib/Navbar";
-import Nav from "react-bootstrap/lib/Nav";
-import NavDropdown from "react-bootstrap/lib/NavDropdown";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import NavDropdown from "react-bootstrap/NavDropdown";
 import { sitekey } from "../../config";
 
 class Navigation extends Component {
