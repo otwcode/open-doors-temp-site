@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Button from "react-bootstrap/lib/Button";
+import Button from "react-bootstrap/Button";
 import { ActionCable } from "react-actioncable-provider";
 import { sitekey } from "../config";
-import Collapse from "react-bootstrap/lib/Collapse";
+import Collapse from "react-bootstrap/Collapse";
 
 export default class MessageBoard extends Component {
   constructor(props) {

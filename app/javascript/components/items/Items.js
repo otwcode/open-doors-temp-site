@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 
-import Card from "react-bootstrap/lib/Card";
-import Collapse from "react-bootstrap/lib/Collapse";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Alert from "react-bootstrap/lib/Alert";
-import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
-import Button from "react-bootstrap/lib/Button";
+import Card from "react-bootstrap/Card";
+import Collapse from "react-bootstrap/Collapse";
+import Tooltip from "react-bootstrap/Tooltip";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Alert from "react-bootstrap/Alert";
+import ButtonToolbar from "react-bootstrap/ButtonToolbar";
+import Button from "react-bootstrap/Button";
 
 import { sitekey } from "../../config";
 import { logStateAndProps } from "../../utils/logging";
