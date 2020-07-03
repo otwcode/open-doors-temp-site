@@ -1,6 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
-import Card from "react-bootstrap/lib/Card";
+import Card from "react-bootstrap/Card";
 import { connect } from "react-redux";
 import { fetchStats } from "../actions";
 

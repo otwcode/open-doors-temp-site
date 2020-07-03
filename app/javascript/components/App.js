@@ -10,9 +10,9 @@ import Navigation from "./navigation/Navigation";
 import SiteInfo from "./SiteInfo";
 import { sitekey } from "../config";
 import AuthorsPage from "./pages/AuthorsPage";
-import Container from "react-bootstrap/lib/Container";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import MessageBoard from "./MessageBoard";
 import StatsPage from "./pages/StatsPage";
 

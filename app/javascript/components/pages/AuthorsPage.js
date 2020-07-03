@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import AlphabeticalPagination from "../pagination/AlphabeticalPagination";
 import Authors from "../items/Authors";
 import NumberPagination from "../pagination/NumberPagination";
-import Col from "react-bootstrap/lib/Col";
+import Col from "react-bootstrap/Col";
 import { authors_path } from "../../config";
 
 export default class AuthorsPage extends Component {
