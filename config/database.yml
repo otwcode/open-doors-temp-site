@@ -1,16 +1,15 @@
 default: &default
   adapter: mysql2
   encoding: utf8
-#  pool: 5
   username: <%= Rails.application.secrets[:database][:username] %>
   password: <%= Rails.application.secrets[:database][:password] %>
-  host: 127.0.0.1
+  host: <%= ENV['OPEN_DOORS_TEMP_SITE_DB'] || '127.0.0.1' %>
   variables:
     sql_mode: STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
 
 development:
   <<: *default
-  database: <%= APP_CONFIG[:sitekey] %>
+  database: <%= ENV['OPEN_DOORS_TEMP_SITE_KEY'] || APP_CONFIG[:sitekey] %>
 
 test:
   <<: *default
@@ -18,4 +17,4 @@ test:
 
 production:
   <<: *default
-  database: <%= APP_CONFIG[:sitekey] %>
+  database: <%= ENV['OPEN_DOORS_TEMP_SITE_KEY'] || APP_CONFIG[:sitekey] %>

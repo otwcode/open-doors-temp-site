@@ -1,23 +1,26 @@
-# Essential information
-sitekey: << unique name for the site used as database name and url path >>
-name: << Site name (displayed on website) >>
+# Local settings
+local_ssh_path: << path to the public ssh key to add to authorised keys on the server >>
+dropbox_token: << Dropbox token used to upload a site backup after removal >>
 
-repo_version: << Github branch, hash, tag, or HEAD to use as source for deployed site >>
+# Linode ssh details
+remote_hostname:  << hostname for the remote server (this will be added to hosts file) >>
+linode_root: << Linux admin password >>
+opendoors_user: << Linux user on remote server >>
+opendoors_pw: << Linux user plain text password: not used - Ansible uses the hashed version - just here for reference >>
+remote_pw_hash: << hash of Linode user password >>
+remote_group: << Linux user's group on remote site >>
 
-remote_user: << user on remote site >>
-remote_group: << user's group on remote site >>
-remote_path: << remote path to root folder for websites >>
-
+# Temp site settings
+remote_path: << remote path to data folder for websites >>
 mysql_user: << MySQL user on the remote host >>
 mysql_pw: << password for the MySQL user on the remote host >>
-mysql_socket: << path to MySQL socket on the remote host >>
-
-# Site user
+mysql_socket: << path to MySQL socket on the remote host (not used with Docker) >>
 opendoors_site_user_email: << Open Doors user email for the site >>
 opendoors_site_user_pw: << Open Doors user password for the site >>
 
-# Needed for PROVISIONING only
-remote_hostname: << hostname for the remote server (added to hosts file) >>
-remote_pw: << not used - just convenient for reference >>
-remote_pw_hash: << hash of user password >>
-local_ssh_path: << path to the public key to add to authorised keys on the server >>
+# Essential information for site deployment
+sitekey: << unique name for the site used as database name and url path >>
+name: << Site name (displayed on website) >>
+repo_version: << Github branch, hash, tag, or HEAD to use as source for deployed site >>
+
+

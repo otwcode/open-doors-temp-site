@@ -1,0 +1,151 @@
+---
+- name: Provision new web server for Open Doors sites
+  hosts: all
+  user: root
+  become: yes
+  become_method: sudo
+  gather_facts: no
+
+  pre_tasks:
+    - name: Update apt-get
+      raw: sudo apt-get update
+
+    - name: Install Python for Ansible
+      raw: sudo apt-get -y install python
+
+    - name: Create a secondary, non-root user
+      user:
+        name: "{{ opendoors_user }}"
+        password: "{{ remote_pw_hash }}"
+        group: www-data
+
+    - name: Add remote authorized key to allow future passwordless logins
+      authorized_key:
+        user: "{{ opendoors_user }}"
+        key: "{{ lookup('file', local_ssh_path) }}"
+
+    - name: Add normal user to sudoers
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: "{{ opendoors_user }} ALL"
+        line: "{{ opendoors_user }} ALL=(ALL) NOPASSWD: ALL"
+        state: present
+
+    - name: Enable Bash as shell for normal user
+      command: sudo chsh -s /bin/bash {{ opendoors_user }}
+
+    - action: setup
+
+  tasks:
+    - name: Set the timezone for the server to UTC
+      timezone:
+        name: UTC
+
+    - name: Set up the unique hostname
+      hostname: name={{ remote_hostname }}
+
+    - name: Add the server's domain to the hosts file
+      lineinfile:
+        dest: /etc/hosts
+        regexp: ".*opendoors$"
+        line: "127.0.0.1 opendoors {{ remote_hostname }}"
+        state: present
+
+    - name: Install apps
+      apt:
+        name:
+        - nginx
+        - python-pip
+        - python-setuptools
+        - mysql-client-core-5.7
+        state: present
+
+
+    - name: Install Docker Module for Python
+      pip:
+        name: ["docker", "PyMySQL"]
+
+#     Install Docker
+    - name: ensure repository key is installed
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: ensure docker registry is available
+      apt_repository:
+        repo: 'deb https://download.docker.com/linux/ubuntu xenial stable'
+        state: present
+
+    - name: ensure docker and dependencies are installed
+      apt:
+        name: docker-ce
+        update_cache: yes
+
+    - name: Install docker-compose
+      get_url:
+        url : https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: 'u+x,g+x'
+
+    - name: Turn on Nginx and Docker and set them to run on boot
+      service: name={{ item }} state=started enabled=yes
+      with_items:
+        - nginx
+        - docker
+
+    - name: launch mysql-server container
+      docker_container:
+        name: open-doors-temp-db
+        image: mysql:5.7.23
+        command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=32505856
+        state: started
+        env:
+          MYSQL_DATABASE: opendoors
+          MYSQL_USER: {{ mysql_user }}
+          MYSQL_PASSWORD: {{ mysql_pw }}
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ROOT_HOST: '%'
+        exposed_ports:
+          - 3306
+        published_ports:
+          - 13306:3306
+        restart_policy: unless-stopped
+        volumes:
+          - /var/lib/mysql
+
+    - name: Grant privileges to opendoors MySQL user
+      mysql_user:
+        login_user: root
+        login_password: root
+        login_host: 127.0.0.1
+        login_port: 13306
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_pw }}"
+        priv: "*.*:ALL"
+
+    # Nginx
+    - name: Copy Nginx config
+      template:
+        src: "{{ playbook_dir }}/../provision/nginx/sites-available/opendoors-sites.j2"
+        dest: "/etc/nginx/sites-available/{{ remote_hostname }}"
+
+    - name: Symlink from sites-enabled Nginx config
+      file:
+        src: "/etc/nginx/sites-available/{{ remote_hostname }}"
+        dest: "/etc/nginx/sites-enabled/{{ remote_hostname }}"
+        state: link
+
+    # Permissions
+    - name: Chown /var/www
+      file:
+        dest: /var/www
+        group: www-data
+        mode: g+rw
+        recurse: yes
+
+    - name: Copy static files
+      copy:
+        scr: "{{ item }}"
+        dest: /var/www
+      with_fileglob:
+        - "{{ playbook_dir }}/../provision/var/www/*"

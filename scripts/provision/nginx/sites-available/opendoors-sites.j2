@@ -35,12 +35,11 @@ server {
     internal;
   }
 
+  # Landing site
   location = / {
     proxy_pass http://unix:/var/www/rootsite/runtime/sockets/unicorn.sock;;
   }
 
-  # Match up any subpath with a corresponding Unicorn socket
-  location ~^\/(?<site>[^\/]+)(\/.*)? {
-    proxy_pass http://unix:/var/www/sites/$site/runtime/sockets/unicorn.sock;
-  }
+  # BEGIN OPENDOORS SITES
+
 }
