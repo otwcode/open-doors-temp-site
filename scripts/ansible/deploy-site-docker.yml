@@ -1,0 +1,117 @@
+---
+- name: Deploy Open Doors temporary site for '{{ sitekey }}'
+  hosts: all
+  remote_user: "{{ opendoors_user }}"
+  become: yes
+
+  vars:
+    image: https://github.com/otwcode/open-doors-temp-site.git
+    deploy_path: "{{ remote_path }}/{{ sitekey }}"
+    nginx_sites:
+
+  tasks:
+  - name: Create directory on Open Doors site
+    file:
+      path: "{{ deploy_path }}"
+      owner: "{{ opendoors_user }}"
+      group: "{{ remote_group }}"
+      state: directory
+
+# Build image locally and copy to remote
+# Start site container
+# Save log to www/sites/(site)/log
+
+  # Config
+  - name: Create site config file
+    template:
+     src: "{{ playbook_dir }}/templates/config.yml.j2"
+     dest: "{{ deploy_path }}/config/config.yml"
+
+  - name: Copy secrets
+    copy:
+      src: "{{ playbook_dir }}/../../config/secrets.yml"
+      dest: "{{ deploy_path }}/config/secrets.yml"
+
+  - debug: 
+      msg: ~~~~~~~  DATABASE ~~~~~~~~~~
+
+  - name: Create database config file
+    template:
+     src: "{{ playbook_dir }}/templates/database.yml.j2"
+     dest: "{{ deploy_path }}/config/database.yml"
+    tags:
+      - database
+
+  - name: Create MySQL database
+    mysql_db:
+      name: "{{ sitekey }}"
+      state: present
+      login_user: "{{ mysql_user }}"
+      login_password: "{{ mysql_pw }}"
+      host: 127.0.0.1
+      port: 13306
+#      login_unix_socket: "{{ mysql_socket }}"
+    register: create_database
+    tags:
+      - database
+
+  - name: Copy MySQL script
+    template:
+      src: "{{ playbook_dir }}/templates/archive_config.sql.j2"
+      dest: "{{ deploy_path }}/archive_config.sql"
+    when: create_database.changed
+    tags:
+      - database
+
+  - name: Load sample data into MySQL
+    mysql_db:
+      name: "{{ sitekey }}"
+      state: import
+      target: "{{ deploy_path }}/archive_config.sql"
+      login_user: "{{ mysql_user }}"
+      login_password: "{{ mysql_pw }}"
+      host: 127.0.0.1
+      port: 13306
+#      login_unix_socket: "{{ mysql_socket }}"
+    when: create_database.changed
+    tags:
+      - database
+    
+  - name: Run migrations 
+    command: "{{ bundle_with_path }} exec rake db:migrate"
+    args:
+      chdir: "{{ deploy_path }}"
+    environment:
+      RAILS_ENV: production
+    tags:
+      - database
+
+  - name: Create Open Doors user for the site
+    command: "{{ bundle_with_path }} exec rake users:create_user[\"Open Doors\",\"{{ opendoors_site_user_email }}\",\"{{ opendoors_site_user_pw }}\"]"
+    args:
+      chdir: "{{ deploy_path }}"
+    environment:
+      RAILS_ENV: production
+    when: create_database
+    tags:
+      - database
+
+  - debug: 
+      msg: ~~~~~~~ START APP ~~~~~~~~~
+
+  - name: Add entry for site in Nginx config
+    blockinfile:
+      path: /etc/
+      insertafter: "# OPENDOORS SITES"
+      block: |
+
+        # {{ site_name }}
+        location = /{{ sitekey }} {
+          proxy_pass http://localhost:{{ site_port }}/{{ sitekey }};
+        }
+
+  - name: Restart Nginx
+    service:
+      name: nginx
+      state: restarted
+      enabled: yes

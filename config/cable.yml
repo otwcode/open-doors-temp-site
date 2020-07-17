@@ -1,6 +1,6 @@
 local: &local
   adapter: redis
-  url: redis://localhost:6379
+  url: redis://<%= ENV['OPEN_DOORS_TEMP_SITE_REDIS_HOST'] || 'localhost' %>:<%= ENV['OPEN_DOORS_TEMP_SITE_REDIS_PORT'] || '6379' %>
 
 production: *local
 development: *local

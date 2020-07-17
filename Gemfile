@@ -23,15 +23,14 @@ gem 'audited', '~> 4.4'
 gem 'react-rails'
 gem 'webpacker'
 
-
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
+# Use Puma as the app server
+gem 'puma', '~> 4.3'
 
 group :development do
-  # Use Puma as the app server
-  gem 'puma', '~> 4.3'
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   # gem 'listen', '~> 3.0.5'
