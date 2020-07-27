@@ -5,9 +5,12 @@
   become: yes
 
   vars:
-    image: https://github.com/otwcode/open-doors-temp-site.git
+    repo: https://github.com/otwcode/open-doors-temp-site.git
     deploy_path: "{{ remote_path }}/{{ sitekey }}"
-    nginx_sites:
+    footer_version: "master"
+    site_image_tag: "master"
+    site_image_name: otwcode/open-doors-temp-site
+    site_image_tar: "{{ sitekey }}-open-doors-temp-site.tar"
 
   tasks:
   - name: Create directory on Open Doors site
@@ -17,49 +20,56 @@
       group: "{{ remote_group }}"
       state: directory
 
-# Build image locally and copy to remote
-# Start site container
-# Save log to www/sites/(site)/log
+  - name: Get git info on currently checked out branch to tag image
+    command: git rev-parse --abbrev-ref HEAD
+    register: gitinfo
+    delegate_to: 127.0.0.1
+    become: no
+
+  - name: Build image and archive it
+    docker_image:
+      name: "{{ site_image_name }}"
+      tag: "{{ gitinfo.stdout }}"
+      archive_path: "{{ site_image_tar }}"
+      build:
+        path: ../..
+        args:
+          SITEKEY: "{{ sitekey }}"
+        pull: no
+      source: build
+    delegate_to: 127.0.0.1
+    become: no
+
+  - name: Copy tar image to remote host
+    copy:
+      src: "{{ site_image_tar }}"
+      dest: "{{ deploy_path }}"
+
+  - name: Load site container
+    docker_image:
+      name: "{{ site_image_name }}"
+      tag: "{{ gitinfo.stdout }}"
+      load_path: "{{ deploy_path }}/{{ site_image_tar }}"
+      source: load
+
+  - name: Launch site container
+    docker_container:
+      name: "{{ sitekey }}"
+      image: "{{ site_image_name }}:{{ gitinfo.stdout }}"
+      state: started
+      exposed_ports:
+        - "{{ site_port }}"
+      published_ports:
+        - "{{ site_port }}:{{ site_port }}"
+      env:
+        SITEKEY: "{{ sitekey }}"
+
 
   # Config
-  - name: Create site config file
-    template:
-     src: "{{ playbook_dir }}/templates/config.yml.j2"
-     dest: "{{ deploy_path }}/config/config.yml"
-
-  - name: Copy secrets
-    copy:
-      src: "{{ playbook_dir }}/../../config/secrets.yml"
-      dest: "{{ deploy_path }}/config/secrets.yml"
-
-  - debug: 
-      msg: ~~~~~~~  DATABASE ~~~~~~~~~~
-
-  - name: Create database config file
-    template:
-     src: "{{ playbook_dir }}/templates/database.yml.j2"
-     dest: "{{ deploy_path }}/config/database.yml"
-    tags:
-      - database
-
-  - name: Create MySQL database
-    mysql_db:
-      name: "{{ sitekey }}"
-      state: present
-      login_user: "{{ mysql_user }}"
-      login_password: "{{ mysql_pw }}"
-      host: 127.0.0.1
-      port: 13306
-#      login_unix_socket: "{{ mysql_socket }}"
-    register: create_database
-    tags:
-      - database
-
   - name: Copy MySQL script
     template:
       src: "{{ playbook_dir }}/templates/archive_config.sql.j2"
       dest: "{{ deploy_path }}/archive_config.sql"
-    when: create_database.changed
     tags:
       - database
 
@@ -68,46 +78,51 @@
       name: "{{ sitekey }}"
       state: import
       target: "{{ deploy_path }}/archive_config.sql"
-      login_user: "{{ mysql_user }}"
-      login_password: "{{ mysql_pw }}"
-      host: 127.0.0.1
-      port: 13306
-#      login_unix_socket: "{{ mysql_socket }}"
-    when: create_database.changed
+      login_password: "{{ mysql_root_pw }}"
     tags:
       - database
     
-  - name: Run migrations 
-    command: "{{ bundle_with_path }} exec rake db:migrate"
-    args:
-      chdir: "{{ deploy_path }}"
-    environment:
-      RAILS_ENV: production
-    tags:
-      - database
-
+#  - name: Run migrations
+#    command: docker exec {{ sitekey }} "bundle exec rake db:migrate"
+#    args:
+#      chdir: "{{ deploy_path }}"
+#    tags:
+#      - database
+#
   - name: Create Open Doors user for the site
-    command: "{{ bundle_with_path }} exec rake users:create_user[\"Open Doors\",\"{{ opendoors_site_user_email }}\",\"{{ opendoors_site_user_pw }}\"]"
+    command: docker exec {{ sitekey }} bundle exec rake users:create_user["Open Doors","{{ opendoors_site_user_email }}","{{ opendoors_site_user_pw }}"]
     args:
       chdir: "{{ deploy_path }}"
     environment:
       RAILS_ENV: production
-    when: create_database
+#    when: create_database
     tags:
       - database
 
   - debug: 
       msg: ~~~~~~~ START APP ~~~~~~~~~
 
+  - name: Change file ownership, group and permissions
+    file:
+      path: "{{ deploy_path }}/{{ item }}"
+      state: touch
+    loop:
+      - "{{ sitekey }}-access.log"
+      - "{{ sitekey }}-error.log"
+
   - name: Add entry for site in Nginx config
     blockinfile:
-      path: /etc/
-      insertafter: "# OPENDOORS SITES"
+      path: /etc/nginx/sites-available/{{ remote_hostname }}
+      insertafter: "# BEGIN OPENDOORS SITES"
+      marker: "# {mark} ANSIBLE MANAGED BLOCK {{ site_name }}"
       block: |
 
-        # {{ site_name }}
-        location = /{{ sitekey }} {
-          proxy_pass http://localhost:{{ site_port }}/{{ sitekey }};
+        # Site: {{ site_name }}
+        location ~ /{{ sitekey }}/?(.*)? {
+          access_log {{ deploy_path }}/{{ sitekey }}-access.log;
+          error_log {{ deploy_path }}/{{ sitekey }}-error.log;
+          rewrite ^\/(.*) /$1 break;
+          proxy_pass http://localhost:{{ site_port }};
         }
 
   - name: Restart Nginx

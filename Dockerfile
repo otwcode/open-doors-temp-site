@@ -21,7 +21,7 @@ RUN echo "$SITEKEY"
 RUN apk add --update --no-cache \
     # for Nokogiri
     build-base \
-    # for MySQL
+    # for MySQL gem
     mariadb-dev \
     # for Raindrops
     linux-headers \
@@ -47,8 +47,15 @@ RUN bundle config --global frozen 1 && \
 # Copy over the application code and compile Node code
 RUN yarn install --production
 COPY . $APP_HOME
+RUN sed -i "s/  public_output_path: react\/packs/  public_output_path: $SITEKEY\/react\/packs/g" $APP_HOME/config/webpacker.yml
 RUN sed -i "s/opendoorstempsite/$SITEKEY/g" $APP_HOME/app/javascript/config.js
 RUN bundle exec rake assets:precompile
+
+# Configure databases
+RUN sed -i "s/opendoorstempsite/$SITEKEY/g" $APP_HOME/config/config.yml
+RUN mv $APP_HOME/config/database-docker.yml $APP_HOME/config/database.yml
+RUN mv $APP_HOME/config/cable-docker.yml $APP_HOME/config/cable.yml
+
 
 # Remove folders not needed in resulting image
 RUN rm -rf tmp/cache vendor/assets spec
@@ -63,8 +70,6 @@ ARG APP_HOME=/production
 ENV RAILS_ENV production
 ENV BUNDLE_APP_CONFIG="$APP_HOME/.bundle"
 
-RUN echo "$SITEKEY"
-
 # Install runtime packages
 RUN apk add --update --no-cache \
     # for MySQL
@@ -75,10 +80,6 @@ RUN apk add --update --no-cache \
 
 COPY --from=build-env $APP_HOME $APP_HOME
 WORKDIR $APP_HOME
-
-# Configure database
-RUN sed -i "s/opendoorstempsite/$SITEKEY/g" $APP_HOME/config/config.yml
-RUN mv $APP_HOME/config/database-docker.yml $APP_HOME/config/database.yml
 
 # Direct logs to stdout so they're visible outside the container
 RUN ln -sf /proc/1/fd/1 $APP_HOME/log/production.log

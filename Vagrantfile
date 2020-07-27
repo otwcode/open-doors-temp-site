@@ -5,12 +5,13 @@ Vagrant.configure(2) do |config|
 
   config.vm.box = "ubuntu/xenial64"
   config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
-  config.vm.network "forwarded_port", guest: 3306, host: 13306
+  # config.vm.network "forwarded_port", guest: 3306, host: 13306
 
   # We only want this to change when the remote server OS is updated
   config.vm.box_check_update = false
 
   config.vm.provider "virtualbox" do |vb|
+    vb.name = "open-doors-temp-vagrant"
     # Customize the amount of memory on the VM:
     vb.memory = "2048"
     vb.cpus = 1
@@ -19,13 +20,13 @@ Vagrant.configure(2) do |config|
 
   # Provision using Ansible
   config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "scripts/provision-server.yml"
+    ansible.playbook = "scripts/ansible/provision-server-docker.yml"
     ansible.extra_vars = "scripts/variables.yml"
   end
-
-  # Deploy using Ansible
+  #
+  # # Deploy using Ansible
   config.vm.provision :ansible do |ansible|
-    ansible.playbook = "scripts/deploy-site.yml"
+    ansible.playbook = "scripts/ansible/deploy-site-docker.yml"
     ansible.extra_vars = "scripts/variables.yml"
   end
 

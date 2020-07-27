@@ -37,9 +37,13 @@ server {
 
   # Landing site
   location = / {
-    proxy_pass http://unix:/var/www/rootsite/runtime/sockets/unicorn.sock;;
+    proxy_pass http://unix:/var/www/rootsite/runtime/sockets/unicorn.sock;
   }
 
   # BEGIN OPENDOORS SITES
+  #  location ~ /terma/(.*)? {
+  #    rewrite ^\/(.*) /$1 break;
+  #    proxy_pass http://localhost:3011;
+  #  }
 
 }

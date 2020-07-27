@@ -10,7 +10,7 @@
     - name: Update apt-get
       raw: sudo apt-get update
 
-    - name: Install Python for Ansible
+    - name: Install Python 2 for Ansible
       raw: sudo apt-get -y install python
 
     - name: Create a secondary, non-root user
@@ -32,7 +32,7 @@
         state: present
 
     - name: Enable Bash as shell for normal user
-      command: sudo chsh -s /bin/bash {{ opendoors_user }}
+      command: chsh -s /bin/bash {{ opendoors_user }}
 
     - action: setup
 
@@ -57,71 +57,58 @@
         - nginx
         - python-pip
         - python-setuptools
-        - mysql-client-core-5.7
+        - python-mysqldb
+        - mysql-server-5.7
+        - redis-server
         state: present
-
 
     - name: Install Docker Module for Python
       pip:
-        name: ["docker", "PyMySQL"]
+        name:
+        - docker
 
 #     Install Docker
-    - name: ensure repository key is installed
+    - name: Install repository key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
-    - name: ensure docker registry is available
+    - name: Add docker source registry
       apt_repository:
         repo: 'deb https://download.docker.com/linux/ubuntu xenial stable'
         state: present
 
-    - name: ensure docker and dependencies are installed
+    - name: Install docker and dependencies
       apt:
         name: docker-ce
         update_cache: yes
 
-    - name: Install docker-compose
-      get_url:
-        url : https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Linux-x86_64
-        dest: /usr/local/bin/docker-compose
-        mode: 'u+x,g+x'
+    # Configure Redis and MySQL to bind to the correct ports
+    - name: Copy Redis config
+      copy:
+        src: "{{ playbook_dir }}/../provision/etc/redis/redis.conf"
+        dest: /etc/redis/
 
-    - name: Turn on Nginx and Docker and set them to run on boot
-      service: name={{ item }} state=started enabled=yes
+    - name: Copy MySQL config
+      template:
+        src: "{{ playbook_dir }}/../provision/etc/mysql/my.cnf.j2"
+        dest: "/etc/mysql/my.cnf"
+
+    - name: Turn on Nginx, Docker and MySQL set them to run on boot
+      service: name={{ item }} state=restarted enabled=yes
       with_items:
         - nginx
         - docker
+        - mysql
+        - redis
 
-    - name: launch mysql-server container
-      docker_container:
-        name: open-doors-temp-db
-        image: mysql:5.7.23
-        command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=32505856
-        state: started
-        env:
-          MYSQL_DATABASE: opendoors
-          MYSQL_USER: {{ mysql_user }}
-          MYSQL_PASSWORD: {{ mysql_pw }}
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_ROOT_HOST: '%'
-        exposed_ports:
-          - 3306
-        published_ports:
-          - 13306:3306
-        restart_policy: unless-stopped
-        volumes:
-          - /var/lib/mysql
-
-    - name: Grant privileges to opendoors MySQL user
+    - name: Create a new user for connections
       mysql_user:
-        login_user: root
-        login_password: root
-        login_host: 127.0.0.1
-        login_port: 13306
         name: "{{ mysql_user }}"
         password: "{{ mysql_pw }}"
         priv: "*.*:ALL"
+        login_password: "{{ mysql_root_pw }}"
+        state: present
 
     # Nginx
     - name: Copy Nginx config
@@ -145,7 +132,7 @@
 
     - name: Copy static files
       copy:
-        scr: "{{ item }}"
+        src: "{{ item }}"
         dest: /var/www
       with_fileglob:
-        - "{{ playbook_dir }}/../provision/var/www/*"
+        - "{{ playbook_dir }}/../provision/var/www/**/*"
