@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 0) do
 
-  create_table "archive_configs", id: :integer, options: "ENGINE=MyISAM DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "archive_configs", id: :integer, options: "ENGINE=MyISAM DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "key", limit: 45, null: false
     t.string "name"
     t.string "fandom"
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.index ["key"], name: "Key_UNIQUE", unique: true
   end
 
-  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.integer "auditable_id"
     t.string "auditable_type"
     t.integer "associated_id"
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
-  create_table "authors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "authors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.string "email", default: "", null: false
     t.boolean "imported", default: false, null: false
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.index ["id"], name: "id_UNIQUE", unique: true
   end
 
-  create_table "chapters", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "chapters", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "position"
     t.string "title", default: "", null: false
     t.integer "authorID", default: 0, null: false
@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.index ["story_id"], name: "storyid"
   end
 
-  create_table "stories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "stories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "title", default: "", null: false
     t.text "summary"
     t.text "notes"
@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.index ["id"], name: "id_UNIQUE", unique: true
   end
 
-  create_table "story_links", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "story_links", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "title", default: "", null: false
     t.text "summary"
     t.text "notes"
@@ -121,7 +121,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.index ["id"], name: "id_UNIQUE", unique: true
   end
 
-  create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
     t.string "email"
     t.string "password_digest"

@@ -1,0 +1,37 @@
+version: '3.5'
+
+services:
+  open-doors-temp-db:
+    image: otwcode/open-doors-temp-site-mysql
+    container_name: open-doors-temp-db
+    command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=32505856
+    restart: always
+    build:
+      context: .
+      dockerfile: ./scripts/docker/Dockerfile-mysql
+      args:
+        MYSQL_USER: opendoors
+    environment:
+      MYSQL_DATABASE: opendoors
+      MYSQL_USER: opendoors
+      MYSQL_PASSWORD: yyuukfla
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - ~/Documents/otwcode/docker_data/od_mysql:/var/lib/mysql
+    ports:
+      - 13306:3306
+    networks:
+      - network
+
+  open-doors-temp-redis:
+    image: redis:3.2.1
+    container_name: open-doors-temp-redis
+    restart: always
+    ports:
+      - 16379:6379
+    networks:
+      - network
+
+networks:
+  network: ~

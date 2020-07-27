@@ -1,0 +1,3 @@
+FROM mysql:5.7.23
+ARG MYSQL_USER
+RUN echo "GRANT ALL PRIVILEGES ON *.* TO $MYSQL_USER@'%'; FLUSH PRIVILEGES;" > /docker-entrypoint-initdb.d/init.sql
