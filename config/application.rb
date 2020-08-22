@@ -6,7 +6,7 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-APP_CONFIG = YAML.load_file('config/config.yml')
+# APP_CONFIG = YAML.load_file('config/config.yml')
 
 module OpendoorsTempSite
   class Application < Rails::Application
@@ -14,7 +14,7 @@ module OpendoorsTempSite
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    config.assets.prefix = "/#{APP_CONFIG[:sitekey]}/assets"
+    # config.assets.prefix = "/assets"
     config.autoload_paths += %W(#{config.root}/lib)
   end
 end

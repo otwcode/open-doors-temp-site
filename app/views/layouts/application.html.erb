@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title><%= APP_CONFIG[:name] %><%= content_for?(:title) ? " - #{yield(:title)}" : "" %></title>
+  <title><%= ENV['SITE_NAME'] %><%= content_for?(:title) ? " - #{yield(:title)}" : "" %></title>
   <%= csrf_meta_tags %>
   <%= favicon_link_tag %>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -17,7 +17,7 @@
   <%= yield %>
 
 <footer>
-  <%= APP_CONFIG[:version] %>
+  <%= ENV['SITE_VERSION'] %>
 </footer>
 </body>
 </html>

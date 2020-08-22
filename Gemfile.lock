@@ -277,7 +277,6 @@ DEPENDENCIES
   factory_bot_rails
   faraday
   faraday_middleware
-  listen (~> 3.1.5)
   mysql2 (>= 0.3.18, < 0.5)
   puma (~> 4.3)
   rails (~> 5.2.2.1)
@@ -295,5 +294,8 @@ DEPENDENCIES
   webmock
   webpacker
 
+RUBY VERSION
+   ruby 2.3.7p456
+
 BUNDLED WITH
-   1.17.2
+   1.17.3

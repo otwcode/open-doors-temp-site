@@ -15,8 +15,6 @@ ENV BUNDLE_APP_CONFIG="$APP_HOME/.bundle"
 RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
-RUN echo "$SITEKEY"
-
 # Installation of dependencies
 RUN apk add --update --no-cache \
     # for Nokogiri
@@ -47,8 +45,10 @@ RUN bundle config --global frozen 1 && \
 # Copy over the application code and compile Node code
 RUN yarn install --production
 COPY . $APP_HOME
-RUN sed -i "s/  public_output_path: react\/packs/  public_output_path: $SITEKEY\/react\/packs/g" $APP_HOME/config/webpacker.yml
-RUN sed -i "s/opendoorstempsite/$SITEKEY/g" $APP_HOME/app/javascript/config.js
+#RUN sed -i "s/  public_output_path: react\/packs/  public_output_path: $SITEKEY\/react\/packs/g" $APP_HOME/config/webpacker.yml
+#RUN sed -i "s/opendoorstempsite/$SITEKEY/g" $APP_HOME/app/javascript/config.js
+
+#RUN bundle exec rails webpacker:install:erb
 RUN bundle exec rake assets:precompile
 
 # Configure databases
@@ -69,6 +69,7 @@ ARG APP_HOME=/production
 
 ENV RAILS_ENV production
 ENV BUNDLE_APP_CONFIG="$APP_HOME/.bundle"
+ENV SITEKEY SITEKEY
 
 # Install runtime packages
 RUN apk add --update --no-cache \

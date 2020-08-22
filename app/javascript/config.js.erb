@@ -1,2 +1,2 @@
-export const sitekey = 'opendoorstempsite';
+export const sitekey = <%= ENV['SITEKEY'] %>;
 export const authors_path = (letter) => `/${sitekey}/authors${ letter ? `?letter=${letter}` :""}`;
