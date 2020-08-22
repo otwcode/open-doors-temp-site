@@ -3,7 +3,7 @@ require 'yaml'
 # Get specific configuration for this app and its location
 app_dir = File.expand_path("../..", __FILE__)
 APP_CONFIG = YAML.load_file("#{app_dir}/config/config.yml")
-shared_dir = "/var/www/sites/#{APP_CONFIG[:sitekey]}"
+shared_dir = "/var/www/sites/#{ENV['RAILS_RELATIVE_URL_ROOT']}"
 
 working_directory app_dir
 

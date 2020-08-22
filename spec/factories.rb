@@ -39,8 +39,8 @@ FactoryBot.define do
   factory :chapter
 
   factory :archive_config do
-    key { APP_CONFIG[:sitekey] }
-    name { APP_CONFIG[:name] }
+    key { ENV['RAILS_RELATIVE_URL_ROOT'] }
+    name { ENV['SITE_NAME'] }
     host { "local" }
     initialize_with { ArchiveConfig.where(key: key).first_or_create }
   end

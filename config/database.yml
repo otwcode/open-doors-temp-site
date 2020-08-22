@@ -9,7 +9,7 @@ default: &default
 
 development:
   <<: *default
-  database: <%= ENV['OPEN_DOORS_TEMP_SITE_KEY'] || APP_CONFIG[:sitekey] %>
+  database: <%= ENV['RAILS_RELATIVE_URL_ROOT'] %>
 
 test:
   <<: *default
@@ -17,4 +17,4 @@ test:
 
 production:
   <<: *default
-  database: <%= ENV['OPEN_DOORS_TEMP_SITE_KEY'] || APP_CONFIG[:sitekey] %>
+  database: <%= ENV['RAILS_RELATIVE_URL_ROOT'] %>
