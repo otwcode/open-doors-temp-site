@@ -1,6 +1,6 @@
 default: &default
   adapter: mysql2
-  encoding: utf8
+  encoding: utf8mb4
   username: <%= Rails.application.secrets[:database][:username] %>
   password: <%= Rails.application.secrets[:database][:password] %>
   host: <%= ENV['OPEN_DOORS_TEMP_SITE_DB'] || '127.0.0.1' %>
