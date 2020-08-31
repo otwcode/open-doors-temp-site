@@ -2,9 +2,10 @@
 FROM ruby:alpine3.12 AS build-env
 MAINTAINER OTW Open Doors
 
-ARG SITEKEY
+ARG RAILS_RELATIVE_URL_ROOT=opendoorstempsite
 
 # Set up environment variables that will be available to the instance
+ENV RAILS_RELATIVE_URL_ROOT="${RAILS_RELATIVE_URL_ROOT}"
 ENV APP_HOME=/production
 ENV RAILS_ENV production
 ENV NODE_ENV production
@@ -52,7 +53,7 @@ COPY . $APP_HOME
 RUN bundle exec rake assets:precompile
 
 # Configure databases
-RUN sed -i "s/opendoorstempsite/$SITEKEY/g" $APP_HOME/config/config.yml
+#RUN sed -i "s/opendoorstempsite/$SITEKEY/g" $APP_HOME/config/config.yml
 RUN mv $APP_HOME/config/database-docker.yml $APP_HOME/config/database.yml
 RUN mv $APP_HOME/config/cable-docker.yml $APP_HOME/config/cable.yml
 
@@ -64,12 +65,12 @@ RUN rm -rf tmp/cache vendor/assets spec
 FROM ruby:alpine3.12
 MAINTAINER OTW Open Doors
 
-ARG SITEKEY
+ARG RAILS_RELATIVE_URL_ROOT
 ARG APP_HOME=/production
 
+ENV RAILS_RELATIVE_URL_ROOT="${RAILS_RELATIVE_URL_ROOT}"
 ENV RAILS_ENV production
 ENV BUNDLE_APP_CONFIG="$APP_HOME/.bundle"
-ENV SITEKEY SITEKEY
 
 # Install runtime packages
 RUN apk add --update --no-cache \
