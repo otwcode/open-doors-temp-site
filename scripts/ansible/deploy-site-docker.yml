@@ -58,11 +58,11 @@
       image: "{{ site_image_name }}:{{ gitinfo.stdout }}"
       state: started
       exposed_ports:
-        - "{{ site_port }}"
+        - "3011"
       published_ports:
-        - "{{ site_port }}:{{ site_port }}"
+        - "{{ site_port }}:3011"
       env:
-        SITEKEY: "{{ sitekey }}"
+        RAILS_RELATIVE_URL_ROOT: "{{ sitekey }}"
 
 
   # Config
@@ -95,6 +95,7 @@
       chdir: "{{ deploy_path }}"
     environment:
       RAILS_ENV: production
+      RAILS_RELATIVE_URL_ROOT: "{{ sitekey }}"
 #    when: create_database
     tags:
       - database

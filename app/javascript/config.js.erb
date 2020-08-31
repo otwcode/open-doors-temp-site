@@ -1,2 +1,2 @@
-export const sitekey = <%= ENV['SITEKEY'] %>;
+export const sitekey = process.env.RAILS_RELATIVE_URL_ROOT;
 export const authors_path = (letter) => `/${sitekey}/authors${ letter ? `?letter=${letter}` :""}`;

@@ -14,7 +14,7 @@ module OpendoorsTempSite
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    # config.assets.prefix = "/assets"
+    # config.assets.prefix = "#{ENV['RAILS_RELATIVE_URL_ROOT']}/assets"
     config.autoload_paths += %W(#{config.root}/lib)
   end
 end
