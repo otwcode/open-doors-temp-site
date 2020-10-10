@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   get 'welcome/index' # default Rails welcome page
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  scope "/#{ENV['RAILS_RELATIVE_URL_ROOT']}" do
+  scope "/#{ENV['SITEKEY']}" do
     root to: 'authors#index'
 
     resources :authors

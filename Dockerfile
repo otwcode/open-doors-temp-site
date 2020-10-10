@@ -2,10 +2,10 @@
 FROM ruby:alpine3.12 AS build-env
 MAINTAINER OTW Open Doors
 
-ARG RAILS_RELATIVE_URL_ROOT=opendoorstempsite
+ARG SITEKEY=opendoorstempsite
 
 # Set up environment variables that will be available to the instance
-ENV RAILS_RELATIVE_URL_ROOT="${RAILS_RELATIVE_URL_ROOT}"
+ENV SITEKEY="${SITEKEY}"
 ENV APP_HOME=/production
 ENV RAILS_ENV production
 ENV NODE_ENV production
@@ -65,10 +65,10 @@ RUN rm -rf tmp/cache vendor/assets spec
 FROM ruby:alpine3.12
 MAINTAINER OTW Open Doors
 
-ARG RAILS_RELATIVE_URL_ROOT
+ARG SITEKEY
 ARG APP_HOME=/production
 
-ENV RAILS_RELATIVE_URL_ROOT="${RAILS_RELATIVE_URL_ROOT}"
+ENV SITEKEY="${SITEKEY}"
 ENV RAILS_ENV production
 ENV BUNDLE_APP_CONFIG="$APP_HOME/.bundle"
 

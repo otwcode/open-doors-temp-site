@@ -62,7 +62,8 @@
       published_ports:
         - "{{ site_port }}:3011"
       env:
-        RAILS_RELATIVE_URL_ROOT: "{{ sitekey }}"
+        SITEKEY: "{{ sitekey }}"
+#        RAILS_RELATIVE_URL_ROOT: "{{ sitekey }}"
 
 
   # Config
@@ -95,7 +96,8 @@
       chdir: "{{ deploy_path }}"
     environment:
       RAILS_ENV: production
-      RAILS_RELATIVE_URL_ROOT: "{{ sitekey }}"
+      SITEKEY: "{{ sitekey }}"
+#      RAILS_RELATIVE_URL_ROOT: "{{ sitekey }}"
 #    when: create_database
     tags:
       - database

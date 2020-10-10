@@ -1,2 +1,3 @@
-export const sitekey = process.env.RAILS_RELATIVE_URL_ROOT;
-export const authors_path = (letter) => `/${sitekey}/authors${ letter ? `?letter=${letter}` :""}`;
+export const sitekey = process.env.SITEKEY;
+export const authors_path = (letter) => `/authors${ letter ? `?letter=${letter}` :""}`;
+//export const authors_path = (letter) => `/${sitekey}/authors${ letter ? `?letter=${letter}` :""}`;

@@ -9,7 +9,7 @@ default: &default
 
 development:
   <<: *default
-  database: <%= ENV['RAILS_RELATIVE_URL_ROOT'] %>
+  database: <%= ENV['SITEKEY'] %>
 
 test:
   <<: *default
@@ -17,4 +17,4 @@ test:
 
 production:
   <<: *default
-  database: <%= ENV['RAILS_RELATIVE_URL_ROOT'] %>
+  database: <%= ENV['SITEKEY'] %>
