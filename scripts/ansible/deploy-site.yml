@@ -11,6 +11,11 @@
     bundle_with_path: /usr/share/rvm/gems/ruby-2.3.7/wrappers/bundle
 
   tasks:
+  - name: Make sure pymysql is present
+    apt:
+      name: python3-pymysql
+      state: installed
+
   - name: Stop app if already running
     service:
       name: "{{ unicorn_script }}"

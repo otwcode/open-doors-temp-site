@@ -10,10 +10,12 @@ importing process, some archives are imported using a semi-automated process inv
 initial Open Doors processes:
 
 1. The metadata and works are extracted from a backup of the old archive and converted into standardised MySQL tables 
-(see [Open Doors Code](https://github.com/otwcode/open-doors-code) which houses the scripts used for this stage)
+(see [Open Doors eFiction](https://github.com/otwcode/open-doors-efiction) and 
+   [Open Doors Code (ODAP)](https://github.com/otwcode/open-doors-code) which are used for this stage)
 1. The standardised data is hosted in a temporary website accessible to import operators and which allows them to 
-perform the import in stages, verifying imported works as they go along. This repository houses the Rails application 
-used to create those sites.
+perform the import in stages, verifying imported works as they go along. 
+   
+This repository houses the Rails application used to create those sites.
 
 # Running it locally
 This is Ruby on Rails site with a React front-end mounted by the `react-rails` gem.
@@ -25,7 +27,7 @@ Requirements:
 - Node 8.11 https://nodejs.org/en/blog/release/v8.11.1/
 - Yarn https://yarnpkg.com/lang/en/docs/install/
 
-Note: for ease of local development, the Ruby and MySQL versions should be kept in step with the []otwarchive project](https://github.com/otwcode/otwarchive)
+Note: for ease of local development, the Ruby and MySQL versions should be kept in step with the [otwarchive project](https://github.com/otwcode/otwarchive)
 
 See [Rails Getting Started Guide](http://guides.rubyonrails.org/getting_started.html) for instructions on installing and configuring Rails.
 
@@ -65,6 +67,9 @@ it being accidentally uploaded to Github.
 Note: the bash script is just provided as a convenience to load parameters from `variables.yml`. If you are working on 
 multiple sites, you might want to have different variable files and an edited copy of the bash script for each one.
 
+This will create a shell site populated with dummy data. You can then upload the real tables produced by the ODAP 
+directly to the MySQL database on the temp site, which will have the `sitekey` you specified as its name.
+
 # Archiving a site
 When you are finished with the site and it has been fully imported, you can archive it using the following procedure:
 
@@ -75,7 +80,7 @@ When you are finished with the site and it has been fully imported, you can arch
     $ ./scripts/remove-site-from-variables.sh
     ```
 
-If all goes well, this will bundle the MySQL tables and app directory into a zip file and download it to the root of the 
+This will bundle the MySQL tables and app directory into a zip file and download it to the root of the 
 repository on your local machine.
 
 # Vagrant deployment
@@ -113,4 +118,4 @@ $ ansible-playbook scripts/provision-server.yml -i scripts/hosts --extra-vars "@
 
 
 # Known Issues
-1. Webpacker compilation fails with no explanation on Linode: this is probably due to lack of memory for the compilcation - stop one of the other sites to resolve this.
+1. Webpacker compilation fails with no explanation on Linode: this is probably due to lack of memory for the compilation - stop one of the other sites to resolve this.
