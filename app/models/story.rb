@@ -26,7 +26,7 @@ class Story < ApplicationRecord
       updated: convert_date(updated),
       summaryLength: summary&.size,
       summaryTooLong: summary && summary.size > 1250,
-      chapters: chapters.map { |c|
+      chapters: chapters.sort_by(&:position).map { |c|
         c.as_json(only: [:id, :title, :position])
           .merge!(
             title: (c.title.blank? ? "Chapter #{c.position}" : c.title),

@@ -14,7 +14,7 @@
   - name: Make sure pymysql is present
     apt:
       name: python3-pymysql
-      state: installed
+      state: present
 
   - name: Stop app if already running
     service:
