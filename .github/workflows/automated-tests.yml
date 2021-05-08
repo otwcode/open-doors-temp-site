@@ -1,0 +1,71 @@
+name: Automated Tests
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  automated-tests:
+    name: ${{ matrix.tests.command }}
+    runs-on: ubuntu-latest
+
+    env:
+      CI: true
+      RAILS_ENV: test
+      SPEC_OPTS: --force-color
+
+    services:
+      database:
+        image: mariadb:10.5.4-focal
+        env:
+          MYSQL_ROOT_PASSWORD:
+          MYSQL_DATABASE: opendoorstempsite
+        ports:
+          - 3306:3306
+
+      redis:
+        image: redis:3.2.1
+        ports:
+          - 6379:6379
+
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Run apt-get update
+        run: sudo apt-get update
+
+      - name: Install Node
+        run: sudo apt-get install libnode-dev
+
+      - name: Install LibXML
+        run: sudo apt-get install libxml2-dev
+
+      - name: Set up Ruby and run bundle install
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Copy config files
+        run: |
+          cp config/github-actions/cable.yml config/cable.yml
+          cp config/github-actions/database.yml config/database.yml
+          cp config/github-actions/local.yml config/local.yml
+
+      - name: Make database
+        run: bundle exec rake db:create db:schema:load db:migrate
+
+      - name: Install NPM modules
+        run: npm install
+
+      - name: Compile front-end application
+        run: bundle exec rake webpacker:compile
+
+      - name: Run tests
+        run: bundle exec rspec spec --format doc
+
