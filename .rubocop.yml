@@ -1,18 +1,18 @@
 # options available at https://github.com/bbatsov/rubocop/blob/master/config/default.yml
 
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.7
 
 # stop checking quotation marks
 Style/StringLiterals:
   Enabled: false
 
 # stop checking line length
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: false
   
 # stop checking for trailing whitespace
-Style/TrailingWhitespace:
+Layout/TrailingWhitespace:
   Enabled: false
   
 # stop checking for ambiguous regexp literal
@@ -24,7 +24,7 @@ Style/AndOr:
   Enabled: false
 
 # Set desired method length
-Style/MethodLength:
+Metrics/MethodLength:
   Max: 30
 
 # Leave arrays alone
