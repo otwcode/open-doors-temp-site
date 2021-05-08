@@ -148,7 +148,6 @@ const itemReq = (itemID, type, req) => {
 };
 
 export function importItem(itemID, type) {
-  console.log("importItem action");
   const req = itemReq(itemID, 'import',
     axios
       .post(`/${sitekey}/items/import/${type}/${itemID}`,

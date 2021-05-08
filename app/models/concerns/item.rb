@@ -39,7 +39,7 @@ module Item
     errors
   end
 
-  def self.items_responses(ao3_response)
+  def self.items_responses(ao3_response, check = false)
     response = {}
     has_success = ao3_response[0][:success]
 
@@ -48,7 +48,11 @@ module Item
     response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
 
     response[:works] = ao3_response[0][:body][:works] ? update_items(ao3_response[0][:body][:works], :story) : []
-    response[:messages] = ao3_response[0][:body][:messages]
+    response[:messages] = if check
+                            ao3_response[0][:body][:search_results][:message]
+                          else
+                            ao3_response[0][:body][:messages]
+                          end
     response[:status] = ao3_response[0][:status] || "ok"
     response[:success] = has_success
     response

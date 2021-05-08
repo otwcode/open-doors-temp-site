@@ -46,38 +46,33 @@ class ItemsController < ApplicationController
         ao3_response = @client.import(item_request)
         response = Item.items_responses(ao3_response)
 
-      if response[0]["status"].in? ["ok", "created"]
-        item_response = response[0][ao3_type]
-        final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
-      else
-        Rails.logger.error(">>> Error returned from remote API:\n #{item_response}")
-
-        final_response[0][ao3_type] = response
-        final_response[0][ao3_type][0].merge!(original_id: item.id)
-      end
-
+        status = if response[:works][id]
+                   response[:works][id][:status]
+                 else
+                   response[:status]
+                 end
         ApplicationHelper.broadcast_message(
-          "Processed individual import for #{type} id #{id} with stats ",
+          "Processed individual import for #{type} id #{id} with status: '#{status}' ",
           id,
           current_user,
           processing_status: "importing",
           response: response,
           type: type)
-    else
 
-      final_response[0][ao3_type] = [
-        {
-          status: :unprocessable_entity,
-          original_id: item.id,
-          messages: [
-            if item.do_not_import
-              "This #{type} is set to 'do NOT import'."
-            elsif item.author.do_not_import
-              "The author of this #{type} is set to 'do NOT import'."
-            end
-          ]
-        }
-      ]
+      else
+        response[ao3_type] = [
+          {
+            status: :unprocessable_entity,
+            original_id: item.id,
+            messages: [
+              if item.do_not_import
+                "This #{type} is set to 'do NOT import'."
+              elsif item.author.do_not_import
+                "The author of this #{type} is set to 'do NOT import'."
+              end
+            ]
+          }
+        ]
       end
     rescue StandardError => e
       log_error(e, "items_controller > import_item", response)

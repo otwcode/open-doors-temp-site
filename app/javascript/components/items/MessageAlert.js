@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Alert from "react-bootstrap/lib/Alert";
+import Alert from "react-bootstrap/Alert";
 import * as PropTypes from "prop-types";
 
 export class MessageAlert extends Component {

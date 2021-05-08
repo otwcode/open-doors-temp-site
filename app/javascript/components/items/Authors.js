@@ -27,6 +27,7 @@ export default class Authors extends Component {
           response: message.response
         }
       })
+      console.log(this.state)
     }
   };
 

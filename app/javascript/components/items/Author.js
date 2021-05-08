@@ -27,7 +27,7 @@ class Author extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    logStateAndProps("Author componentDidUpdate", this.props.author.name, this);
+    // logStateAndProps("Author componentDidUpdate", this.props.author.name, this);
     if (this.props.data !== prevProps.data) {
       this.setState(Object.assign(this.state, {
         messages: this.props.data.messages,
@@ -149,7 +149,9 @@ class Author extends Component {
                            importText="Import All"
                            onChecking={this.handleChecking}
                            onDNI={this.handleDNI}
-                           onImporting={this.handleImporting}/>
+                           onImporting={this.handleImporting}
+                           showText={true}
+            />
               : "" }
             {author.errors.length > 0 && <ul>{author.errors.map((e, i) => <li key={i}>{e}</li>)}</ul>}
           </ButtonToolbar>

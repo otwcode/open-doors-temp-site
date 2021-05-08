@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Button from "react-bootstrap/lib/Button";
+import Button from "react-bootstrap/Button";
 import * as PropTypes from "prop-types";
 
 export class ImportButton extends Component {

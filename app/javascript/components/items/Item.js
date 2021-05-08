@@ -2,15 +2,16 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { importItem } from "../../actions";
 
-import Card from "react-bootstrap/lib/Card";
-import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
+import Card from "react-bootstrap/Card";
+import ButtonToolbar from "react-bootstrap/ButtonToolbar";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 import ImportButtons from "../buttons/ImportButtons";
-import Button from "react-bootstrap/lib/Button";
-import Collapse from "react-bootstrap/lib/Collapse";
+import Button from "react-bootstrap/Button";
+import Collapse from "react-bootstrap/Collapse";
 import { sitekey } from "../../config";
 import { MessageAlert } from "./MessageAlert";
+import { logStateAndProps } from "../../utils/logging";
 
 class Item extends Component {
   constructor(props) {
@@ -18,8 +19,21 @@ class Item extends Component {
     this.state = {
       open: this.props.open,
       hideAlert: false,
-      isImporting: false
+      isImporting: false,
+      isImported: this.props.item.imported
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    logStateAndProps("Item componentDidUpdate", this.props.item.title, this);
+    if (this.props.item !== prevProps.item) {
+      this.setState(Object.assign(this.state, {
+        messages: this.props.item.messages,
+        hasError: !this.props.item.success,
+        isImported: this.props.item.imported,
+        data: this.props.item
+      }))
+    }
   }
 
   stopEvents = (e) => {
@@ -32,7 +46,7 @@ class Item extends Component {
   };
 
   handleImporting = (e) => {
-    alert("importing");
+    alert(`importing ${this.props.item.id}`);
     this.stopEvents(e);
     const type = this.props.isStory ? `story` : `link`;
     this.setState(
@@ -43,7 +57,7 @@ class Item extends Component {
             hideAlert: false,
             isImporting: false,
             isImported: this.props.item.imported,
-            hasError: !this.props.item.success
+            hasError: !this.props.item.success,
           }))
       }
     );
@@ -103,6 +117,19 @@ class Item extends Component {
               placement="bottom"
               overlay={<Tooltip id="tooltip">id: {item.id}</Tooltip>}>
               <Card.Subtitle className="itemTitle">
+                {item.success === false ?
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip id="tooltip">This item recently failed to import</Tooltip>}>
+                    <i className="fa fa-times-circle" style={{ marginRight: '0.2em'}}/>
+                  </OverlayTrigger> :
+                  item.success === true ?
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={<Tooltip id="tooltip">This item was recently imported</Tooltip>}>
+                      <i className="fa fa-check-circle" style={{ marginRight: '0.2em'}}/>
+                    </OverlayTrigger> : ""
+                }
                 {item.title}
               </Card.Subtitle>
             </OverlayTrigger>
@@ -113,7 +140,9 @@ class Item extends Component {
                              importText="Import"
                              onChecking={this.handleChecking}
                              onDNI={this.handleDNI}
-                             onImporting={this.handleImporting}>
+                             onImporting={this.handleImporting}
+                             showText={false}
+              >
                 {isStory ? "" :
                   <Button variant="outline-primary" size="sm" href={item.url}
                           className="button-import" title="visit link" target="_blank">
@@ -169,11 +198,17 @@ class Item extends Component {
   }
 }
 
+// Receives the output of the reducer and merges with the item object
+// note that successive item responses accumulate in the itemResponses object
 function mapStateToProps({ itemResponse }, ownProps) {
-  if (itemResponse.original_id === ownProps.item.id) {
-    return { item: _.merge(ownProps.item, itemResponse) };
+  const current_item_id = ownProps.item.id.toString()
+  const response_ids = Object.keys(itemResponse)
+
+  if (response_ids.find((id) => current_item_id === id)) {
+    return { item: _.merge(ownProps.item, itemResponse[ current_item_id ]) };
   }
   return ownProps;
 }
 
+// link to the Redux action
 export default connect(mapStateToProps, { importItem })(Item);

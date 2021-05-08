@@ -25,7 +25,6 @@ export default class Items extends Component {
                 <div>
                   <Card.Title>Stories</Card.Title>
                   {Object.entries(stories).map(([ id, s ]) => {
-                    console.log(s);
                     return <Item key={`story-${id}`} item={s} isStory={true} user={this.props.user}/> // importResult={importResult}/>
                   })}
                 </div> : ''
