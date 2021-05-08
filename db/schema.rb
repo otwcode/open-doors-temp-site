@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "action"
     t.text "audited_changes"
     t.integer "version", default: 0
-    t.string "comment"
+    t.string "comment", limit: 2048
     t.string "remote_address"
     t.string "request_uuid"
     t.datetime "created_at"
@@ -92,6 +92,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "ao3_url"
     t.string "import_notes", limit: 1024, default: ""
     t.integer "coauthor_id", default: 0
+    t.string "language_code", limit: 5
     t.index ["author_id"], name: "authorId"
     t.index ["id"], name: "id_UNIQUE", unique: true
   end
@@ -110,7 +111,6 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "fandoms", default: ""
     t.string "characters", default: ""
     t.string "relationships", default: ""
-    t.string "language_code", default: "en"
     t.string "url"
     t.boolean "imported", default: false, null: false
     t.boolean "do_not_import", default: false, null: false
