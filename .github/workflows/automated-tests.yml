@@ -22,7 +22,7 @@ jobs:
       database:
         image: mariadb:10.5.4-focal
         env:
-          MYSQL_ROOT_PASSWORD:
+          MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: opendoorstempsite
         ports:
           - 3306:3306
@@ -40,11 +40,11 @@ jobs:
       - name: Run apt-get update
         run: sudo apt-get update
 
-      - name: Install Node
-        run: sudo apt-get install libnode-dev
+      - name: Install dependencies for Node and MariaDB
+        run: sudo apt-get install -y libnode-dev libmariadbclient-dev
 
-      - name: Install LibXML
-        run: sudo apt-get install libxml2-dev
+#      - name: Install LibXML
+#        run: sudo apt-get install libxml2-dev
 
       - name: Set up Ruby and run bundle install
         uses: ruby/setup-ruby@v1
@@ -55,7 +55,7 @@ jobs:
         run: |
           cp config/github-actions/cable.yml config/cable.yml
           cp config/github-actions/database.yml config/database.yml
-          cp config/github-actions/local.yml config/local.yml
+          cp config/github-actions/secrets.yml config/secrets.yml
 
       - name: Make database
         run: bundle exec rake db:create db:schema:load db:migrate
