@@ -8,7 +8,7 @@
     repo: https://github.com/otwcode/open-doors-temp-site.git
     deploy_path: "{{ remote_path }}/{{ sitekey }}"
     unicorn_script: unicorn_{{ sitekey }}
-    bundle_with_path: /usr/share/rvm/gems/ruby-2.3.7/wrappers/bundle
+    bundle_with_path: /usr/share/rvm/gems/ruby-2.7.3/wrappers/bundle
 
   tasks:
   - name: Make sure pymysql is present
@@ -68,7 +68,7 @@
 
   # Install Bundle
   - name: Alias Ruby
-    command: /usr/share/rvm/bin/rvm alias create default ruby-2.3.7
+    command: /usr/share/rvm/bin/rvm alias create default ruby-2.7.3
 
   - name: Create Bundle directory 
     file:
@@ -141,7 +141,7 @@
       chdir: "{{ deploy_path }}"
 
   - name: Precompile assets
-    command: /usr/share/rvm/gems/ruby-2.3.7/wrappers/bundle exec rake assets:precompile
+    command: /usr/share/rvm/gems/ruby-2.7.3/wrappers/bundle exec rake assets:precompile
     become: false
     args:
       chdir: "{{ deploy_path }}"

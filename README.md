@@ -21,7 +21,7 @@ This repository houses the Rails + React application used to create those sites.
 This is Ruby on Rails site with a React front-end mounted by the `react-rails` gem.
 
 Requirements:
-- Ruby 2.3 
+- Ruby 2.7.3 
 - MySQL 5.7
 - Bundler
 - Node 8.11 https://nodejs.org/en/blog/release/v8.11.1/
