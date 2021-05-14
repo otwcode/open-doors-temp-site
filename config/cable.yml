@@ -3,5 +3,7 @@ local: &local
   url: redis://localhost:6379
 
 production: *local
-development: *local
+development:
+  adapter: redis
+  url: redis://localhost:16379
 test: *local

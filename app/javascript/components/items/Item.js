@@ -24,7 +24,7 @@ class Item extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     logStateAndProps("Item componentDidUpdate", this.props.item.title, this);
     if (this.props.item !== prevProps.item) {
       this.setState(Object.assign(this.state, {
@@ -50,14 +50,14 @@ class Item extends Component {
     this.stopEvents(e);
     const type = this.props.isStory ? `story` : `link`;
     this.setState(
-      { isImporting: true, message: "" },
+      { isImporting: true, messages: [] },
       () => {
         this.props.importItem(this.props.item.id, type)
           .then(() => this.setState({
             hideAlert: false,
             isImporting: false,
             isImported: this.props.item.imported,
-            hasError: !this.props.item.success,
+            hasError: !this.props.item.success
           }))
       }
     );
@@ -117,19 +117,7 @@ class Item extends Component {
               placement="bottom"
               overlay={<Tooltip id="tooltip">id: {item.id}</Tooltip>}>
               <Card.Subtitle className="itemTitle">
-                {item.success === false ?
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip id="tooltip">This item recently failed to import</Tooltip>}>
-                    <i className="fa fa-times-circle" style={{ marginRight: '0.2em'}}/>
-                  </OverlayTrigger> :
-                  item.success === true ?
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={<Tooltip id="tooltip">This item was recently imported</Tooltip>}>
-                      <i className="fa fa-check-circle" style={{ marginRight: '0.2em'}}/>
-                    </OverlayTrigger> : ""
-                }
+                {/*this.successIcon(item)*/}
                 {item.title}
               </Card.Subtitle>
             </OverlayTrigger>
@@ -196,12 +184,29 @@ class Item extends Component {
       </Card>
     )
   }
+
+  successIcon(item) {
+    if (item.success === false) {
+        return <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip id="tooltip">This item recently failed to import</Tooltip>}>
+          <i className="fa fa-times-circle" style={{ marginRight: '0.2em'}}/>
+        </OverlayTrigger>
+    }
+    if (item.success === true) {
+      return <OverlayTrigger
+        placement="top"
+        overlay={<Tooltip id="tooltip">This item was recently imported or checked</Tooltip>}>
+        <i className="fa fa-check-circle" style={{ marginRight: '0.2em' }}/>
+      </OverlayTrigger>
+    } else return "";
+  }
 }
 
 // Receives the output of the reducer and merges with the item object
 // note that successive item responses accumulate in the itemResponses object
 function mapStateToProps({ itemResponse }, ownProps) {
-  const current_item_id = ownProps.item.id.toString()
+  const current_item_id = ownProps.item.id ? ownProps.item.id.toString() : ownProps.item.id;
   const response_ids = Object.keys(itemResponse)
 
   if (response_ids.find((id) => current_item_id === id)) {

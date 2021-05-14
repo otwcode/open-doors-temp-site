@@ -48,7 +48,7 @@ module Item
     response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
 
     response[:works] = ao3_response[0][:body][:works] ? update_items(ao3_response[0][:body][:works], :story) : []
-    response[:messages] = if check
+    response[:messages] = if check && ao3_response[0][:body][:search_results]
                             ao3_response[0][:body][:search_results][:message]
                           else
                             ao3_response[0][:body][:messages]

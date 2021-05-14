@@ -22,7 +22,9 @@ class Author extends Component {
       hasError: false,
       isImporting: false,
       isChecking: false,
-      isImported: this.props.author.imported
+      isImported: this.props.author.imported,
+      // Increment this on each change to force children to update
+      version: 1
     };
   }
 
@@ -33,7 +35,8 @@ class Author extends Component {
         messages: this.props.data.messages,
         hasError: !this.props.data.success,
         isImported: this.props.data.author_imported,
-        data: this.props.data
+        data: this.props.data,
+        version: this.state.version + 1
       }))
     }
   }
@@ -82,6 +85,7 @@ class Author extends Component {
   };
 
   handleDNI = (e) => {
+    alert("Not working - see OD-623")
   };
 
   handleAlertDismiss = (e) => {
@@ -129,7 +133,7 @@ class Author extends Component {
     const { items, messages, author_imported } = importData;
 
     // Some utility variables for simplicity
-    const key = `author-${author.id}`;
+    const key = `author-${author.id}-${this.state.version}`;
     const headerClass = (isImporting ? " importing" : "") + (isChecking ? " checking" : "");
 
     return (
@@ -160,7 +164,7 @@ class Author extends Component {
 
         <Collapse in={this.state.open}>
           <Card.Body id={`${key}-collapse`}>
-            <Items key={`${key}-items`} data={items} user={this.props.user} />
+            <Items key={`${key}-items`} data={items} user={this.props.user} authorVersion={this.state.version} />
           </Card.Body>
         </Collapse>
       </Card>

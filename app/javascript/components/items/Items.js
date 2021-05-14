@@ -25,7 +25,7 @@ export default class Items extends Component {
                 <div>
                   <Card.Title>Stories</Card.Title>
                   {Object.entries(stories).map(([ id, s ]) => {
-                    return <Item key={`story-${id}`} item={s} isStory={true} user={this.props.user}/> // importResult={importResult}/>
+                    return <Item key={`story-${id}-${this.props.authorVersion}`} item={s} isStory={true} user={this.props.user}/>
                   })}
                 </div> : ''
             }
@@ -34,7 +34,7 @@ export default class Items extends Component {
                 <div>
                   <Card.Title>Story Links</Card.Title>
                   {Object.entries(links).map(([ id, s ]) => {
-                    return <Item key={`link-${id}`} item={s} isStory={false} user={this.props.user}/> // importResult={importResult}/>
+                    return <Item key={`link-${id}-${this.props.authorVersion}`} item={s} isStory={false} user={this.props.user}/>
                   })}
                 </div> : ''
             }

@@ -100,7 +100,7 @@ class Author < ApplicationRecord
     works, bookmarks = works_and_bookmarks(client.config.archive_config, host)
 
     ao3_response = client.search(works: works, bookmarks: bookmarks)
-    response = Item.items_responses(ao3_response)
+    response = Item.items_responses(ao3_response, true)
 
     final_response = author_response(client, response)
     Rails.logger.info("........ author model > check ............")
