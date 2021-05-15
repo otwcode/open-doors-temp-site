@@ -8,7 +8,6 @@ import { authors_path } from "../../config";
 export default class AlphabeticalPagination extends React.Component {
   constructor(props) {
     super(props);
-    this.state = this.props;
   }
 
   handleLetterChange = (e, l) => {
