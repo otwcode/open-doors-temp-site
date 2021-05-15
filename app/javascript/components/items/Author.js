@@ -39,8 +39,8 @@ class Author extends Component {
   }
 
   handleAuthorClick = () => {
-    this.setState({ open: !this.state.open });
     this.props.fetchAuthorItems(this.props.author.id);
+    this.setState({ open: !this.state.open });
   };
 
   handleImporting = (e) => {
@@ -143,8 +143,12 @@ class Author extends Component {
           <ButtonToolbar className="justify-content-between">
             <Card.Title>{author.name}</Card.Title>
             { this.props.user ?
-            <ImportButtons isChecking={isChecking} onChecking={this.handleChecking} onDNI={this.handleDNI}
-                           isImporting={isImporting} isImported={isImported} onImporting={this.handleImporting}/>
+            <ImportButtons isChecking={isChecking}
+                           isImporting={isImporting}
+                           isImported={isImported}
+                           onChecking={this.handleChecking}
+                           onDNI={this.handleDNI}
+                           onImporting={this.handleImporting}/>
               : "" }
             {author.errors.length > 0 && <ul>{author.errors.map((e, i) => <li key={i}>{e}</li>)}</ul>}
           </ButtonToolbar>
@@ -153,7 +157,7 @@ class Author extends Component {
 
         <Collapse in={this.state.open}>
           <Card.Body id={`${key}-collapse`}>
-            <Items key={`${key}-items`} data={items} />
+            <Items key={`${key}-items`} data={items} user={this.props.user} />
           </Card.Body>
         </Collapse>
       </Card>

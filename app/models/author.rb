@@ -23,12 +23,8 @@ class Author < ApplicationRecord
 
   def author_errors
     errors = []
-    if stories.size > NUMBER_OF_ITEMS
-      errors << "Author '#{name}' has more than #{stories.size} stories - the Archive can only import #{NUMBER_OF_ITEMS} at a time"
-    end
-    if story_links.size > NUMBER_OF_ITEMS
-      errors << "Author '#{name}' has more than #{story_links.size} stories - the Archive can only import #{NUMBER_OF_ITEMS} at a time"
-    end
+    errors << "Author '#{name}' has more than #{stories.size} stories - the Archive can only import #{NUMBER_OF_ITEMS} at a time" if stories.size > NUMBER_OF_ITEMS
+    errors << "Author '#{name}' has more than #{story_links.size} stories - the Archive can only import #{NUMBER_OF_ITEMS} at a time" if story_links.size > NUMBER_OF_ITEMS
   end
 
   def items_errors
@@ -162,6 +158,8 @@ class Author < ApplicationRecord
   def items_all_imported?
     stories_all_imported = stories.blank? || (stories.present? && stories.all? { |s| s.imported || s.do_not_import })
     story_links_all_imported = story_links.blank? || (story_links.present? && story_links.all? { |s| s.imported || s.do_not_import })
-    (stories_all_imported && story_links_all_imported)
+    all_imported = (stories_all_imported && story_links_all_imported)
+    imported = all_imported if all_imported != imported
+    imported
   end
 end

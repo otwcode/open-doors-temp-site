@@ -4,6 +4,7 @@ class ItemsController < ApplicationController
   include OtwArchive
   include OtwArchive::Request
   include Item
+  include ApplicationHelper
 
   def initialize
     load_config
@@ -19,7 +20,6 @@ class ItemsController < ApplicationController
   end
 
   def import
-    respond_to :json
     type = params[:type]
     id = params[:id]
     ao3_type = type == "story" ? "works" : "bookmarks"
@@ -27,51 +27,61 @@ class ItemsController < ApplicationController
 
     item = find_item(id, type)
 
-    if !item.do_not_import && !item.author.do_not_import
-      item_request =
-        if type == "story"
-          {
-            works: [
-              item.to_work(@archive_config, request.host_with_port)
-            ]
-          }
+    begin
+      if !item.do_not_import && !item.author.do_not_import
+        item_request =
+          if type == "story"
+            {
+              works: [
+                item.to_work(@archive_config, request.host_with_port)
+              ]
+            }
+          else
+            {
+              bookmarks: [
+                item.to_bookmark(@archive_config)
+              ]
+            }
+          end
+
+        response = @client.import(item_request)
+
+        if response[0]["status"].in? ["ok", "created"]
+          item_response = response[0][ao3_type]
+          final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
         else
-          {
-            bookmarks: [
-              item.to_bookmark(@archive_config)
-            ]
-          }
+          Rails.logger.error(">>> Error returned from remote API:\n #{item_response}")
+
+          final_response[0][ao3_type] = response
+          final_response[0][ao3_type][0].merge!(original_id: item.id)
         end
 
-      response = @client.import(item_request)
-
-      if response[0]["status"].in? ["ok", "created"]
-        item_response = response[0][ao3_type]
-        final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
       else
-        Rails.logger.error(">>> Error returned from remote API:\n #{item_response}")
 
-        final_response[0][ao3_type] = response
-        final_response[0][ao3_type][0].merge!(original_id: item.id)
+        final_response[0][ao3_type] = [
+          {
+            status: :unprocessable_entity,
+            original_id: item.id,
+            messages: [
+              if item.do_not_import
+                "This #{type} is set to 'do NOT import'."
+              elsif item.author.do_not_import
+                "The author of this #{type} is set to 'do NOT import'."
+              end
+            ]
+          }
+        ]
       end
-
-    else
-
-      final_response[0][ao3_type] = [
-        {
-          status: :unprocessable_entity,
-          original_id: item.id,
-          messages: [
-            if item.do_not_import
-              "This #{type} is set to 'do NOT import'."
-            elsif item.author.do_not_import
-              "The author of this #{type} is set to 'do NOT import'."
-            end
-          ]
-        }
-      ]
+    rescue StandardError => e
+      log_error(e, "items_controller > import_item", final_response)
+      ApplicationHelper.broadcast_message(
+        "Error importing #{item.title} with error: #{e.message}.",
+        id,
+        current_user,
+        response: final_response,
+        processing_status: "none",
+        type: type)
     end
-
     # Is the author now fully imported?
     final_response[0][:author_imported] = item.author.all_imported?
 
@@ -106,7 +116,6 @@ class ItemsController < ApplicationController
   # end
 
   def dni
-    respond_to :json
     type = params[:type]
     id = params[:id]
 

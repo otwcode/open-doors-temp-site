@@ -18,7 +18,8 @@ export default class AuthorsPage extends Component {
   };
 
   handlePageChange = (page) => {
-    history.pushState(null, `Authors for ${letter}`, authors_path(this.state.letter, page));
+    const letter = this.state.letter;
+    history.pushState(null, `Authors for ${letter}, page ${page}`, authors_path(letter, page));
     this.setState({ page: page, selectedAuthor: undefined });
   };
 

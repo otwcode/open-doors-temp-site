@@ -12,7 +12,6 @@ import { sitekey } from "../config";
 import AuthorsPage from "./pages/AuthorsPage";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import MessageBoard from "./MessageBoard";
 import StatsPage from "./pages/StatsPage";
 
