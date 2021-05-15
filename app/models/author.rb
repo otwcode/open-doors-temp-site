@@ -132,9 +132,18 @@ class Author < ApplicationRecord
     response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
 
     response[:works] = ao3_response[0][:body][:works] ? update_items(ao3_response[0][:body][:works], :story) : []
-    response[:messages] = ao3_response[0][:body][:messages]
+
+    response[:messages] = ao3_response[0][:body][:messages] || []
     response[:status] = ao3_response[0][:status] || "ok"
-    response[:success] = has_success
+
+    response[:success] =
+      if response[:works].values.all? { |w| ["created", "already_imported"].include?(w[:status]) } &&
+         response[:bookmarks].values.all? { |w| ["created", "already_imported"].include?(w[:status]) }
+        true
+      else
+        has_success
+      end
+    
     response
   end
 
