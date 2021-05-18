@@ -34,7 +34,6 @@ class Item extends Component {
   };
 
   handleAlertDismiss = (e) => {
-    alert("dismiss");
     this.stopEvents(e);
     this.setState({ hideAlert: true });
   };

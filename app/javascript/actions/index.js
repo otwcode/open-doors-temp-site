@@ -64,6 +64,13 @@ const authorReq = (authorID, type, req) => {
   }
 ;
 
+const headers = {
+  'X-CSRF-Token':
+    document.querySelector('meta[name="csrf-token"]')
+      .getAttribute('content'),
+  'Content-Type': 'application/json',
+};
+
 export function fetchAuthorItems(authorID) {
   const req = authorReq(authorID, 'items', getReq(`items/author/${authorID}`));
   return {
@@ -78,12 +85,10 @@ export function importAuthor(authorID) {
       .post(`/${sitekey}/authors/import/${authorID}`,
         {},
         {
-          timeout: 5 * 60 * 1000, // 5 minutes
-          headers: {
-            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Content-Type': 'application/json',
-          }
+          timeout: 5 * 60 * 1000,
+          headers
         }));
+
   return {
     type: IMPORT_AUTHOR,
     payload: req
@@ -95,12 +100,7 @@ export function checkAuthor(authorID) {
   const req = authorReq(authorID, 'import',
     axios
       .get(`/${sitekey}/authors/check/${authorID}`,
-        {
-          headers: {
-            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Content-Type': 'application/json',
-          }
-        }));
+        { headers }));
 
   return {
     type: CHECK_AUTHOR,

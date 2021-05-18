@@ -1,4 +1,4 @@
-import { CHECK_AUTHOR, DNI_AUTHOR, GET_AUTHOR_ITEMS, IMPORT_AUTHOR } from "../actions";
+import { CHECK_AUTHOR, GET_AUTHOR_ITEMS, IMPORT_AUTHOR } from "../actions";
 import _ from "lodash";
 
 const payload_items = (payload, state, key) => {
