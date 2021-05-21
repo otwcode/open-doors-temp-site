@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Author < ApplicationRecord
+  include Item
+
   audited comment_required: true
   has_associated_audits
 
@@ -44,7 +46,7 @@ class Author < ApplicationRecord
   def all_items_as_json
     {
       author_imported: all_imported?,
-      stories: stories_with_chapters.all.index_by { |s| s.id},
+      stories: stories_with_chapters.all.index_by { |s| s.id },
       story_links: story_links.all.index_by { |b| b.id },
       coauthored: coauthored_stories
     }
@@ -136,14 +138,11 @@ class Author < ApplicationRecord
     response[:messages] = ao3_response[0][:body][:messages] || []
     response[:status] = ao3_response[0][:status] || "ok"
 
-    response[:success] =
-      if response[:works].values.all? { |w| ["created", "already_imported"].include?(w[:status]) } &&
-         response[:bookmarks].values.all? { |w| ["created", "already_imported"].include?(w[:status]) }
-        true
-      else
-        has_success
-      end
-    
+    works_ok = response[:works].empty? || response[:works].values.all? { |w| OK_STATUSES.include?(w[:status]) }
+    bookmarks_ok = response[:bookmarks].empty? || response[:bookmarks].values.all? { |w| OK_STATUSES.include?(w[:status]) }
+
+    response[:success] = (works_ok && bookmarks_ok) || has_success
+
     response
   end
 

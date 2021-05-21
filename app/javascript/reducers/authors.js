@@ -47,8 +47,7 @@ const payload_items = (payload, state, key) => {
 export default function (state = {}, action) {
   switch (action.type) {
     case IMPORT_AUTHOR:
-    case CHECK_AUTHOR:
-    case DNI_AUTHOR: {
+    case CHECK_AUTHOR: {
       console.log("IMPORT, DNI or CHECK");
       const payload = payload_items(action.payload, state, 'import');
       console.log("payload");

@@ -9,7 +9,7 @@ describe Author, type: :model do
 
   let!(:archive_config) { create(:archive_config, archivist: "testy") }
   let!(:author1) { create(:author_with_stories, audit_comment: "Test") }
-  let(:story1) { create(:story, author_id: author1.id, audit_comment: "Test") }
+
 
   before do
     mock_external
@@ -34,6 +34,22 @@ describe Author, type: :model do
     response = author1.import(client, "test")
     expect(response[:status]).to eq "Forbidden"
     expect(response[:messages][0]).to eq "The \"archivist\" field must specify the name of an Archive user with archivist privileges."
+  end
+
+  it "returns a success if there is a mix of created and found items" do
+    story1 = Story.new(id: 10, author_id: author1.id, audit_comment: "Test1")
+    story2 = Story.new(id: 20, author_id: author1.id, audit_comment: "Test2")
+    story1.save! && story2.save!
+    archive_config = create(:archive_config, archivist: "archivist")
+    import_config = OtwArchive::ImportConfig.new("multi_works", 123, archive_config)
+    client = OtwArchive::Client.new(import_config)
+    response = author1.import(client, "test")
+    puts response
+    expect(response[:status]).to eq "Bad Request"
+    expect(response[:success]).to eq true
+    expect(response[:messages][0]).to eq "At least one work was not imported. Please check individual work responses for further information."
+    story1.destroy
+    story2.destroy
   end
 
   describe "all_imported?" do
