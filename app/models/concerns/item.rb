@@ -50,10 +50,15 @@ module Item
     if response[:status].in? OK_STATUSES
       response[:success] = true
       search_results = response.delete(:search_results)
-      archive_url = search_results ? search_results[0]["archive_url"] : response[:archive_url]
+      if search_results
+        archive_url = search_results[0]["archive_url"]
+        messages = [search_results[0]["message"]]
+      else
+        archive_url = response[:archive_url]
+        messages = response[:messages]
+      end
       response[:ao3_url] = archive_url
-      # TODO fix when AO3-5572 is fixed
-      response[:messages] = [response[:messages]] if response[:messages].is_a?(String)
+      response[:messages] = messages
       if item.ao3_url != archive_url || (item.ao3_url == archive_url && !item.imported)
         response[:messages] << "Archive URL updated to #{archive_url}."
         response[:imported] = true

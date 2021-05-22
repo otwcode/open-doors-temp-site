@@ -19,8 +19,6 @@ export default class Authors extends Component {
   }
 
   onReceived = (message) => {
-    console.log("Authors.js > onReceived");
-    console.log(message);
     if (message.response && this.state.authors.some(a => a.id.toString() === message.response.author_id)) {
       this.setState({
         [ message.author_id ]: {
@@ -29,7 +27,6 @@ export default class Authors extends Component {
           response: message.response
         }
       })
-      console.log(this.state)
     }
   };
 

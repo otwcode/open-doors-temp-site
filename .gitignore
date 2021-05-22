@@ -1,3 +1,5 @@
+.idea/
+
 *.rbc
 capybara-*.html
 .rspec
@@ -40,6 +42,7 @@ bower.json
 .byebug_history
 /public/packs
 /public/packs-test
+/public/react
 /node_modules
 yarn-debug.log*
 .yarn-integrity

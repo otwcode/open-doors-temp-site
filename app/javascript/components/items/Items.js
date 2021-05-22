@@ -20,6 +20,10 @@ class Item extends Component {
     };
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    this.state.hideAlert = false;
+  }
+
   stopEvents = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -159,9 +163,7 @@ export default class Items extends Component {
                 <div>
                   <Card.Title>Stories</Card.Title>
                   {Object.entries(stories).map(([ id, s ]) => {
-                    console.log(s);
-                    // const importResult = this.props.works ? this.props.works[ s.id ] : undefined;
-                    return <Item key={`story-${id}`} item={s} isStory={true}/> // importResult={importResult}/>
+                    return <Item key={`story-${id}`} item={s} isStory={true} user={this.props.user}/> // importResult={importResult}/>
                   })}
                 </div> : ''
             }
@@ -170,8 +172,7 @@ export default class Items extends Component {
                 <div>
                   <Card.Title>Story Links</Card.Title>
                   {Object.entries(links).map(([ id, s ]) => {
-                    // const importResult = this.props.bookmarks ? this.props.bookmarks[ s.id ] : undefined;
-                    return <Item key={`link-${id}`} item={s} isStory={false}/> // importResult={importResult}/>
+                    return <Item key={`link-${id}`} item={s} isStory={false} user={this.props.user}/> // importResult={importResult}/>
                   })}
                 </div> : ''
             }
@@ -180,10 +181,10 @@ export default class Items extends Component {
       }
     } else {
       return (
-        <Alert variant="warning">
-          <h4>No data</h4>
+        <Card>
+          <Card.Title>No data</Card.Title>
           No data could be retrieved for this author.
-        </Alert>
+        </Card>
       )
     }
   }

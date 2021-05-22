@@ -6,6 +6,7 @@ class AuthorsController < ApplicationController
   include OtwArchive
   include OtwArchive::Request
   include Item
+  include ApplicationHelper
 
   # Prevent unhandled errors from returning the normal HTML page
   rescue_from StandardError, with: :render_standard_error_response
@@ -32,16 +33,25 @@ class AuthorsController < ApplicationController
     author = Author.find(id)
     response = {}
     begin
-      broadcast_message("Starting import for #{author.name}", id, processing_status: "importing")
+      ApplicationHelper.broadcast_message(
+        "Starting import for #{author.name}",
+        id,
+        current_user,
+        processing_status: "importing")
 
       response = author.import(@client, request.host_with_port)
 
       message = "Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
       processing_status = response[:author_imported] ? "imported" : "none"
-      broadcast_message(message, id, response: response, processing_status: processing_status)
+      ApplicationHelper.broadcast_message(message, id, current_user, response: response, processing_status: processing_status)
     rescue StandardError => e
       log_error(e, "authors_controller > import_author", response)
-      broadcast_message("Error importing #{author.name} with error: #{e.message}.", id, response: response, processing_status: "none")
+      ApplicationHelper.broadcast_message(
+        "Error importing #{author.name} with error: #{e.message}.",
+        id,
+        current_user,
+        response: response,
+        processing_status: "none")
     end
     Rails.logger.info("-------- authors_controller > import response ------")
     Rails.logger.info(response)
@@ -51,7 +61,6 @@ class AuthorsController < ApplicationController
 
   # Mark as imported (not currently in use)
   def mark
-    respond_to :json
     author = Author.find(params[:author_id])
     imported_status = "set author to #{author.imported ? '' : 'NOT '}imported."
     author.update_attributes!(imported: !author.imported, audit_comment: imported_status)
@@ -77,15 +86,20 @@ class AuthorsController < ApplicationController
     author = Author.find(id)
     response = {}
     begin
-      broadcast_message("Checking #{author.name}", id, processing_status: "checking")
+      ApplicationHelper.broadcast_message("Checking #{author.name}", id, current_user, processing_status: "checking")
 
       response = author.check(@client, request.host_with_port)
 
       message = "Processed check for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
-      broadcast_message(message, id, response: response)
+      ApplicationHelper.broadcast_message(message, id, current_user, response: response)
     rescue StandardError => e
       log_error(e, "authors_controller > check", response)
-      broadcast_message("Error checking #{author.name} with error: #{e.message}.", id, response: response)
+      ApplicationHelper.broadcast_message(
+        "Error checking #{author.name} with error: #{e.message}.",
+        id,
+        current_user,
+        response: response,
+        type: "author")
     end
     Rails.logger.info("-------- authors_controller > check response ------")
     Rails.logger.info(response)
@@ -110,32 +124,6 @@ class AuthorsController < ApplicationController
   end
 
   private
-
-  def broadcast_message(message, id, processing_status: "none", response: {})
-    status = (["importing", "imported", "checking"].include? processing_status) ? processing_status : ""
-    status_hash = case status
-                    when "importing"
-                      { isImporting: true }
-                    when "imported"
-                      { isImported: true }
-                    when "checking"
-                      { isChecking: true }
-                    else
-                      { isImporting: false, isChecking: false }
-                  end
-    ok_status = if response.any? && response.has_key?(:success)
-                  response[:success]
-                else
-                  false
-                end
-    broadcast = {
-      author_id: id,
-      is_ok: ok_status,
-      message: "#{DateTime.now} - #{current_user&.name || 'Anonymous'}: #{message}",
-      response: response
-    }.merge!(status_hash)
-    ActionCable.server.broadcast BROADCAST_CHANNEL, broadcast
-  end
 
   def otw_client
     archive_config = ArchiveConfig.archive_config

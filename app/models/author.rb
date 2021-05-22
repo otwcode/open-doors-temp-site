@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Author < ApplicationRecord
+  include Item
+
   audited comment_required: true
   has_associated_audits
 
@@ -23,12 +25,8 @@ class Author < ApplicationRecord
 
   def author_errors
     errors = []
-    if stories.size > NUMBER_OF_ITEMS
-      errors << "Author '#{name}' has more than #{stories.size} stories - the Archive can only import #{NUMBER_OF_ITEMS} at a time"
-    end
-    if story_links.size > NUMBER_OF_ITEMS
-      errors << "Author '#{name}' has more than #{story_links.size} stories - the Archive can only import #{NUMBER_OF_ITEMS} at a time"
-    end
+    errors << "Author '#{name}' has more than #{stories.size} stories - the Archive can only import #{NUMBER_OF_ITEMS} at a time" if stories.size > NUMBER_OF_ITEMS
+    errors << "Author '#{name}' has more than #{story_links.size} stories - the Archive can only import #{NUMBER_OF_ITEMS} at a time" if story_links.size > NUMBER_OF_ITEMS
   end
 
   def items_errors
@@ -48,7 +46,7 @@ class Author < ApplicationRecord
   def all_items_as_json
     {
       author_imported: all_imported?,
-      stories: stories_with_chapters.all.index_by { |s| s.id},
+      stories: stories_with_chapters.all.index_by { |s| s.id },
       story_links: story_links.all.index_by { |b| b.id },
       coauthored: coauthored_stories
     }
@@ -136,9 +134,15 @@ class Author < ApplicationRecord
     response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
 
     response[:works] = ao3_response[0][:body][:works] ? update_items(ao3_response[0][:body][:works], :story) : []
-    response[:messages] = ao3_response[0][:body][:messages]
+
+    response[:messages] = ao3_response[0][:body][:messages] || []
     response[:status] = ao3_response[0][:status] || "ok"
-    response[:success] = has_success
+
+    works_ok = response[:works].empty? || response[:works].values.all? { |w| OK_STATUSES.include?(w[:status]) }
+    bookmarks_ok = response[:bookmarks].empty? || response[:bookmarks].values.all? { |w| OK_STATUSES.include?(w[:status]) }
+
+    response[:success] = (works_ok && bookmarks_ok) || has_success
+
     response
   end
 
@@ -162,6 +166,8 @@ class Author < ApplicationRecord
   def items_all_imported?
     stories_all_imported = stories.blank? || (stories.present? && stories.all? { |s| s.imported || s.do_not_import })
     story_links_all_imported = story_links.blank? || (story_links.present? && story_links.all? { |s| s.imported || s.do_not_import })
-    (stories_all_imported && story_links_all_imported)
+    all_imported = (stories_all_imported && story_links_all_imported)
+    imported = all_imported if all_imported != imported
+    imported
   end
 end

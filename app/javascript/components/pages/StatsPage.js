@@ -22,7 +22,6 @@ class StatsPage extends Component {
 
   render() {
     const stats = this.props.stats;
-    console.log(stats);
     if (Object.keys(stats).length > 0) {
       return (
         <Col>

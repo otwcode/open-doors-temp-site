@@ -12,7 +12,6 @@ import { sitekey } from "../config";
 import AuthorsPage from "./pages/AuthorsPage";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import MessageBoard from "./MessageBoard";
 import StatsPage from "./pages/StatsPage";
 
@@ -23,7 +22,6 @@ const store = createStoreWithMiddleware(reducers);
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = this.props;
   }
 
   render() {
@@ -31,16 +29,16 @@ export default class App extends Component {
       <Provider store={store}>
         <div>
           <Navigation data={this.props}/>
-          <SiteInfo config={this.state.config}/>
+          <SiteInfo config={this.props.config}/>
           <ActionCableProvider url={`ws://${window.location.host}/${sitekey}/cable`}>
             <Container fluid={true}>
               <Row>
                 <Router>
                   <Switch>
                     <Route path={`/${sitekey}`} exact
-                           render={() => <AuthorsPage data={this.props} user={this.state.current_user} />} />
+                           render={() => <AuthorsPage data={this.props} user={this.props.current_user} />} />
                     <Route path={`/${sitekey}/authors`}
-                           render={() => <AuthorsPage data={this.props} user={this.state.current_user} />} />
+                           render={() => <AuthorsPage data={this.props} user={this.props.current_user} />} />
                     <Route path={`/${sitekey}/stats`}
                            render={() => <StatsPage/>} />
                     <Route component={() => <h1>Not found</h1>} />

@@ -16,14 +16,19 @@ const payload_items = (payload, state, key) => {
   function getStateItems(key) {
     return (!_.isEmpty(state) && state[ authorId ]) ? state[ authorId ].items[key] : {};
   }
+
   const authorId = Object.keys(payload)[ 0 ];
   const author_payload = !(_.isEmpty(payload)) ? payload[ authorId ][ key ] : undefined;
 
+  // Work and bookmark messages
   const works = getPayloadItems([ 'works', 'stories' ]);
   const stories = getStateItems("stories");
   const bookmarks = getPayloadItems(['bookmarks', 'story_links']);
   const story_links = getStateItems("story_links");
-  const { author_imported, messages, remote_host, status, success } = (_.isEmpty(payload)) ? {} : author_payload;
+
+  const { author_imported, messages, remote_host, status, success } =
+    (_.isEmpty(payload)) ? {} : author_payload;
+
   const final_messages = (_.isEmpty(messages) && state[ authorId ]) ? state[ authorId ].messages : messages;
   const final_success = (_.isUndefined(success) && state[ authorId ]) ? state[ authorId ].success : success;
 
@@ -43,7 +48,7 @@ export default function (state = {}, action) {
   switch (action.type) {
     case IMPORT_AUTHOR:
     case CHECK_AUTHOR: {
-      console.log("IMPORT or CHECK");
+      console.log("IMPORT, DNI or CHECK");
       const payload = payload_items(action.payload, state, 'import');
       console.log("payload");
       console.log(payload);
