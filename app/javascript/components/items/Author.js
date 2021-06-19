@@ -18,7 +18,6 @@ class Author extends Component {
 
     this.state = {
       open: false,
-      message: "",
       hasError: false,
       isImporting: false,
       isChecking: false,
@@ -49,10 +48,11 @@ class Author extends Component {
   handleImporting = (e) => {
     this.stopEvents(e);
     this.setState(
-      { isImporting: true, message: "" },
+      { isChecking: true, hideAlert: true, open: false },
       () => {
         this.props.importAuthor(this.props.author.id)
           .then(() => this.setState({
+            open: true,
             hideAlert: false,
             isImporting: false,
             isImported: this.props.data.author_imported,
@@ -70,7 +70,7 @@ class Author extends Component {
   handleChecking = (e) => {
     this.stopEvents(e);
     this.setState(
-      { isChecking: true, message: "" },
+      { isChecking: true, hideAlert: true, open: false },
       () => {
       this.props.checkAuthor(this.props.author.id)
         .then(() => {
@@ -101,7 +101,7 @@ class Author extends Component {
 
   msgAlert = (key, messages) => {
     const { hasError } = this.state;
-    const msg = messages ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : this.state.message;
+    const msg = messages ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : "";
     return msg ?
       <Alert key={`${key}-msg`} variant={hasError ? "danger" : "success"} className="alert-dismissible"
              hidden={this.state.hideAlert}>

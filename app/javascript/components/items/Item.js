@@ -25,7 +25,7 @@ class Item extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    logStateAndProps("Item componentDidUpdate", this.props.item.title, this);
+    // logStateAndProps("Item componentDidUpdate", this.props.item.title, this);
     if (this.props.item !== prevProps.item) {
       this.setState(Object.assign(this.state, {
         messages: this.props.item.messages,
@@ -46,11 +46,10 @@ class Item extends Component {
   };
 
   handleImporting = (e) => {
-    alert(`importing ${this.props.item.id}`);
     this.stopEvents(e);
     const type = this.props.isStory ? `story` : `link`;
     this.setState(
-      { isImporting: true, messages: [] },
+      { isImporting: true, hideAlert: true },
       () => {
         this.props.importItem(this.props.item.id, type)
           .then(() => this.setState({
