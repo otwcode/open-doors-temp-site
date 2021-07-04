@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { importItem } from "../../actions";
+import { importItem, checkItem } from "../../actions";
 
 import Card from "react-bootstrap/Card";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
@@ -18,7 +18,6 @@ class Item extends Component {
     super(props);
     this.state = {
       open: this.props.open,
-      hideAlert: false,
       isImporting: false,
       isImported: this.props.item.imported
     };
@@ -47,7 +46,7 @@ class Item extends Component {
 
   handleImporting = (e) => {
     this.stopEvents(e);
-    const type = this.props.isStory ? `story` : `link`;
+    const type = this.props.item.type === 'bookmark' ? `link` : `story`;
     this.setState(
       { isImporting: true, hideAlert: true },
       () => {
@@ -64,7 +63,19 @@ class Item extends Component {
 
   handleChecking = (e) => {
     this.stopEvents(e);
-    alert("checking")
+    const type = this.props.item.type === 'bookmark' ? `link` : `story`;
+    this.setState(
+      { isImporting: true, hideAlert: true },
+      () => {
+        this.props.checkItem(this.props.item.id, type)
+          .then(() => this.setState({
+            hideAlert: false,
+            isImporting: false,
+            isImported: this.props.item.imported,
+            hasError: !this.props.item.success
+          }))
+      }
+    );
   };
 
   handleDNI = (e) => {
@@ -100,7 +111,8 @@ class Item extends Component {
 
   render() {
     const { isImporting } = this.state;
-    const { item, isStory, isChecking } = this.props;
+    const { item, isChecking } = this.props;
+    const isStory = !_.isUndefined(item.chapters)
     // logStateAndProps("Item", item.name, this);
     const key = isStory ? `story-${item.id}` : `link-${item.id}`;
     const headerClass = isImporting ? " importing" : "";
@@ -215,4 +227,4 @@ function mapStateToProps({ itemResponse }, ownProps) {
 }
 
 // link to the Redux action
-export default connect(mapStateToProps, { importItem })(Item);
+export default connect(mapStateToProps, { importItem, checkItem })(Item);

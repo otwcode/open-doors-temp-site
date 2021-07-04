@@ -163,8 +163,15 @@ export function importItem(itemID, type) {
   }
 }
 
-export function checkItem() {
-  const req = undefined;
+export function checkItem(itemID, type) {
+  const req = itemReq(itemID, 'check',
+    axios
+      .post(`/${sitekey}/items/check/${type}/${itemID}`,
+        {},
+        {
+          timeout: 5 * 60 * 1000,
+          headers
+        }));
   return {
     type: CHECK_ITEM,
     payload: req

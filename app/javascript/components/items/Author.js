@@ -19,6 +19,7 @@ class Author extends Component {
     this.state = {
       open: false,
       hasError: false,
+      hideAlert: true,
       isImporting: false,
       isChecking: false,
       isImported: this.props.author.imported,
@@ -48,7 +49,7 @@ class Author extends Component {
   handleImporting = (e) => {
     this.stopEvents(e);
     this.setState(
-      { isChecking: true, hideAlert: true, open: false },
+      { isImporting: true, hideAlert: true },
       () => {
         this.props.importAuthor(this.props.author.id)
           .then(() => this.setState({
@@ -70,7 +71,7 @@ class Author extends Component {
   handleChecking = (e) => {
     this.stopEvents(e);
     this.setState(
-      { isChecking: true, hideAlert: true, open: false },
+      { isChecking: true, hideAlert: true },
       () => {
       this.props.checkAuthor(this.props.author.id)
         .then(() => {
@@ -95,7 +96,7 @@ class Author extends Component {
 
   handleBroadcast = (broadcast) => {
     if (broadcast.author_id === this.props.author.id.toString()) {
-      this.setState({ isImporting: broadcast.isImporting, isChecking: broadcast.isChecking })
+      this.setState({ isImporting: broadcast.isImporting, isChecking: broadcast.isChecking, isImported: broadcast.isImported })
     }
   };
 

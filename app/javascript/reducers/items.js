@@ -1,8 +1,9 @@
-import { IMPORT_ITEM } from "../actions";
+import { CHECK_ITEM, IMPORT_ITEM } from "../actions";
 
 export default function (state = {}, action) {
   switch (action.type) {
     case IMPORT_ITEM:
+    case CHECK_ITEM:
       const payload = action.payload;
       const id = Object.keys(payload)[ 0 ];
       const item_response = payload[ id ];

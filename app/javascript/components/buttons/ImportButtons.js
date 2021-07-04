@@ -39,7 +39,7 @@ export default class ImportButtons extends Component {
   };
 
   checkText = () => {
-    return this.props.isImporting ?
+    return this.props.isChecking ?
       <span><i className="fa fa-clock-o"/>
         {this.props.showText ? " Checking..." : ""}
       </span> :
