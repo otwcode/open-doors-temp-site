@@ -125,7 +125,8 @@ module Item
     # Update author in case this means it's fully imported
     response[:author_id] = item.author.id
     item.author.update_attributes!(
-      imported: item.author.items_all_imported?
+      imported: item.author.items_all_imported?,
+      audit_comment: "Updated author to #{item.author.items_all_imported? ? "imported" : "not imported"}"
     )
 
     response[:messages] = response[:messages].reject { |m| m == "" }

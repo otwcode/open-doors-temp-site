@@ -65,12 +65,12 @@ class Item extends Component {
     this.stopEvents(e);
     const type = this.props.item.type === 'bookmark' ? `link` : `story`;
     this.setState(
-      { isImporting: true, hideAlert: true },
+      { isChecking: true, hideAlert: true },
       () => {
         this.props.checkItem(this.props.item.id, type)
           .then(() => this.setState({
             hideAlert: false,
-            isImporting: false,
+            isChecking: false,
             isImported: this.props.item.imported,
             hasError: !this.props.item.success
           }))
@@ -110,12 +110,12 @@ class Item extends Component {
   };
 
   render() {
-    const { isImporting } = this.state;
-    const { item, isChecking } = this.props;
+    const { isImporting, isChecking } = this.state;
+    const { item } = this.props;
     const isStory = !_.isUndefined(item.chapters)
     // logStateAndProps("Item", item.name, this);
     const key = isStory ? `story-${item.id}` : `link-${item.id}`;
-    const headerClass = isImporting ? " importing" : "";
+    const headerClass = (isImporting ? " importing" : "") + (isChecking ? " checking" : "");
     const { messages, success, ao3_url, imported } = item;
     return (
       <Card id={key} key={key} className={this.itemClass(item)}>

@@ -108,6 +108,15 @@ class Author < ApplicationRecord
     final_response
   end
 
+  # True if items are blank, or items are present and none remain to be imported
+  def items_all_imported?
+    stories_all_imported = stories.blank? || (stories.present? && stories.all? { |s| s.imported || s.do_not_import })
+    story_links_all_imported = story_links.blank? || (story_links.present? && story_links.all? { |s| s.imported || s.do_not_import })
+    all_imported = (stories_all_imported && story_links_all_imported)
+    imported = all_imported if all_imported != imported
+    imported
+  end
+
   private
 
   def author_response(client, response)
@@ -129,12 +138,4 @@ class Author < ApplicationRecord
     stories.present? || story_links.present?
   end
 
-  # True if items are blank, or items are present and none remain to be imported
-  def items_all_imported?
-    stories_all_imported = stories.blank? || (stories.present? && stories.all? { |s| s.imported || s.do_not_import })
-    story_links_all_imported = story_links.blank? || (story_links.present? && story_links.all? { |s| s.imported || s.do_not_import })
-    all_imported = (stories_all_imported && story_links_all_imported)
-    imported = all_imported if all_imported != imported
-    imported
-  end
 end

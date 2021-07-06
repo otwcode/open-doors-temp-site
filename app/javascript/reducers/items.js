@@ -8,21 +8,21 @@ export default function (state = {}, action) {
       const id = Object.keys(payload)[ 0 ];
       const item_response = payload[ id ];
       // Occurs when the server fails, eg with a 500 error
-      if (payload[ id ].messages[ 0 ] === undefined) {
-        payload[ id ].messages = [ payload[ id ].status ]
-      }
+      if (!_.isUndefined(item_response)) {
+        if (!_.isUndefined(item_response.status) &&
+          (_.isUndefined(item_response.messages) || _.isUndefined(item_response.messages[0]))) {
+          item_response.messages = [ item_response.status ]
+        }
 
-      // Since this is an individual item, we want to display its own message not the generic
-      // "see individual works" message used on author imports
-      console.log(payload[id].works[id])
-      if (payload[id].works[id]) {
-        const item = payload[id].works[id];
-        const response = { ...state, [id]: item };
-        return response
-      } else {
-        const response = { ...state, [ id ]: item_response}
-        return response
-      }
+        // Since this is an individual item, we want to display its own message not the generic
+        // "see individual works" message used on author imports
+        if (item_response.works && item_response.works[ id ]) {
+          const item = payload[ id ].works[ id ];
+          return { ...state, [ id ]: item }
+        } else {
+          return { ...state, [ id ]: item_response }
+        }
+    }
     default:
       return state;
   }
