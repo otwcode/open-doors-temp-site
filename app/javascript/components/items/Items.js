@@ -27,7 +27,8 @@ export default class Items extends Component {
                   {Object.entries(stories).map(([ id, s ]) => {
                     return <Item key={`story-${id}-${this.props.authorVersion}`}
                                  item={s}
-                                 user={this.props.user}/>
+                                 user={this.props.user}
+                                 type="story"/>
                   })}
                 </div> : ''
             }
@@ -38,7 +39,8 @@ export default class Items extends Component {
                   {Object.entries(links).map(([ id, s ]) => {
                     return <Item key={`link-${id}-${this.props.authorVersion}`}
                                  item={s}
-                                 user={this.props.user}/>
+                                 user={this.props.user}
+                                 type="link"/>
                   })}
                 </div> : ''
             }

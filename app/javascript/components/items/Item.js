@@ -46,11 +46,10 @@ class Item extends Component {
 
   handleImporting = (e) => {
     this.stopEvents(e);
-    const type = this.props.item.type === 'bookmark' ? `link` : `story`;
     this.setState(
       { isImporting: true, hideAlert: true },
       () => {
-        this.props.importItem(this.props.item.id, type)
+        this.props.importItem(this.props.item.id, this.props.type)
           .then(() => this.setState({
             hideAlert: false,
             isImporting: false,
@@ -63,11 +62,10 @@ class Item extends Component {
 
   handleChecking = (e) => {
     this.stopEvents(e);
-    const type = this.props.item.type === 'bookmark' ? `link` : `story`;
     this.setState(
       { isChecking: true, hideAlert: true },
       () => {
-        this.props.checkItem(this.props.item.id, type)
+        this.props.checkItem(this.props.item.id, this.props.type)
           .then(() => this.setState({
             hideAlert: false,
             isChecking: false,
