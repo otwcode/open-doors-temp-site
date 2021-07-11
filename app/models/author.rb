@@ -87,7 +87,7 @@ class Author < ApplicationRecord
       ao3_response = client.import(works: works, bookmarks: bookmarks)
 
       # Apply Archive response to items in the database 
-      response = items_responses(ao3_response)
+      response = Item.items_responses(ao3_response)
     end
 
     final_response = author_response(client, response)
@@ -100,12 +100,21 @@ class Author < ApplicationRecord
     works, bookmarks = works_and_bookmarks(client.config.archive_config, host)
 
     ao3_response = client.search(works: works, bookmarks: bookmarks)
-    response = items_responses(ao3_response)
+    response = Item.items_responses(ao3_response, true)
 
     final_response = author_response(client, response)
     Rails.logger.info("........ author model > check ............")
     Rails.logger.info(final_response)
     final_response
+  end
+
+  # True if items are blank, or items are present and none remain to be imported
+  def items_all_imported?
+    stories_all_imported = stories.blank? || (stories.present? && stories.all? { |s| s.imported || s.do_not_import })
+    story_links_all_imported = story_links.blank? || (story_links.present? && story_links.all? { |s| s.imported || s.do_not_import })
+    all_imported = (stories_all_imported && story_links_all_imported)
+    imported = all_imported if all_imported != imported
+    imported
   end
 
   private
@@ -125,49 +134,8 @@ class Author < ApplicationRecord
     response
   end
 
-  def items_responses(ao3_response)
-    response = {}
-    has_success = ao3_response[0][:success]
-
-    bookmarks_responses = ao3_response[1] ? ao3_response[1][:body][:bookmarks] : ao3_response[0][:body][:bookmarks]
-
-    response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
-
-    response[:works] = ao3_response[0][:body][:works] ? update_items(ao3_response[0][:body][:works], :story) : []
-
-    response[:messages] = ao3_response[0][:body][:messages] || []
-    response[:status] = ao3_response[0][:status] || "ok"
-
-    works_ok = response[:works].empty? || response[:works].values.all? { |w| OK_STATUSES.include?(w[:status]) }
-    bookmarks_ok = response[:bookmarks].empty? || response[:bookmarks].values.all? { |w| OK_STATUSES.include?(w[:status]) }
-
-    response[:success] = (works_ok && bookmarks_ok) || has_success
-
-    response
-  end
-
-  def update_items(items_responses, type)
-    responses = {}
-    if items_responses.present?
-      items_responses.each do |item_response|
-        update = Item.update_item(type, item_response.symbolize_keys)
-        Rails.logger.info(update)
-        responses.merge!(update)
-      end
-    end
-    responses
-  end
-
   def has_items?
     stories.present? || story_links.present?
   end
 
-  # True if items are blank, or items are present and none remain to be imported
-  def items_all_imported?
-    stories_all_imported = stories.blank? || (stories.present? && stories.all? { |s| s.imported || s.do_not_import })
-    story_links_all_imported = story_links.blank? || (story_links.present? && story_links.all? { |s| s.imported || s.do_not_import })
-    all_imported = (stories_all_imported && story_links_all_imported)
-    imported = all_imported if all_imported != imported
-    imported
-  end
 end

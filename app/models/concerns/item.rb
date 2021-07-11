@@ -23,20 +23,38 @@ module Item
     type = self.class.name.underscore.humanize(capitalize: false)
     item = self
     errors = []
-    if item.summary && item.summary&.length > SUMMARY_LENGTH
-      errors << "Summary for #{type} '#{item.title}' is too long (#{item.summary.length})"
-    end
+    errors << "Summary for #{type} '#{item.title}' is too long (#{item.summary.length})" if item.summary && item.summary&.length > SUMMARY_LENGTH
     if item.respond_to?(:chapters)
       item.chapters.map { |c|
-        if c.text && c.text.length > CHAPTER_LENGTH
-          errors << "Chapter #{c.position} in story '#{item.title}' is too long (#{c.text.length})"
-        end
+        errors << "Chapter #{c.position} in story '#{item.title}' is too long (#{c.text.length})" if c.text && c.text.length > CHAPTER_LENGTH
       }
     end
-    if item.fandoms.blank?
-      errors << "Fandom for story link '#{item.title}' is missing"
-    end
+    errors << "Fandom for story link '#{item.title}' is missing" if item.fandoms.blank?
     errors
+  end
+
+  def self.items_responses(ao3_response, check = false)
+    response = {}
+    has_success = ao3_response[0][:success]
+
+    bookmarks_responses = ao3_response[1] ? ao3_response[1][:body][:bookmarks] : ao3_response[0][:body][:bookmarks]
+
+    response[:bookmarks] = update_items(bookmarks_responses, :bookmark)
+
+    response[:works] = ao3_response[0][:body][:works] ? update_items(ao3_response[0][:body][:works], :story) : []
+    response[:messages] = if check && ao3_response[0][:body][:search_results]
+                            ao3_response[0][:body][:search_results][:message]
+                          else
+                            ao3_response[0][:body][:messages]
+                          end
+    response[:status] = ao3_response[0][:status] || "ok"
+    response[:success] = has_success
+
+    # Copy the author id to the main response object to pass information to the author UI as well
+    all_items = !response[:works].empty? ? response[:works] : response[:bookmarks]
+    response[:author_id] = all_items.first[1][:author_id] unless all_items.empty?
+
+    response
   end
 
   def self.update_item(type, response)
@@ -45,6 +63,11 @@ module Item
       item = Story.find_by_id(response[:original_id])
     elsif type == :bookmark
       item = StoryLink.find_by_id(response[:original_id])
+    end
+
+    # Add a synthetic `type` field for use in the broadcast
+    class << item
+      attr_accessor :type
     end
 
     if response[:status].in? OK_STATUSES
@@ -65,7 +88,8 @@ module Item
         item.update_attributes!(
           imported: true,
           ao3_url: archive_url,
-          audit_comment: response[:messages][0]
+          audit_comment: response[:messages][0],
+          type: type
         )
         Rails.logger.info(item.inspect)
       else
@@ -80,7 +104,8 @@ module Item
         item.update_attributes!(
           imported: false,
           ao3_url: nil,
-          audit_comment: response[:messages][0]
+          audit_comment: response[:messages][0],
+          type: type
         )
       else
         response[:success] = true
@@ -97,10 +122,28 @@ module Item
       )
       audit.save!
     end
+    # Update author in case this means it's fully imported
     response[:author_id] = item.author.id
+    item.author.update_attributes!(
+      imported: item.author.items_all_imported?,
+      audit_comment: "Updated author to #{item.author.items_all_imported? ? "imported" : "not imported"}"
+    )
+
     response[:messages] = response[:messages].reject { |m| m == "" }
     result = {}
     result[item.id] = response
     result
+  end
+
+  def self.update_items(items_responses, type)
+    responses = {}
+    if items_responses.present?
+      items_responses.each do |item_response|
+        update = Item.update_item(type, item_response.symbolize_keys)
+        Rails.logger.info(update)
+        responses.merge!(update)
+      end
+    end
+    responses
   end
 end

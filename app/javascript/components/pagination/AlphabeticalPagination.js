@@ -4,6 +4,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 import Pagination from "react-bootstrap/Pagination";
 import Dropdown from "react-bootstrap/Dropdown";
 import { authors_path } from "../../config";
+import { logStateAndProps } from "../../utils/logging";
 
 export default class AlphabeticalPagination extends React.Component {
   constructor(props) {

@@ -1,4 +1,4 @@
-import { CHECK_AUTHOR, GET_AUTHOR_ITEMS, IMPORT_AUTHOR } from "../actions";
+import { CHECK_AUTHOR, DNI_AUTHOR, GET_AUTHOR_ITEMS, IMPORT_AUTHOR } from "../actions";
 import _ from "lodash";
 
 const payload_items = (payload, state, key) => {
@@ -47,7 +47,8 @@ const payload_items = (payload, state, key) => {
 export default function (state = {}, action) {
   switch (action.type) {
     case IMPORT_AUTHOR:
-    case CHECK_AUTHOR: {
+    case CHECK_AUTHOR:
+    case DNI_AUTHOR: {
       console.log("IMPORT, DNI or CHECK");
       const payload = payload_items(action.payload, state, 'import');
       console.log("payload");

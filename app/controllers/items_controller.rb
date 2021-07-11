@@ -23,42 +23,52 @@ class ItemsController < ApplicationController
     type = params[:type]
     id = params[:id]
     ao3_type = type == "story" ? "works" : "bookmarks"
-    final_response = [{}] # Needs to be the same shape as the response for authors
-
     item = find_item(id, type)
+    response = [{}]
 
     begin
       if !item.do_not_import && !item.author.do_not_import
-        item_request =
+        item_request = {}
+        item_request[ao3_type.to_sym] =
           if type == "story"
-            {
-              works: [
-                item.to_work(@archive_config, request.host_with_port)
-              ]
-            }
+            [item.to_work(@archive_config, request.host_with_port)]
           else
-            {
-              bookmarks: [
-                item.to_bookmark(@archive_config)
-              ]
-            }
+            [item.to_bookmark(@archive_config)]
           end
 
-        response = @client.import(item_request)
+        ApplicationHelper.broadcast_message(
+          "Starting individual import for #{type} id #{id}",
+          id,
+          current_user,
+          processing_status: "importing",
+          type: type)
 
-        if response[0]["status"].in? ["ok", "created"]
-          item_response = response[0][ao3_type]
-          final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
-        else
-          Rails.logger.error(">>> Error returned from remote API:\n #{item_response}")
+        ao3_response = @client.import(item_request)
+        response = Item.items_responses(ao3_response)
 
-          final_response[0][ao3_type] = response
-          final_response[0][ao3_type][0].merge!(original_id: item.id)
-        end
+        # Status on the work object is more helpful
+        status = if response[:works][id]
+                   response[:works][id][:status]
+                 else
+                   response[:status]
+                 end
+
+        processing_status = if response[ao3_type.to_sym] && response[ao3_type.to_sym][id]
+                              response[ao3_type.to_sym][id][:imported] ? "imported" : "none"
+                            else
+                              "none"
+                            end
+
+        ApplicationHelper.broadcast_message(
+          "Processed individual import for #{type} id #{id} with status: '#{status}' ",
+          id,
+          current_user,
+          processing_status: processing_status,
+          response: response,
+          type: type)
 
       else
-
-        final_response[0][ao3_type] = [
+        response[ao3_type] = [
           {
             status: :unprocessable_entity,
             original_id: item.id,
@@ -72,20 +82,24 @@ class ItemsController < ApplicationController
           }
         ]
       end
+
     rescue StandardError => e
-      log_error(e, "items_controller > import_item", final_response)
+      log_error(e, "items_controller > import_item", response)
       ApplicationHelper.broadcast_message(
         "Error importing #{item.title} with error: #{e.message}.",
         id,
         current_user,
-        response: final_response,
+        response: response,
         processing_status: "none",
         type: type)
     end
     # Is the author now fully imported?
-    final_response[0][:author_imported] = item.author.all_imported?
+    response[:author_imported] = item.author.all_imported?
 
-    render json: final_response, content_type: 'text/json'
+    Rails.logger.info("-------- items_controller > import response ------")
+    Rails.logger.info(JSON.pretty_generate(response.as_json))
+
+    render json: response, content_type: 'application/json'
   end
 
   # def mark
@@ -130,7 +144,6 @@ class ItemsController < ApplicationController
                   dni: item.do_not_import,
                   messages: ["Successfully #{imported_status}"] }
 
-
     # Is the author now fully imported?
     response[0][:author_imported] = author.all_imported?
 
@@ -142,35 +155,65 @@ class ItemsController < ApplicationController
   end
 
   def check
-    respond_to :json
     type = params[:type]
     id = params[:id]
     ao3_type = type == "story" ? "works" : "bookmarks"
-    final_response = [{}] # Needs to be the same shape as the response for authors
 
     item = find_item(id, type)
+    response = [{}]
 
-    item_request =
-      if type == "story"
-        {
-          works: [
-            item.to_work(@archive_config, request.host_with_port)
-          ]
-        }
-      else
-        {
-          bookmarks: [
-            item.to_bookmark(@archive_config)
-          ]
-        }
-      end
+    begin
+      item_request = {}
+      item_request[ao3_type.to_sym] =
+        if type == "story"
+          [item.to_work(@archive_config, request.host_with_port)]
+        else
+          [item.to_bookmark(@archive_config)]
+        end
 
-    response = @client.search(item_request)
+      ApplicationHelper.broadcast_message(
+        "Starting individual check for #{type} id #{id}",
+        id,
+        current_user,
+        processing_status: "checking",
+        type: type)
 
-    item_response = response[0][ao3_type][0]
-    final_response[0][ao3_type] = [update_item(type.to_sym, item_response.symbolize_keys)]
+      ao3_response = @client.search(item_request)
+      response = Item.items_responses(ao3_response)
 
-    render json: final_response, content_type: 'text/json'
+      # Status on the work object is more helpful
+      status = if response[:works][id]
+                 response[:works][id][:status]
+               else
+                 response[:status]
+               end
+
+      processing_status = response[ao3_type.to_sym][id][:imported] ? "imported" : "none"
+      ApplicationHelper.broadcast_message(
+        "Processed individual check for #{type} id #{id} with status: '#{status}' ",
+        id,
+        current_user,
+        processing_status: processing_status,
+        response: response,
+        type: type)
+
+    rescue StandardError => e
+      log_error(e, "items_controller > import_item", response)
+      ApplicationHelper.broadcast_message(
+        "Error importing #{item.title} with error: #{e.message}.",
+        id,
+        current_user,
+        response: response,
+        processing_status: "none",
+        type: type)
+    end
+    # Is the author now fully imported?
+    response[:author_imported] = item.author.all_imported?
+
+    Rails.logger.info("-------- items_controller > check response ------")
+    Rails.logger.info(JSON.pretty_generate(response.as_json))
+
+    render json: response, content_type: 'application/json'
   end
 
   def audit

@@ -5,7 +5,7 @@ import { fetchAuthorItems, importAuthor, checkAuthor } from "../../actions";
 import Collapse from "react-bootstrap/Collapse";
 import Card from "react-bootstrap/Card";
 import Items from "./Items";
-import ImportButtons from "./ImportButtons";
+import ImportButtons from "../buttons/ImportButtons";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import Alert from "react-bootstrap/Alert";
 import { ActionCable } from "react-actioncable-provider";
@@ -18,22 +18,25 @@ class Author extends Component {
 
     this.state = {
       open: false,
-      message: "",
       hasError: false,
+      hideAlert: true,
       isImporting: false,
       isChecking: false,
-      isImported: this.props.author.imported
+      isImported: this.props.author.imported,
+      // Increment this on each change to force children to update
+      version: 1
     };
   }
 
   componentDidUpdate(prevProps) {
-    logStateAndProps("Author componentDidUpdate", this.props.author.name, this);
+    // logStateAndProps("Author componentDidUpdate", this.props.author.name, this);
     if (this.props.data !== prevProps.data) {
       this.setState(Object.assign(this.state, {
         messages: this.props.data.messages,
         hasError: !this.props.data.success,
         isImported: this.props.data.author_imported,
-        data: this.props.data
+        data: this.props.data,
+        version: this.state.version + 1
       }))
     }
   }
@@ -46,10 +49,11 @@ class Author extends Component {
   handleImporting = (e) => {
     this.stopEvents(e);
     this.setState(
-      { isImporting: true, message: "" },
+      { isImporting: true, hideAlert: true },
       () => {
         this.props.importAuthor(this.props.author.id)
           .then(() => this.setState({
+            open: true,
             hideAlert: false,
             isImporting: false,
             isImported: this.props.data.author_imported,
@@ -67,7 +71,7 @@ class Author extends Component {
   handleChecking = (e) => {
     this.stopEvents(e);
     this.setState(
-      { isChecking: true, message: "" },
+      { isChecking: true, hideAlert: true },
       () => {
       this.props.checkAuthor(this.props.author.id)
         .then(() => {
@@ -82,6 +86,7 @@ class Author extends Component {
   };
 
   handleDNI = (e) => {
+    alert("Not working - see OD-623")
   };
 
   handleAlertDismiss = (e) => {
@@ -91,13 +96,13 @@ class Author extends Component {
 
   handleBroadcast = (broadcast) => {
     if (broadcast.author_id === this.props.author.id.toString()) {
-      this.setState({ isImporting: broadcast.isImporting, isChecking: broadcast.isChecking })
+      this.setState({ isImporting: broadcast.isImporting, isChecking: broadcast.isChecking, isImported: broadcast.isImported })
     }
   };
 
   msgAlert = (key, messages) => {
     const { hasError } = this.state;
-    const msg = messages ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : this.state.message;
+    const msg = messages ? <ul>{messages.map((item, idx) => <li key={idx}>{item}</li>)}</ul> : "";
     return msg ?
       <Alert key={`${key}-msg`} variant={hasError ? "danger" : "success"} className="alert-dismissible"
              hidden={this.state.hideAlert}>
@@ -129,7 +134,7 @@ class Author extends Component {
     const { items, messages, author_imported } = importData;
 
     // Some utility variables for simplicity
-    const key = `author-${author.id}`;
+    const key = `author-${author.id}-${this.state.version}`;
     const headerClass = (isImporting ? " importing" : "") + (isChecking ? " checking" : "");
 
     return (
@@ -146,9 +151,12 @@ class Author extends Component {
             <ImportButtons isChecking={isChecking}
                            isImporting={isImporting}
                            isImported={isImported}
+                           importText="Import All"
                            onChecking={this.handleChecking}
                            onDNI={this.handleDNI}
-                           onImporting={this.handleImporting}/>
+                           onImporting={this.handleImporting}
+                           showText={true}
+            />
               : "" }
             {author.errors.length > 0 && <ul>{author.errors.map((e, i) => <li key={i}>{e}</li>)}</ul>}
           </ButtonToolbar>
@@ -157,7 +165,7 @@ class Author extends Component {
 
         <Collapse in={this.state.open}>
           <Card.Body id={`${key}-collapse`}>
-            <Items key={`${key}-items`} data={items} user={this.props.user} />
+            <Items key={`${key}-items`} data={items} user={this.props.user} authorVersion={this.state.version} />
           </Card.Body>
         </Collapse>
       </Card>
