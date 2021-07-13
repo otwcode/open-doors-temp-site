@@ -15,7 +15,7 @@ initial Open Doors processes:
 1. The standardised data is hosted in a temporary website accessible to import operators and which allows them to 
 perform the import in stages, verifying imported works as they go along. 
    
-This repository houses the Rails application used to create those sites.
+This repository houses the Rails + React application used to create those sites.
 
 # Running it locally
 This is Ruby on Rails site with a React front-end mounted by the `react-rails` gem.
