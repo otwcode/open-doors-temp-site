@@ -12,7 +12,7 @@ class Author < ApplicationRecord
   # All items
   scope :with_stories, (-> { joins(:stories).where("stories.id IS NOT NULL") })
   scope :with_story_links, (-> { joins(:story_links).where("story_links.id IS NOT NULL") })
-  scope :with_stories_or_story_links, (-> { (with_stories + with_story_links).uniq })
+  scope :with_stories_or_story_links, (-> { (with_stories + with_story_links).uniq.sort_by {|a| a.name.downcase } })
   # Front-end scopes
   scope :by_letter, ->(letter) { where("substr(upper(name), 1, 1) = '#{letter}'") }
   scope :by_letter_with_items, ->(letter) { by_letter(letter).merge(with_stories_or_story_links) }
