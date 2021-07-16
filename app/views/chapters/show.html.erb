@@ -65,7 +65,7 @@
       end
     %>
       <br/>
-      <b>Chapter Title:</b> <%= @chapter.title || "Chapter #{@chapter.position || "1"}" %>
+      <b>Chapter Title:</b> <%= @chapter.title.blank? ? "Chapter #{@chapter.position}" : @chapter.title %>
       <br/><b>Chapter Number:</b> <%= @chapter.position %>
 
       <% if @chapter.date.present? %>
