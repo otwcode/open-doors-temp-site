@@ -44,7 +44,7 @@
         </div>
       <% end %>
 
-      <b>Summary:</b> <%= raw story.summary %>
+      <!-- Hide summary so it doesn't get imported as the chapter summary (AO3-6191) -->
 
       <%= raw tag_html("Rating", story.rating) %>
       <%= raw tag_html("Warnings", story.warnings) %>
@@ -54,7 +54,7 @@
       <%= raw tag_html("Characters", story.characters) %>
       <%= raw tag_html("Tags", story.tags) %>
 
-      <!--// DON'T INDENT <dd> start tag - THIS *ALWAYS* GETS SCRAPED-->
+      <!--// DON'T INDENT start tag - THIS *ALWAYS* GETS SCRAPED -->
       <!-- First chapter in single chapter work or non-first in multichapter -> updated date -->
       <br/>
       <b>Date:</b> <%=
@@ -65,7 +65,7 @@
       end
     %>
       <br/>
-      <b>Chapter Title:</b> <%= @chapter.title %>
+      <b>Chapter Title:</b> <%= @chapter.title.blank? ? "Chapter #{@chapter.position}" : @chapter.title %>
       <br/><b>Chapter Number:</b> <%= @chapter.position %>
 
       <% if @chapter.date.present? %>
