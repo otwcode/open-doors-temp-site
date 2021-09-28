@@ -5,14 +5,14 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-ruby "2.3.7"
+ruby "2.7.3"
 
 # Use SCSS for stylesheets (sassc-rails needs be before rails https://github.com/sass/sassc-rails/issues/114)
 gem 'sassc-rails', '~> 2.0.0'
 
-gem 'rails', '~> 5.2.2.1'
+gem 'rails', '~> 5.2.5'
 
-gem 'mysql2', '>= 0.3.18', '< 0.5'
+gem 'mysql2', '0.5.2'
 
 gem 'faraday'
 gem 'faraday_middleware'
