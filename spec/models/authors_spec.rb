@@ -46,7 +46,7 @@ describe Author, type: :model do
     response = author1.import(client, "test")
     puts response
     expect(response[:status]).to eq "Bad Request"
-    expect(response[:success]).to eq true
+    expect(response[:success]).to eq false
     expect(response[:messages][0]).to eq "At least one work was not imported. Please check individual work responses for further information."
     story1.destroy
     story2.destroy
