@@ -8,7 +8,7 @@
     repo: https://github.com/otwcode/open-doors-temp-site.git
     deploy_path: "{{ remote_path }}/{{ sitekey }}"
     unicorn_script: unicorn_{{ sitekey }}
-    bundle_with_path: /usr/share/rvm/gems/ruby-2.7.3/wrappers/bundle
+    ruby_path: /usr/share/rvm/gems/ruby-2.7.3/wrappers
 
   tasks:
   - name: Make sure pymysql is present
@@ -67,8 +67,9 @@
       dest: "{{ deploy_path }}/config/secrets.yml"
 
   # Install Bundle
-  - name: Alias Ruby
-    command: /usr/share/rvm/bin/rvm alias create default ruby-2.7.3
+  - name: Use correct Ruby version
+    command: /usr/share/rvm/bin/rvm --default use 2.7.3
+    become: false
 
   - name: Create Bundle directory 
     file:
@@ -78,19 +79,19 @@
       state: directory
 
   - name: Install bundler gem
-    command: gem install bundler
+    command: "{{ ruby_path }}/gem install bundler:1.17.3"
     args:
       chdir: "{{ deploy_path }}"
     become: false
 
   - name: Update bundle
-    command: bundle update
+    command: "{{ ruby_path }}/bundle update"
     args:
       chdir: "{{ deploy_path }}"
     become: false
 
   - name: Install bundle
-    command: bundle install --deployment --path={{ remote_path }}/../bundler/{{ repo_version }}
+    command: "{{ ruby_path }}/bundle install --deployment --path={{ remote_path }}/../bundler/{{ repo_version }}"
     args:
       chdir: "{{ deploy_path }}"
     become: false
@@ -190,7 +191,7 @@
       - database
     
   - name: Run migrations 
-    command: "{{ bundle_with_path }} exec rake db:migrate"
+    command: "{{ ruby_path }}/bundle exec rake db:migrate"
     args:
       chdir: "{{ deploy_path }}"
     environment:
@@ -199,7 +200,7 @@
       - database
 
   - name: Create Open Doors user for the site
-    command: "{{ bundle_with_path }} exec rake users:create_user[\"Open Doors\",\"{{ opendoors_site_user_email }}\",\"{{ opendoors_site_user_pw }}\"]"
+    command: "{{ ruby_path }}/bundle exec rake users:create_user[\"Open Doors\",\"{{ opendoors_site_user_email }}\",\"{{ opendoors_site_user_pw }}\"]"
     args:
       chdir: "{{ deploy_path }}"
     environment:
