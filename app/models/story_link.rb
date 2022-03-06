@@ -38,7 +38,7 @@ class StoryLink < ApplicationRecord
       characters,
       language_code,
       archive_config.collection_name,
-      "#{archive_config.bookmarks_note}\n#{notes}",
+      "#{archive_config.bookmarks_note}\n<br/><br/><p>--</p><br/>#{notes}",
       tags,
       false,
       false
