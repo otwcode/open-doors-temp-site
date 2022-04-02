@@ -7,7 +7,7 @@ describe StoryLink, type: :model do
   it 'converts a story link to a bookmark with all fields correct' do
     config = create(:archive_config, bookmarks_note: "Bookmark note")
     bookmark = story_link.to_bookmark(config)
-    expect(bookmark.notes).to eq "Bookmark note\nOriginal Notes"
+    expect(bookmark.notes).to eq "Bookmark note\n<br/><br/><p>--</p><br/>Original Notes"
     expect(bookmark.language_code).to eq "en"
   end
 

@@ -169,7 +169,7 @@ class Item extends Component {
             <span> - <b>Updated:</b> {item.updated || "No update date set"}</span>
             }
             <br/>
-
+            <b>Notes: </b><span dangerouslySetInnerHTML={{ __html: item.notes }}/><br/>
             <b>Summary: </b><span dangerouslySetInnerHTML={{ __html: item.summary }}/>
             {item.summaryTooLong ?
               <span className="badge badge-danger">{item.summaryLength}</span> : ""}<br/>

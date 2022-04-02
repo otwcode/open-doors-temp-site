@@ -34,12 +34,14 @@
 
   <div class="card">
     <div class="card-text">
-      <% if is_first_chapter && @config.present? %>
+      <% if is_first_chapter && @archive_config.present? %>
         <b>Note:</b><br/>
         <div style="border: 1px silver solid;">
-          <%= @config.ODNote %>
-          <% if story.notes %>
-            <br/><br/><span>Author's notes:</span> <%= story.notes %>
+          <%= raw @archive_config.stories_note %>
+          <% if story.notes.present? %>
+            <br/><br/>
+            <p>--</p>
+            <span>Author's notes:</span> <%= raw story.notes %>
           <% end %>
         </div>
       <% end %>
