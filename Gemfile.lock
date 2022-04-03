@@ -167,7 +167,7 @@ GEM
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     public_suffix (4.0.6)
-    puma (4.3.12)
+    puma (5.6.4)
       nio4r (~> 2.0)
     racc (1.6.0)
     rack (2.2.3)
@@ -321,7 +321,7 @@ DEPENDENCIES
   faraday
   faraday_middleware
   mysql2 (= 0.5.2)
-  puma (~> 4.3)
+  puma (~> 5.6)
   rails (~> 5.2.6.2)
   rails-controller-testing
   react-rails
