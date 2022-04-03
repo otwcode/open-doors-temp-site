@@ -12,7 +12,7 @@ gem 'sassc-rails', '~> 2.0.0'
 
 gem 'rails', '~> 5.2.6.2'
 
-gem 'mysql2', '0.5.2'
+gem 'mysql2', '0.5.3'
 
 gem 'faraday'
 gem 'faraday_middleware'
