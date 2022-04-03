@@ -51,7 +51,7 @@ GEM
     babel-transpiler (0.7.0)
       babel-source (>= 4.0, < 6)
       execjs (~> 2.0)
-    bcrypt (3.1.16)
+    bcrypt (3.1.17)
     benchmark-ips (2.10.0)
     bindex (0.8.1)
     builder (3.2.4)
@@ -313,7 +313,7 @@ PLATFORMS
 
 DEPENDENCIES
   audited (~> 5.0)
-  bcrypt (~> 3.1.7)
+  bcrypt (~> 3.1.17)
   capybara
   coveralls
   derailed_benchmarks
