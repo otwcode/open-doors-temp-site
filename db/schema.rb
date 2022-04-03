@@ -85,14 +85,13 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "fandoms", default: ""
     t.string "characters", default: ""
     t.string "relationships", default: ""
-    t.string "language_code", default: "en"
+    t.string "language_code", limit: 5, default: "en"
     t.string "url"
     t.boolean "imported", default: false, null: false
     t.boolean "do_not_import", default: false, null: false
     t.string "ao3_url"
     t.string "import_notes", limit: 1024, default: ""
     t.integer "coauthor_id", default: 0
-    t.string "language_code", limit: 5
     t.index ["author_id"], name: "authorId"
     t.index ["id"], name: "id_UNIQUE", unique: true
   end
