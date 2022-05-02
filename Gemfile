@@ -8,7 +8,7 @@ end
 ruby "2.7.3"
 
 # Use SCSS for stylesheets (sassc-rails needs be before rails https://github.com/sass/sassc-rails/issues/114)
-gem 'sassc-rails', '~> 2.0.0'
+gem 'sassc-rails', '~> 2.1.2'
 
 gem 'rails', '~> 5.2.6.2'
 
