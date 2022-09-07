@@ -41,24 +41,30 @@ $ bin/rails server
 In your browser, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
 
 # Deploying a site
-Before you proceed, you will need to install Ansible (https://www.ansible.com/).
+Before you proceed, you will need to install Ansible Playbook (https://docs.ansible.com/ansible/latest/network/getting_started/first_playbook.html). Yes, 
 
 1. In the `scripts/ansible` directory, create a file called `hosts` with the following contents:
     ```
     [otw]
     [[SERVER_NAME]] ansible_ssh_user=[[SERVER_USER]]
     ```
-    Where `SERVER_NAME` and `SERVER_USER` are the server DNS host and ssh user for the web server. You can optionally include the local path to your private SSH key. 
+    Where `SERVER_NAME` and `SERVER_USER` are the server DNS host and ssh user for the web server. You can optionally 
+    include the local path to your private SSH key using `ansible_ssh_private_key_file`:
+    ```
+   [otw]
+    server.transformativeworks.org ansible_ssh_user=username ansible_ssh_private_key_file=/path/to/.ssh/something_rsa
+    ```
 
-1. Make a copy of `scripts/variables.yml.example` as `scripts/variables.yml` and fill it in with the details 
+3. Make a copy of `scripts/variables.yml.example` as `scripts/variables.yml` and fill it in with the details 
 of the site you're creating. The `sitekey` must be a string with no spaces: this will be used as the installation 
-directory, database name and site path.
+directory, database name and site path. Note: a filled-in `variables.yml` for use with the live temp site server is 
+available for OTW staff.
 
-1. Make a copy of `config/secrets.yml.example` as `config/secrets.yml` (you'll probably need to have one for development 
+4. Make a copy of `config/secrets.yml.example` as `config/secrets.yml` (you'll probably need to have one for development 
 anyway - make sure it has a valid `production` section). Note: `secrets.yml` is included in the `.gitignore` to prevent 
 it being accidentally uploaded to Github. 
 
-1. Run 
+5. Run 
     ```bash
     $ cd open-doors-temp-site/
     $ ./scripts/deploy-site-from-variables.sh
