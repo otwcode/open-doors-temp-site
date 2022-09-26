@@ -17,7 +17,7 @@
     "react-actioncable-provider": "^2.0.0",
     "react-bootstrap": "1.0.1",
     "react-dom": "^16.13.1",
-    "react-redux": "^5.1.2",
+    "react-redux": "^8.0.4",
     "react-router-dom": "^4.3.1",
     "react_ujs": "^2.6.1",
     "redux": "^4.0.5",
