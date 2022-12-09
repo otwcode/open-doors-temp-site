@@ -330,13 +330,14 @@ DEPENDENCIES
   bcrypt (~> 3.1.17)
   capybara
   coveralls
+  date (= 3.3.1)
   derailed_benchmarks
   factory_bot_rails
   faraday (= 1.10.2)
   faraday_middleware (= 1.2.0)
   mysql2 (= 0.5.3)
   puma (~> 5.6)
-  rails (~> 5.2.6.2)
+  rails (= 5.2.6.3)
   rails-controller-testing
   react-rails (= 2.6.2)
   redis (~> 4.6)
