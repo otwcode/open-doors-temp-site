@@ -14,14 +14,14 @@ gem 'rails', '~> 5.2.6.2'
 
 gem 'mysql2', '0.5.3'
 
-gem 'faraday'
-gem 'faraday_middleware'
+gem 'faraday', '1.10.2'
+gem 'faraday_middleware', '1.2.0'
 
 gem 'audited', '~> 5.0'
 
 # Use React for the front end
-gem 'react-rails'
-gem 'webpacker'
+gem 'react-rails', '2.6.2'
+gem 'webpacker', '5.4.3'
 
 
 # Use Redis adapter to run Action Cable in production

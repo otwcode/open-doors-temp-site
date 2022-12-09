@@ -41,7 +41,7 @@ $ bin/rails server
 In your browser, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
 
 # Deploying a site
-Before you proceed, you will need to install Ansible Playbook (https://docs.ansible.com/ansible/latest/network/getting_started/first_playbook.html). Yes, 
+Before you proceed, you will need to install Ansible Playbook (https://docs.ansible.com/ansible/latest/network/getting_started/first_playbook.html).
 
 1. In the `scripts/ansible` directory, create a file called `hosts` with the following contents:
     ```
