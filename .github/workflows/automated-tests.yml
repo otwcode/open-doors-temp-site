@@ -41,7 +41,7 @@ jobs:
         run: sudo apt-get update
 
       - name: Install dependencies for Node and MariaDB
-        run: sudo apt-get install -y libnode-dev libmariadbclient-dev
+        run: sudo apt-get install -y libnode-dev libmariadb-dev
 
 #      - name: Install LibXML
 #        run: sudo apt-get install libxml2-dev
