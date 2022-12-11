@@ -75,7 +75,6 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    date (3.3.0)
     dead_end (4.0.0)
     derailed_benchmarks (2.1.2)
       benchmark-ips (~> 2)
@@ -164,8 +163,7 @@ GEM
     multi_json (1.15.0)
     multipart-post (2.2.3)
     mysql2 (0.5.3)
-    net-imap (0.3.2)
-      date
+    net-imap (0.3.1)
       net-protocol
     net-pop (0.1.2)
       net-protocol
@@ -239,7 +237,7 @@ GEM
     rspec-expectations (3.12.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
-    rspec-mocks (3.12.0)
+    rspec-mocks (3.12.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-rails (5.1.2)
@@ -330,12 +328,12 @@ DEPENDENCIES
   bcrypt (~> 3.1.17)
   capybara
   coveralls
-  date (= 3.3.0)
   derailed_benchmarks
   factory_bot_rails
   faraday (= 1.10.2)
   faraday_middleware (= 1.2.0)
   mysql2 (= 0.5.3)
+  net-imap (= 0.3.1)
   puma (~> 5.6)
   rails (= 5.2.6.2)
   rails-controller-testing
@@ -347,7 +345,6 @@ DEPENDENCIES
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
-  timeout (= 0.3.1)
   unicorn
   web-console (>= 3.3.0)
   webmock
