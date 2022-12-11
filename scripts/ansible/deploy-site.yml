@@ -142,7 +142,7 @@
       chdir: "{{ deploy_path }}"
 
   - name: Precompile assets
-    command: "{{ ruby_path }}/bundle exec rake assets:precompile --path={{ remote_path }}/../bundler/{{ repo_version }}"
+    command: "{{ ruby_path }}/bundle exec rake assets:precompile"
     become: false
     args:
       chdir: "{{ deploy_path }}"
