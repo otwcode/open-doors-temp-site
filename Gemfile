@@ -9,6 +9,7 @@ ruby "2.7.3"
 
 # Use SCSS for stylesheets (sassc-rails needs be before rails https://github.com/sass/sassc-rails/issues/114)
 gem 'sassc-rails', '~> 2.1.2'
+gem 'net-imap', '0.3.1'
 # gem 'date', '3.2.2'
 # gem 'timeout', '0.3.0'
 gem 'rails', '5.2.6.2'
