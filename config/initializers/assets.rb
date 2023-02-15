@@ -2,7 +2,7 @@
 
 Rails.application.configure do
   # Version of your assets, change this if you want to expire all your assets.
-  config.assets.version = '1.1'
+  config.assets.version = '1.2'
 
   # Add additional assets to the asset load path
   Rails.application.config.assets.paths << Rails.root.join('node_modules')
