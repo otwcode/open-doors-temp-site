@@ -31,14 +31,18 @@ jobs:
         image: redis:3.2.1
         ports:
           - 6379:6379
-
-
+          
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
       - name: Run apt-get update
         run: sudo apt-get update
+        
+      - name: Set up Node js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.14.0'
 
       - name: Install dependencies for Node and MariaDB
         run: sudo apt-get install -y libnode-dev libmariadb-dev
