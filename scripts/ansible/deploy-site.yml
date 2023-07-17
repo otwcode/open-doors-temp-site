@@ -142,7 +142,7 @@
       chdir: "{{ deploy_path }}"
 
   - name: Precompile assets
-    command: /usr/share/rvm/gems/ruby-2.7.3/wrappers/bundle exec rake assets:precompile
+    command: "{{ ruby_path }}/bundle exec rake assets:precompile"
     become: false
     args:
       chdir: "{{ deploy_path }}"
