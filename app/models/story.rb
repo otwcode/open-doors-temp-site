@@ -28,11 +28,11 @@ class Story < ApplicationRecord
       summaryTooLong: summary && summary.size > 1250,
       chapters: chapters.sort_by(&:position).map { |c|
         c.as_json(only: [:id, :title, :position])
-          .merge!(
-            title: (c.title.blank? ? "Chapter #{c.position}" : c.title),
-            textLength: c.text.size,
-            textTooLong: c.text.size > 510_000 # Same as Archive MAX_LENGTH
-          ).except!(:content)
+         .merge!(
+           title: (c.title.blank? ? "Chapter #{c.position}" : c.title),
+           textLength: c.text.size,
+           textTooLong: c.text.size > 510_000 # Same as Archive MAX_LENGTH
+         ).except!(:content)
       }
     )
   end
@@ -53,7 +53,12 @@ class Story < ApplicationRecord
       language_code,
       categories,
       tags,
-      "#{archive_config.stories_note}\n<br/><br/><p>--</p><br/>#{notes}",
+      "#{archive_config.stories_note}\n" +
+        if notes.present?
+          "<br/><br/><p>--</p><br/>#{notes}"
+        else
+          ""
+        end,
       id,
       summary,
       chapters.map { |c| chapter_url(c, host: host) }

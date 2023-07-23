@@ -6,12 +6,19 @@ describe Story, type: :model do
 
   let!(:author1) { create(:author_with_stories, audit_comment: "Test") }
   let(:story1) { create(:story, author_id: author1.id, notes: "Original Notes", language_code: "de", audit_comment: "Test") }
+  let(:story_no_notes) { create(:story, author_id: author1.id, audit_comment: "Test") }
 
   it 'converts a story with all fields correctly' do
     config = create(:archive_config, stories_note: "Story note")
     work = story1.to_work(config, "test")
     expect(work.notes).to eq "Story note\n<br/><br/><p>--</p><br/>Original Notes"
     expect(work.language_code).to eq "de"
+  end
+
+  it 'doesn’t include a separator if no notes are present' do
+    config = create(:archive_config, stories_note: "Story note")
+    work = story_no_notes.to_work(config, "test")
+    expect(work.notes).to eq "Story note\n"
   end
 
   it 'returns a summary too long error in json object' do
