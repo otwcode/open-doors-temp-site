@@ -53,7 +53,7 @@ class Story < ApplicationRecord
       language_code,
       categories,
       tags,
-      "#{archive_config.stories_note}\n<br/><br/><p>--</p><br/>#{notes}",
+      "#{archive_config.stories_note}\n" + ("<br/><br/><p>--</p><br/>#{notes}" if notes.present?),
       id,
       summary,
       chapters.map { |c| chapter_url(c, host: host) }
