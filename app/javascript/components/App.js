@@ -30,7 +30,7 @@ export default class App extends Component {
         <div>
           <Navigation data={this.props}/>
           <SiteInfo config={this.props.config}/>
-          <ActionCableProvider url={`ws://${window.location.host}/${sitekey}/cable`}>
+          <ActionCableProvider url={`${ws_protocol}${window.location.host}/${sitekey}/cable`}>
             <Container fluid={true}>
               <Row>
                 <Router>
