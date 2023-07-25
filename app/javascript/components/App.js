@@ -9,6 +9,7 @@ import { ActionCableProvider } from 'react-actioncable-provider';
 import Navigation from "./navigation/Navigation";
 import SiteInfo from "./SiteInfo";
 import { sitekey } from "../config";
+import { ws_protocol } from "../config";
 import AuthorsPage from "./pages/AuthorsPage";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
