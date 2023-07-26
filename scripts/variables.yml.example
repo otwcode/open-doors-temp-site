@@ -21,3 +21,5 @@ remote_hostname: << hostname for the remote server (added to hosts file) >>
 remote_pw: << not used - just convenient for reference >>
 remote_pw_hash: << hash of user password >>
 local_ssh_path: << path to the public key to add to authorised keys on the server >>
+
+use_ssl: << false / true, note that if true, you will need to install a cert/key for nginx yourself! See the README. >>

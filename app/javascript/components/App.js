@@ -9,6 +9,7 @@ import { ActionCableProvider } from 'react-actioncable-provider';
 import Navigation from "./navigation/Navigation";
 import SiteInfo from "./SiteInfo";
 import { sitekey } from "../config";
+import { ws_protocol } from "../config";
 import AuthorsPage from "./pages/AuthorsPage";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -30,7 +31,7 @@ export default class App extends Component {
         <div>
           <Navigation data={this.props}/>
           <SiteInfo config={this.props.config}/>
-          <ActionCableProvider url={`ws://${window.location.host}/${sitekey}/cable`}>
+          <ActionCableProvider url={`${ws_protocol}${window.location.host}/${sitekey}/cable`}>
             <Container fluid={true}>
               <Row>
                 <Router>

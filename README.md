@@ -122,6 +122,8 @@ $ cd <root of this repo>
 $ ansible-playbook scripts/provision-server.yml -i scripts/hosts --extra-vars "@scripts/variables.yml"
 ```
 
+If you have set `use_ssl` to `true` in your variables, you will need to install a PEM certificate file and key at `/etc/nginx/od-import.crt` and `/etc/nginx/od-import.key` respectively.
+
 
 # Known Issues
 1. Webpacker compilation fails with no explanation on Linode: this is probably due to lack of memory for the compilation - stop one of the other sites to resolve this.

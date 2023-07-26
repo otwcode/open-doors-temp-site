@@ -1,2 +1,7 @@
 export const sitekey = "{{ sitekey }}";
 export const authors_path = (letter) => `/${sitekey}/authors${ letter ? `?letter=${letter}` :""}`;
+{% if use_ssl %}
+export const ws_protocol = 'wss://';
+{% else %}
+export const ws_protocol = 'ws://';
+{% endif %}
