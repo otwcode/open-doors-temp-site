@@ -12,7 +12,7 @@ gem 'sassc-rails', '~> 2.1.2'
 gem 'net-imap', '0.3.1'
 # gem 'date', '3.2.2'
 gem 'timeout', '0.3.0'
-gem 'rails', '5.2.6.2'
+gem 'rails', '7.0.7'
 
 gem 'mysql2', '0.5.3'
 
