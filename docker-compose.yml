@@ -1,0 +1,46 @@
+version: "2"
+services:
+    db:
+        image: mysql:5.7
+        volumes:
+            - db-data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: change_me
+            MYSQL_DATABASE: opendoorstempsite
+            MYSQL_USER: db_user
+            MYSQL_PASSWORD: change_me
+        ports:
+            - "3307:3307"
+        expose:
+          - "3307"
+    redis:
+        image: redis:5
+        ports:
+          - "6379:6379"
+        volumes:
+          - redis-data:/var/lib/redis:rw
+    web:
+        profiles:
+          - dev
+        build:
+          context: .
+          dockerfile: ./config/docker/Dockerfile
+        environment:
+          - RAILS_ENV=development
+          - DB_USER=root
+          - DB_NAME=opendoorstempsite
+          - DB_PASSWORD=change_me
+          - DB_HOST=db
+        command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -p 3010 -b '0.0.0.0'"
+        volumes:
+          - .:/tempsite
+        ports:
+          - "3010:3010"
+        expose:
+          - "3010"
+        depends_on:
+          - db
+          - redis
+volumes:
+  db-data:
+  redis-data:
