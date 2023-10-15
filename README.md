@@ -43,28 +43,15 @@ In your browser, navigate to http://localhost:3010/opendoorstempsite to view the
 # Running it locally using Docker
 There is also an option to set up the local environment using Docker.
 
-For MacOS and Linux, installing Docker with Docker Compose is all that is needed. If you're using Windows, refer to [this documentation](https://learn.microsoft.com/en-us/windows/wsl/setup/environment) for setting up a Windows Subsystem for Linux (WSL 2) development environment, specifically the sections on installing and setting up WSL 2, Visual Studio Code, Git and Docker Desktop. All of the development should be done from within the WSL distro you install.
+For MacOS and Linux, installing Docker is all that is needed. If you're using Windows, refer to [this documentation](https://learn.microsoft.com/en-us/windows/wsl/setup/environment) for setting up a Windows Subsystem for Linux (WSL 2) development environment, specifically the sections on installing and setting up WSL 2, Visual Studio Code, Git and Docker Desktop. All of the development should be done from within the WSL distro you install.
 
-Once inside the repo, replace all the "change_me"s in docker-compose.yml to the MySQL password you'd prefer, and create the config/secrets.yml file. Then run the script that initializes almost everything.
+Once inside the repo, run the script that initializes everything.
 ```bash
-chmod +x scripts/docker/init.sh
-scripts/docker/init.sh
+sudo bash scripts/docker/init.sh
 ``` 
-This script builds the image with all the Ruby gems, node modules, etc. needed for development and starts the containers and volumes, so it will take a while for this script to finish running. However, the script does not populate the MySQL database; this is manual process, to be done after the script finishes using these commands:
+The script will first prompt you to set the MySQL password, and will update docker-compose.yml and config/secrets.yml as long as the files have "change_me" where the password should be. Then the script builds the image with all the Ruby gems, node modules, etc. needed for development and starts the containers and volumes, so it will take a while for this script to finish running. At the very end it will populate the MySQL database with sample data. To test with real data, put the SQL dump file somewhere inside the repo (so the container can access it) and use the last command in the script, replacing the variables accordingly.
 
-```bash
-docker-compose exec web bash
-#This will prompt for the password set in docker-compose.yml
-mysql -h db -u root -p
-use opendoorstempsite;
-INSERT INTO `archive_configs` (`key`, `name`, `host`) VALUES ('opendoorstempsite', 'Open Doors Temp Site', 'local');
-#This is an example of how to import a SQL dump file
-#You can put it anywhere in the repo, but referencing files outside of the repo will not work
-source ./data/init.sql
-exit x2
-docker-compose exec web bundle exec rails restart
-``` 
-Once all that's done, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
+Once the script has finished running, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
 
 # Deploying a site
 Before you proceed, you will need to install Ansible Playbook (https://docs.ansible.com/ansible/latest/network/getting_started/first_playbook.html).

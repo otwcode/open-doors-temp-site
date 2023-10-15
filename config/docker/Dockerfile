@@ -1,4 +1,4 @@
-FROM ruby:2.7.3
+FROM node:14
 
 # Install additional packages
 RUN apt-get update             &&  \
@@ -12,11 +12,13 @@ RUN apt-get update             &&  \
         software-properties-common \
         zlib1g-dev                 \
         curl                       \
-        ca-certificates
+        ca-certificates            \
+        npm
 
-# Install nodejs
-RUN curl -L https://deb.nodesource.com/setup_14.x | bash && \
-	apt-get install -y nodejs
+# Install ruby
+RUN git clone https://github.com/rbenv/ruby-build.git && \
+    PREFIX=/usr/local ./ruby-build/install.sh && \
+    ruby-build -v 2.7.3 /usr/local
 
 # Clean and mount repository at /tempsite
 RUN rm -rf /tempsite && mkdir -p /tempsite
@@ -30,7 +32,7 @@ RUN gem install bundler -v 1.17.3 && bundle install
 
 # Install nodejs packages
 COPY package.json .
-RUN npm install yarn -g && npm install
+RUN npm install
 
 # Default commands to run in a new container
 EXPOSE 3010
