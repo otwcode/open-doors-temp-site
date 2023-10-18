@@ -52,8 +52,9 @@ variables.yml
 *.retry
 hosts
 
-# Ignore auto-generated SQL file
-/config/docker/archive_config.sql
+# Ignore auto-generated Docker files
+docker-compose.yml
+/scripts/docker/archive_config.sql
 
 # Ignore compiled assets folder
 /public/opendoorstempsite/assets

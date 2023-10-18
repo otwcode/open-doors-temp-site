@@ -6,13 +6,19 @@ cd "$(dirname "$0")/../.."
 
 # Change MySQL password
 read -sp 'Please set the new MySQL password: ' MYSQL_PASS
+
+cp scripts/docker/docker-compose-template.yml docker-compose.yml
 sed -i'' -e "s/change_me/$MYSQL_PASS/g" docker-compose.yml
+
+cp scripts/docker/secrets.yml config/secrets.yml
 sed -i'' -e "s/change_me/$MYSQL_PASS/g" config/secrets.yml
 
-# Manual backup as the --backup option is not available for all versions of cp
-filename='database.yml'
-test -f "config/$filename" && cp "config/$filename" "config/$filename~"
-cp "config/docker/$filename" "config/$filename"
+for file in 'database.yml' 'cable.yml'
+do
+  # Manual backup as the --backup option is not available for all versions of cp
+  test -f "config/$file" && cp "config/$file" "config/$file~"
+  cp "scripts/docker/$file" "config/$file"
+done
 
 docker-compose up -d
 
@@ -32,7 +38,7 @@ docker-compose run --rm web bundle exec rake assets:precompile
 docker-compose up -d web
 
 #Create sample SQL file
-SQL_FILE="config/docker/archive_config.sql"
+SQL_FILE="scripts/docker/archive_config.sql"
 cp scripts/ansible/templates/archive_config.sql.j2 $SQL_FILE
 
 sed -i'' -e 's/{{ sitekey }}/opendoorstempsite/g' $SQL_FILE

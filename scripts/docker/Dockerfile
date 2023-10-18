@@ -11,8 +11,6 @@ RUN apt-get update             &&  \
         make                       \
         software-properties-common \
         zlib1g-dev                 \
-        curl                       \
-        ca-certificates            \
         npm
 
 # Install ruby
