@@ -13,6 +13,12 @@ sed -i'' -e "s/change_me/$MYSQL_PASS/g" docker-compose.yml
 cp scripts/docker/secrets.yml config/secrets.yml
 sed -i'' -e "s/change_me/$MYSQL_PASS/g" config/secrets.yml
 
+for key in KEY_DEV KEY_AO3_LOCAL KEY_AO3_TEST KEY_TEST
+do
+    SECRET=$(openssl rand -hex 32)
+    sed -i'' -e "s/$key/$SECRET/g" config/secrets.yml
+done
+
 for file in 'database.yml' 'cable.yml'
 do
   # Manual backup as the --backup option is not available for all versions of cp
