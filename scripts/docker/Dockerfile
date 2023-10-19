@@ -1,13 +1,14 @@
-FROM node:14
+FROM node:14-bullseye-slim
 
 # Install additional packages
 RUN apt-get update             &&  \
     apt-get install -y             \
-        build-essential            \   
+        build-essential            \
+        curl                       \
         g++                        \
         gcc                        \
         git                        \
-        default-mysql-client       \
+        default-libmysqlclient-dev \
         make                       \
         software-properties-common \
         zlib1g-dev                 \
