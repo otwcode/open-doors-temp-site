@@ -5,5 +5,5 @@ local: &local
 production: *local
 development:
   adapter: redis
-  url: redis://localhost:6379
+  url: redis://redis:6379
 test: *local

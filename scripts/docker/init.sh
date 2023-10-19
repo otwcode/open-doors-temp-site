@@ -52,4 +52,4 @@ sed -i'' -e 's/{{ name }}/Open Doors Temp Site/g' $SQL_FILE
 sed -i'' -e 's/ariana/local/g' $SQL_FILE
 
 #Auto-load sample SQL file
-docker-compose exec -T web mysql -h db -uroot -p$MYSQL_PASS opendoorstempsite < $SQL_FILE
+docker-compose exec -T db mysql -h db -uroot -p$MYSQL_PASS opendoorstempsite < $SQL_FILE
