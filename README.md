@@ -40,6 +40,19 @@ $ bin/rails server
 
 In your browser, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
 
+# Running it locally using Docker
+There is also an option to set up the local environment using Docker.
+
+If you're using Windows, refer to [this documentation](https://learn.microsoft.com/en-us/windows/wsl/setup/environment) for setting up a Windows Subsystem for Linux (WSL 2) development environment, specifically the sections on installing and setting up WSL 2, Visual Studio Code, Git and Docker Desktop. All of the development should be done from within the WSL distro you install.
+
+Once inside the repo, run the script that initializes everything.
+```bash
+sudo bash scripts/docker/init.sh
+``` 
+The script will first prompt you to set the MySQL password, and will generate and update docker-compose.yml and config/secrets.yml. Then the script builds the image with all the Ruby gems, node modules, etc. needed for development and starts the containers and volumes, so it will take a while for this script to finish running. At the very end it will populate the MySQL database with sample data. To test with real data, put the SQL dump file somewhere inside the repo (so the container can access it) and use the last command in the script, replacing the variables accordingly.
+
+Once the script has finished running, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
+
 # Deploying a site
 Before you proceed, you will need to install Ansible Playbook (https://docs.ansible.com/ansible/latest/network/getting_started/first_playbook.html).
 
