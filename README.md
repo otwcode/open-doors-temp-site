@@ -18,13 +18,13 @@ perform the import in stages, verifying imported works as they go along.
 This repository houses the Rails + React application used to create those sites.
 
 # Running it locally
-This is Ruby on Rails site with a React front-end mounted by the `react-rails` gem.
+This is a Ruby on Rails site with a React front-end mounted by the `react-rails` gem.
 
 Requirements:
 - Ruby 2.7.3 
-- MySQL 5.7
+- MySQL 5.7 or MariaDB
 - Bundler
-- Node 8.11 https://nodejs.org/en/blog/release/v8.11.1/
+- Node 14
 - Yarn https://yarnpkg.com/lang/en/docs/install/
 
 Note: for ease of local development, the Ruby and MySQL versions should be kept in step with the [otwarchive project](https://github.com/otwcode/otwarchive)
@@ -43,17 +43,31 @@ In your browser, navigate to http://localhost:3010/opendoorstempsite to view the
 # Running it locally using Docker
 There is also an option to set up the local environment using Docker.
 
-If you're using Windows, refer to [this documentation](https://learn.microsoft.com/en-us/windows/wsl/setup/environment) for setting up a Windows Subsystem for Linux (WSL 2) development environment, specifically the sections on installing and setting up WSL 2, Visual Studio Code, Git and Docker Desktop. All of the development should be done from within the WSL distro you install.
+## MacOS and Linux
 
-Once inside the repo, run the script that initializes everything.
-```bash
-sudo bash scripts/docker/init.sh
-``` 
-The script will first prompt you to set the MySQL password, and will generate and update docker-compose.yml and config/secrets.yml. Then the script builds the image with all the Ruby gems, node modules, etc. needed for development and starts the containers and volumes, so it will take a while for this script to finish running. At the very end it will populate the MySQL database with sample data. To test with real data, put the SQL dump file somewhere inside the repo (so the container can access it) and use the last command in the script, replacing the variables accordingly.
-
+1. On Mac, install Docker Desktop, which includes Docker Composer. On Linux, install `docker` and `docker-compose`.
+2. On the command line, navigate to the root of this repository.
+3. If necessary, set permissions on the init file:
+   ```bash
+   chmod +x script/docker/init.sh
+   ```
+4. Run the init file to create the containers and run them. This will prompt for the MySQL password to use.
+   ```bash
+   ./script/docker/init.sh
+   ```
+5. Follow any instructions on screen. 
 Once the script has finished running, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
 
-# Deploying a site
+## Windows
+1. Refer to [the Windows Subsystem for Linux (WSL 2) documentation](https://learn.microsoft.com/en-us/windows/wsl/setup/environment) to set up a development environment, specifically the sections on installing and setting up WSL 2, Visual Studio Code, Git and Docker Desktop. All of the development should be done from within the WSL distro you install.
+2. In WSL, navigate to the root of the repo and run the script that initializes everything.
+   ```bash
+   sudo bash scripts/docker/init.sh
+   ``` 
+3. The script will first prompt you to set the MySQL password, and will update docker-compose.yml and config/secrets.yml as long as the files have "change_me" where the password should be. Then the script builds the image with all the Ruby gems, node modules, etc. needed for development and starts the containers and volumes, so it will take a while for this script to finish running. At the very end it will populate the MySQL database with sample data. To test with real data, put the SQL dump file somewhere inside the repo (so the container can access it) and use the last command in the script, replacing the variables accordingly.
+Once the script has finished running, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
+
+# Deploying a site to the live server
 Before you proceed, you will need to install Ansible Playbook (https://docs.ansible.com/ansible/latest/network/getting_started/first_playbook.html).
 
 1. In the `scripts/ansible` directory, create a file called `hosts` with the following contents:
