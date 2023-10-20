@@ -49,11 +49,11 @@ There is also an option to set up the local environment using Docker.
 2. On the command line, navigate to the root of this repository.
 3. If necessary, set permissions on the init file:
    ```bash
-   chmod +x script/docker/init.sh
+   chmod +x scripts/docker/init.sh
    ```
 4. Run the init file to create the containers and run them. This will prompt for the MySQL password to use.
    ```bash
-   ./script/docker/init.sh
+   ./scripts/docker/init.sh
    ```
 5. Follow any instructions on screen. 
 Once the script has finished running, navigate to http://localhost:3010/opendoorstempsite to view the temp site.
