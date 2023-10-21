@@ -1,7 +1,7 @@
 version: "3"
 services:
     db:
-        image: mysql:5.7
+        image: mariadb:10.11.5
         volumes:
             - db-data:/var/lib/mysql
         environment:
@@ -14,11 +14,11 @@ services:
         expose:
           - "3307"
     redis:
-        image: redis:3.2.1
-        ports:
-          - "6379:6379"
+        image: redis:5-alpine
         volumes:
           - redis-data:/var/lib/redis:rw
+        ports:
+          - "6379:6379"
     web:
         profiles:
           - dev
