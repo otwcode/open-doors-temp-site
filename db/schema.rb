@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_21_222726) do
+ActiveRecord::Schema.define(version: 2023_10_22_170248) do
 
-  create_table "archive_configs", id: :integer, options: "ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
+  create_table "archive_configs", id: :integer, options: "ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "key", limit: 45, null: false
     t.string "name"
     t.string "fandom"
-    t.text "stories_note"
-    t.text "bookmarks_note"
+    t.text "stories_note", limit: 16777215
+    t.text "bookmarks_note", limit: 16777215
     t.boolean "send_email", default: false, null: false
     t.boolean "post_preview", default: false, null: false
     t.string "archivist", limit: 100, default: "testy", null: false
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 2023_10_21_222726) do
     t.index ["key"], name: "Key_UNIQUE", unique: true
   end
 
-  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
+  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "auditable_id"
     t.string "auditable_type"
     t.integer "associated_id"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2023_10_21_222726) do
     t.string "user_type"
     t.string "username"
     t.string "action"
-    t.text "audited_changes"
+    t.text "audited_changes", limit: 16777215
     t.integer "version", default: 0
     t.string "comment", limit: 2048
     t.string "remote_address"
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 2023_10_21_222726) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
-  create_table "authors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
+  create_table "authors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.string "email", default: "", null: false
     t.boolean "imported", default: false, null: false
@@ -58,22 +58,22 @@ ActiveRecord::Schema.define(version: 2023_10_21_222726) do
     t.index ["id"], name: "id_UNIQUE", unique: true
   end
 
-  create_table "chapters", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
+  create_table "chapters", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "position"
     t.string "title", default: "", null: false
-    t.text "text", limit: 16777215
+    t.text "text", limit: 4294967295
     t.datetime "date"
     t.integer "story_id", default: 0
-    t.text "notes"
+    t.text "notes", limit: 16777215
     t.string "url", limit: 1024
     t.index ["id"], name: "id_UNIQUE", unique: true
     t.index ["story_id"], name: "storyid"
   end
 
-  create_table "stories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
+  create_table "stories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title", default: "", null: false
-    t.text "summary"
-    t.text "notes"
+    t.text "summary", limit: 16777215
+    t.text "notes", limit: 16777215
     t.integer "author_id", default: 0
     t.string "rating", default: "", null: false
     t.datetime "date"
@@ -95,10 +95,10 @@ ActiveRecord::Schema.define(version: 2023_10_21_222726) do
     t.index ["id"], name: "id_UNIQUE", unique: true
   end
 
-  create_table "story_links", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
+  create_table "story_links", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title", default: "", null: false
-    t.text "summary"
-    t.text "notes"
+    t.text "summary", limit: 16777215
+    t.text "notes", limit: 16777215
     t.integer "author_id", default: 0
     t.string "rating", default: "", null: false
     t.datetime "date"
@@ -120,7 +120,7 @@ ActiveRecord::Schema.define(version: 2023_10_21_222726) do
     t.index ["id"], name: "id_UNIQUE", unique: true
   end
 
-  create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
+  create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "email"
     t.string "password_digest"
