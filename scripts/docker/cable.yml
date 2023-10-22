@@ -2,8 +2,10 @@ local: &local
   adapter: redis
   url: redis://localhost:6379
 
-production: *local
-development:
+docker: &docker
   adapter: redis
   url: redis://redis:6379
-test: *local
+
+production: *local
+development: *docker
+test: *docker
