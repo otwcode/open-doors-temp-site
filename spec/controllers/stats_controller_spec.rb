@@ -21,9 +21,8 @@ RSpec.describe StatsController, type: :controller do
 
   context "stats methods" do
     it "returns the author stats" do
-      author = Author.new(name: "Name", email: "foo@ao3.org")
-      authors = [author]
-      result = controller.author_stats(authors)
+      author = create(:author, imported: true)
+      result = controller.item_stats(Author)
       expect(result).to be_a(OpenStruct)
       expect(result.all).to eq 1
       expect(result.imported).to eq 1
@@ -32,10 +31,9 @@ RSpec.describe StatsController, type: :controller do
     end
 
     it "returns the story stats" do
-      author = Author.new(name: "Name", email: "foo@ao3.org")
-      story = Story.new(title: "Name", author: author)
-      stories = [story]
-      result = controller.story_stats(stories)
+      author = create(:author)
+      story = create(:story, author_id: author.id, audit_comment: "Test")
+      result = controller.item_stats(Story)
       expect(result).to be_a(OpenStruct)
       expect(result.all).to eq 1
       expect(result.imported).to eq 0
@@ -44,10 +42,9 @@ RSpec.describe StatsController, type: :controller do
     end
 
     it "returns the story link stats" do
-      author = Author.new(name: "Name", email: "foo@ao3.org")
-      story_link = StoryLink.new(title: "Name", author: author)
-      story_links = [story_link]
-      result = controller.story_stats(story_links)
+      author = create(:author)
+      story_link = create(:story_link, author_id: author.id, audit_comment: "Test")
+      result = controller.item_stats(StoryLink)
       expect(result).to be_a(OpenStruct)
       expect(result.all).to eq 1
       expect(result.imported).to eq 0
@@ -56,10 +53,10 @@ RSpec.describe StatsController, type: :controller do
     end
 
     it "returns all the stats" do
-      author = Author.new(name: "Name", email: "foo@ao3.org")
-      story = Story.new(title: "Name", author: author)
-      story_link = StoryLink.new(title: "Name", author: author)
-      result = controller.gather_stats([author], [story], [story_link])
+      author = create(:author)
+      story = create(:story, author_id: author.id, audit_comment: "Test")
+      story_link = create(:story_link, author_id: author.id, audit_comment: "Test")
+      result = controller.gather_stats
       expect(result).to be_a(OpenStruct)
       expect(result.authors.all).to eq 1
       expect(result.letters.all).to eq 1

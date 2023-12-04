@@ -35,6 +35,43 @@ class Author < ApplicationRecord
     [story_errors, link_errors].compact.reduce([], :|)
   end
 
+  def self.all_errors(author_ids)
+    all_errors = Author.size_errors(author_ids)
+    item_errors = Item.all_errors(author_ids)
+    item_errors.map do |a_id, errors|
+      if all_errors.key?(a_id)
+        all_errors[a_id].concat errors
+      else
+        all_errors[a_id] = errors
+      end
+    end
+    all_errors
+  end
+
+  def self.size_errors(author_ids)
+    author_errors = {}
+    author_names = Author.where("id in (#{author_ids})").pluck(:id, :name).to_h
+    
+    items = [
+      {model: Story, label: :stories},
+      {model: StoryLink, label: :bookmarks}
+    ]
+
+    items.map do |item|
+      errors = item[:model].where("author_id in (#{author_ids})").group(:author_id).having("count(id) > #{NUMBER_OF_ITEMS}").count
+      errors.map do |a_id, count|
+        msg = "Author '#{author_names[a_id]}' has more than #{count} #{item[:label]} - the Archive can only import #{NUMBER_OF_ITEMS} at a time"
+        if author_errors.key?(a_id)
+          author_errors[a_id] << msg
+        else
+          author_errors[a_id] = [msg]
+        end
+      end
+    end
+
+    author_errors
+  end
+
   def coauthored_stories
     Story.where(coauthor_id: id)
   end
@@ -69,6 +106,74 @@ class Author < ApplicationRecord
         errors: [a.author_errors, a.items_errors].compact.reduce([], :|)
       }
     end.group_by { |a| a[:name][0].upcase }
+  end
+
+  def self.all_imported
+    non_imported_stories = Item.auth_id_to_not_imported_dni(Story)
+    non_imported_links = Item.auth_id_to_not_imported_dni(StoryLink)
+    authors = []
+    Author.all.map do |a|
+      s_to_import = non_imported_stories[a.id] || 0
+      l_to_import = non_imported_links[a.id] || 0
+      authors << a.id if s_to_import == 0 && l_to_import == 0
+    end
+    authors
+  end
+
+  def self.not_imported
+    non_imported_stories = Item.auth_id_to_not_imported_dni(Story)
+    non_imported_links = Item.auth_id_to_not_imported_dni(StoryLink)
+    authors = []
+    Author.with_stories_or_story_links.map do |a|
+      s_to_import = non_imported_stories[a.id] || 0
+      l_to_import = non_imported_links[a.id] || 0
+      authors << a if s_to_import > 0 || l_to_import > 0
+    end
+    authors
+  end
+
+  def self.authors_by_letter(letter, page, page_size)
+    offset = (page.to_i - 1) * page_size
+    Author.left_outer_joins(:stories, :story_links).where(
+      "substr(upper(name),1,1) = '#{letter}' and (stories.id IS NOT NULL or story_links.id IS NOT NULL)"
+    ).order(:name).limit(page_size).offset(offset).distinct
+  end
+
+  def self.get_letter(letter, page, page_size)
+    authors = Author.authors_by_letter(letter, page, page_size).to_a
+    author_ids = authors.map(&:id).join(",")
+
+    id_to_stories = Item.auth_id_to_not_imported(Story, author_ids)
+    id_to_links = Item.auth_id_to_not_imported(StoryLink, author_ids)
+    errors = Author.all_errors(author_ids)
+
+    authors.map do |a|
+      {
+        id: a.id,
+        name: a.name,
+        imported: a.imported,
+        s_to_import: id_to_stories[a.id] || 0,
+        l_to_import: id_to_links[a.id] || 0,
+        errors: errors[a.id] || []
+      }
+    end
+  end
+
+  def self.letter_counts
+    letters = Author.with_stories_or_story_links.group_by { |a| a[:name][0].upcase }
+    not_imported_letters = Author.not_imported.group_by { |a| a[:name][0].upcase }
+
+    all_authors = Hash[letters.map{|k,v| [k,v.size]}]
+    not_imported = Hash[not_imported_letters.map{|k,v| [k, v.size]}]
+    
+    letter_hash = {}
+    all_authors.map do |letter,count|
+      letter_hash[letter] = {
+        all: count,
+        imports: not_imported[letter] || 0
+      }
+    end
+    letter_hash
   end
 
   def import(client, host)
