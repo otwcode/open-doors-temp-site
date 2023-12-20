@@ -88,4 +88,17 @@ describe Author, type: :model do
       expect(Author.all_imported.include?(author.id)).to eq false
     end
   end
+
+  it 'returns too many item errors' do
+    stub_const("NUMBER_OF_ITEMS", 4)
+    author = create(:author, name: "testy")
+    5.times {
+      story = create(:story, author_id: author.id, audit_comment: "Test")
+      story_link = create(:story_link, author_id: author.id, audit_comment: "Test")
+    }
+    errors = Author.all_errors(author.id.to_s)
+    expect(errors.key?(author.id)).to eq true
+    expect(errors[author.id].include?("Author 'testy' has 5 stories - the Archive can only import 4 at a time")).to eq true
+    expect(errors[author.id].include?("Author 'testy' has 5 bookmarks - the Archive can only import 4 at a time")).to eq true
+  end
 end

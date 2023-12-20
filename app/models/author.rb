@@ -60,7 +60,7 @@ class Author < ApplicationRecord
     items.map do |item|
       errors = item[:model].where("author_id in (#{author_ids})").group(:author_id).having("count(id) > #{NUMBER_OF_ITEMS}").count
       errors.map do |a_id, count|
-        msg = "Author '#{author_names[a_id]}' has more than #{count} #{item[:label]} - the Archive can only import #{NUMBER_OF_ITEMS} at a time"
+        msg = "Author '#{author_names[a_id]}' has #{count} #{item[:label]} - the Archive can only import #{NUMBER_OF_ITEMS} at a time"
         if author_errors.key?(a_id)
           author_errors[a_id] << msg
         else

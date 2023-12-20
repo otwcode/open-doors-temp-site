@@ -138,7 +138,7 @@ class AuthorsController < ApplicationController
 
   def get_host(request)
     if @client.config.archive_host.split("//")[1].split(":")[0] =~ Resolv::IPv4::Regex
-      host = @client.config.archive_host.clone.sub! "3000", "3010"
+      host = @client.config.archive_host.dup.sub("3000", "3010")
     else
       host = request.host_with_port
     end

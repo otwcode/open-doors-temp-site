@@ -77,7 +77,8 @@ module Item
   end
   
   def self.missing_fandom(type_model, type_sym, author_ids)
-    fandom_errors = type_model.where("fandoms = null AND author_id IN (#{author_ids})").group_by { |item| item[:author_id] }
+    where = Item.get_auth_id_query("(fandoms is null OR length(fandoms) = 0)", author_ids)
+    fandom_errors = type_model.where(where).group_by { |item| item[:author_id] }
     missing_fandom_text = Proc.new do |type_sym, col, item|
       "Fandom for #{type_sym} '#{item.title}' is missing"
     end
@@ -85,7 +86,8 @@ module Item
   end
 
   def self.too_long_errors(type_model, type_sym, col, max, author_ids)
-    length_errors = type_model.where("length(#{col}) > #{max} AND author_id IN (#{author_ids})").group_by { |item| item[:author_id] }
+    where = Item.get_auth_id_query("#{col} is not null AND length(#{col}) > #{max}", author_ids)
+    length_errors = type_model.where(where).group_by { |item| item[:author_id] }
     too_long_text = Proc.new do |type_sym, col, item|
       "#{col.capitalize} for #{type_sym} '#{item.title}' is too long (#{item[col].length})"
     end
@@ -93,7 +95,8 @@ module Item
   end
 
   def self.chapter_errors(col, max, author_ids)
-    length_errors = Chapter.joins(:story).where("length(chapters.#{col.to_s}) > #{max} AND stories.author_id IN (#{author_ids})").select(Arel.sql("chapters.*, stories.author_id as a_id, stories.title as s_title")).group_by { |c| c[:a_id] }
+    where = Item.get_auth_id_query("chapters.#{col} is not null AND length(chapters.#{col}) > #{max}", author_ids).dup.sub("author_id", "stories.author_id")
+    length_errors = Chapter.joins(:story).where(where).select(Arel.sql("chapters.*, stories.author_id as a_id, stories.title as s_title")).group_by { |c| c[:a_id] }
     chapter_text = Proc.new do |type_sym, col, item|
       "#{col.capitalize} for #{type_sym} #{item.position} in story '#{item.s_title}' is too long (#{item[col].length})"
     end
@@ -114,18 +117,20 @@ module Item
   end
 
   def self.auth_id_to_not_imported(type, author_ids = nil)
-    Item.get_auth_id_hash(type, "imported = false", author_ids)
+    where = Item.get_auth_id_query("imported = false", author_ids)
+    type.where(where).group(:author_id).count
   end
 
   def self.auth_id_to_not_imported_dni(type, author_ids = nil)
-    Item.get_auth_id_hash(type, "imported = false AND do_not_import = false", author_ids)
+    where = Item.get_auth_id_query("imported = false AND do_not_import = false", author_ids)
+    type.where(where).group(:author_id).count
   end
 
-  def self.get_auth_id_hash(type, where, author_ids = nil)
+  def self.get_auth_id_query(where, author_ids = nil)
     if !author_ids.nil? && author_ids.split(",").length > 0
       where += " AND author_id IN (#{author_ids})"
     end
-    type.where(where).group(:author_id).count
+    where
   end
 
   def self.items_responses(ao3_response, check = false)
