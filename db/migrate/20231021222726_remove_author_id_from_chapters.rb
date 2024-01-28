@@ -1,5 +1,7 @@
 class RemoveAuthorIdFromChapters < ActiveRecord::Migration[5.2]
   def change
-    remove_column :chapters, :authorID, :integer
+    if ActiveRecord::Base.connection.column_exists?(:chapters, :authorID)
+      remove_column :chapters, :authorID
+    end
   end
 end
