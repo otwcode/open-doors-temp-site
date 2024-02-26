@@ -18,7 +18,7 @@ module OtwArchive
     end
     
     def isHttp?(archive_host)
-      archive_host.include?("ariana.archiveofourown.org") || archive_host.include?("localhost") || archive_host.split(":")[0] =~ Resolv::IPv4::Regex
+      archive_host.include?("localhost") || archive_host.split(":")[0] =~ Resolv::IPv4::Regex
     end
   end
 end # OtwArchive

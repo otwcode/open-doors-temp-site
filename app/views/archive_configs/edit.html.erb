@@ -16,7 +16,7 @@
     <% end %>
 
     <div class="field form-group">
-      <% host_list = ENV['RAILS_ENV'] == "production" ? [:ariana, :test, :live] : [:local, :ariana, :test, :live] %>
+      <% host_list = ENV['RAILS_ENV'] == "production" ? [:test, :live] : [:local, :test, :live] %>
       <%= f.label :host %>
       <%= f.select :host, host_list, {}, class: "form-control" %>
       <small id="hostHelp" class="form-text">Warning: changing this will clear imported and do not import flags and AO3

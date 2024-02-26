@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 2023_10_22_170248) do
     t.boolean "post_preview", default: false, null: false
     t.string "archivist", limit: 100, default: "testy", null: false
     t.string "collection_name"
-    t.string "host", limit: 15, default: "ariana"
+    t.string "host", limit: 15, default: "test"
     t.index ["id"], name: "id_UNIQUE", unique: true
     t.index ["key"], name: "Key_UNIQUE", unique: true
   end

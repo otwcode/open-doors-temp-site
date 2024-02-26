@@ -36,7 +36,7 @@ CREATE TABLE `archive_configs` (
   `post_preview` tinyint(1) NOT NULL DEFAULT '0',
   `archivist` varchar(100) NOT NULL DEFAULT 'testy',
   `collection_name` varchar(255) DEFAULT NULL,
-  `host` varchar(15) DEFAULT 'ariana',
+  `host` varchar(15) DEFAULT 'test',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `Key_UNIQUE` (`key`)

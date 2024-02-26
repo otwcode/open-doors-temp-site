@@ -49,7 +49,7 @@ cp scripts/ansible/templates/archive_config.sql.j2 $SQL_FILE
 
 sed -i'' -e 's/{{ sitekey }}/opendoorstempsite/g' $SQL_FILE
 sed -i'' -e 's/{{ name }}/Open Doors Temp Site/g' $SQL_FILE
-sed -i'' -e 's/ariana/local/g' $SQL_FILE
+sed -i'' -e 's/test/local/g' $SQL_FILE
 
 #Auto-load sample SQL file
 docker-compose exec -T db mysql -h db -uroot -p$MYSQL_PASS opendoorstempsite < $SQL_FILE
