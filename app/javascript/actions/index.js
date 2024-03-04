@@ -13,7 +13,7 @@ export const CHECK_ITEM = "check_item";
 export const DNI_ITEM = "dni_item";
 
 
-function getReq(endpoint) {
+export function getReq(endpoint) {
   return axios.get(`/${sitekey}/${endpoint}`,
     { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
 }

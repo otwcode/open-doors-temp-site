@@ -1,5 +1,6 @@
 module OtwArchive
   class ImportConfig
+    require "resolv"
 
     attr_reader :archive_host, :token, :restricted, :override_tags, :detect_tags,
                 :encoding, :archive_config
@@ -17,7 +18,7 @@ module OtwArchive
     end
     
     def isHttp?(archive_host)
-      archive_host.include?("ariana.archiveofourown.org") || archive_host.include?("localhost")
+      archive_host.include?("ariana.archiveofourown.org") || archive_host.include?("localhost") || archive_host.split(":")[0] =~ Resolv::IPv4::Regex
     end
   end
 end # OtwArchive

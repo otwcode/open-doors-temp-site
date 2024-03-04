@@ -25,12 +25,14 @@ describe AuthorsController, type: :controller do
 
   it "renders the authors template with a list of letters and authors" do
     get :index
-    letters = assigns(:all_letters)
+    letters = assigns(:letter_counts)
     expect(letters).to be_a Hash
     expect(letters.keys).to eq ["A"]
-    expect(letters["A"][0][:name]).to eq author1.name
+    authors = assigns(:authors)
+    expect(authors).to be_a Array
+    expect(authors[0][:name]).to eq author1.name
   end
-
+  
   it "lists authors with stories and bookmarks" do
     get :author_letters
     expect(response.status).to be 200

@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
     # AJAX end points
     get  "authors/letters"                => "authors#author_letters"
-    get  "authors/letters/:letter"        => "authors#authors"
+    get  "authors/letters/:letter/:page"  => "authors#authors"
 
     post "authors/import/:author_id"      => "authors#import_author"
     get "authors/check/:author_id"        => "authors#check"

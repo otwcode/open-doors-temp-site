@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `archive_configs` (
   `post_preview` tinyint(1) NOT NULL DEFAULT '0',
   `archivist` varchar(100) NOT NULL DEFAULT 'testy',
   `collection_name` varchar(255) DEFAULT NULL,
-  `host` varchar(15) DEFAULT 'ariana',  
+  `host` varchar(15) DEFAULT 'test',  
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `Key_UNIQUE` (`key`)
@@ -23,7 +23,7 @@ INSERT IGNORE INTO `archive_configs`
    `archivist`, `collection_name`, `host`)
   VALUES
   (1, "{{ sitekey }}", "{{ name }}", "Testing", "OD STORY NOTE", "OD BOOKMARK NOTE", 0, 0,
-   "testy", "opendoorstestcollection", "ariana");
+   "testy", "opendoorstestcollection", "test");
 
 --
 -- Table structure for table `audits`

@@ -33,6 +33,106 @@ module Item
     errors
   end
 
+  def self.all_errors(author_ids)
+    author_errors = {}
+
+    items = [
+      {model: Story, label: :story},
+      {model: StoryLink, label: :bookmark}
+    ]
+    
+    item_cols = [
+      {col: :summary, max: SUMMARY_LENGTH},
+      {col: :notes, max: NOTES_LENGTH}
+    ]
+
+    items.map do |item|
+      author_errors = Item.iterate_errors(Item.missing_fandom(item[:model], item[:label], author_ids), author_errors)
+      item_cols.map do |field|
+        author_errors = Item.iterate_errors(Item.too_long_errors(item[:model], item[:label], field[:col], field[:max], author_ids), author_errors)
+      end
+    end
+
+    chapter_params = [
+      {col: :notes, max: NOTES_LENGTH},
+      {col: :text, max: CHAPTER_LENGTH}
+    ]
+
+    chapter_params.map do |field|
+      author_errors = Item.iterate_errors(Item.chapter_errors(field[:col], field[:max], author_ids), author_errors)
+    end
+
+    author_errors
+  end
+
+  def self.iterate_errors(item_errors, author_errors)
+    item_errors.map do |a_id, errors|
+      if author_errors.key?(a_id)
+        author_errors[a_id].concat errors
+      else
+        author_errors[a_id] = errors
+      end
+    end
+    author_errors
+  end
+  
+  def self.missing_fandom(type_model, type_sym, author_ids)
+    where = Item.get_auth_id_query("(fandoms is null OR length(fandoms) = 0)", author_ids)
+    fandom_errors = type_model.where(where).group_by { |item| item[:author_id] }
+    missing_fandom_text = Proc.new do |type_sym, col, item|
+      "Fandom for #{type_sym} '#{item.title}' is missing"
+    end
+    Item.parse_author_errors(fandom_errors, type_sym, :fandoms, missing_fandom_text)
+  end
+
+  def self.too_long_errors(type_model, type_sym, col, max, author_ids)
+    where = Item.get_auth_id_query("#{col} is not null AND length(#{col}) > #{max}", author_ids)
+    length_errors = type_model.where(where).group_by { |item| item[:author_id] }
+    too_long_text = Proc.new do |type_sym, col, item|
+      "#{col.capitalize} for #{type_sym} '#{item.title}' is too long (#{item[col].length})"
+    end
+    Item.parse_author_errors(length_errors, type_sym, col, too_long_text)
+  end
+
+  def self.chapter_errors(col, max, author_ids)
+    where = Item.get_auth_id_query("chapters.#{col} is not null AND length(chapters.#{col}) > #{max}", author_ids).dup.sub("author_id", "stories.author_id")
+    length_errors = Chapter.joins(:story).where(where).select(Arel.sql("chapters.*, stories.author_id as a_id, stories.title as s_title")).group_by { |c| c[:a_id] }
+    chapter_text = Proc.new do |type_sym, col, item|
+      "#{col.capitalize} for #{type_sym} #{item.position} in story '#{item.s_title}' is too long (#{item[col].length})"
+    end
+    Item.parse_author_errors(length_errors, :chapter, col, chapter_text)
+  end
+
+  def self.parse_author_errors(item_errors, type_sym, col, text_proc)
+    author_errors = {}
+    item_errors.map do |a_id, errors|
+      if errors.size > 0
+        author_errors[a_id] = []
+        errors.map do |item|
+          author_errors[a_id] << text_proc.call(type_sym, col, item)
+        end
+      end
+    end
+    author_errors
+  end
+
+  def self.auth_id_to_not_imported(type, author_ids = nil)
+    where = Item.get_auth_id_query("imported = false", author_ids)
+    type.where(where).group(:author_id).count
+  end
+
+  def self.auth_id_to_not_imported_dni(type, author_ids = nil)
+    where = Item.get_auth_id_query("imported = false AND do_not_import = false", author_ids)
+    type.where(where).group(:author_id).count
+  end
+
+  def self.get_auth_id_query(where, author_ids = nil)
+    if !author_ids.nil? && author_ids.split(",").length > 0
+      where += " AND author_id IN (#{author_ids})"
+    end
+    where
+  end
+
   def self.items_responses(ao3_response, check = false)
     response = {}
     has_success = ao3_response[0][:success]

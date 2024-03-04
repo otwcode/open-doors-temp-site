@@ -22,10 +22,10 @@ export default class AlphabeticalPagination extends React.Component {
   };
 
   render() {
-    const listItems = Object.entries(this.props.authors).map((kv) => {
-        const [ l, as ] = kv;
-        const numAuthors = as.length;
-        const authorsWithImports = as.filter(a => (a.s_to_import + a.l_to_import > 0) && !a.imported).length;
+    const listItems = Object.entries(this.props.letters).map((kv) => {
+        const [ l, counts ] = kv;
+        const numAuthors = counts.all;
+        const authorsWithImports = counts.imports;
         const isCurrent = (l === this.props.letter);
         const isDone = authorsWithImports === 0;
 
@@ -47,7 +47,7 @@ export default class AlphabeticalPagination extends React.Component {
       }
     );
 
-    const letters = Object.keys(this.props.authors);
+    const letters = Object.keys(this.props.letters);
     const letterIndex = letters.findIndex(x => x === this.props.letter);
     const prev = letterIndex - 1;
     const next = letterIndex + 1;
@@ -63,10 +63,10 @@ export default class AlphabeticalPagination extends React.Component {
           <Dropdown className="page-item">
             <Dropdown.Toggle className="page-link" id="dropdown-basic-button">Scroll to...</Dropdown.Toggle>
             <Dropdown.Menu>
-              {Object.entries(this.props.authors).map((kv) => {
-                const [ l, authors ] = kv;
+              {Object.entries(this.props.letters).map((kv) => {
+                const [ l, counts ] = kv;
                 if (l === this.props.letter) {
-                  return authors.map(a => {
+                  return this.props.authors.map(a => {
                     const key = `author-${a.id}`;
                     return <Dropdown.Item key={`${key}-link`}
                                           onClick={e => this.handleAuthorSelect(e, key)}>{a.name}</Dropdown.Item>

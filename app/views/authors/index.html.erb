@@ -1,6 +1,8 @@
 <%= react_component("App", {
-  all_letters: @all_letters,
+  letter_counts: @letter_counts,
+  authors: @authors,
   letter: params[:letter] || 'A',
+  page_size: $page_size,
   page: params[:page] || '1',
   logo_path: asset_path("Opendoors.png"),
   config: @api_config.merge(@archive_config),

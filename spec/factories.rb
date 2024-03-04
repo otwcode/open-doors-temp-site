@@ -36,7 +36,11 @@ FactoryBot.define do
     end
   end
 
-  factory :chapter
+  factory :chapter do
+    story
+    id { generate :id }
+    audit_comment {"Test"}
+  end
 
   factory :archive_config do
     key { APP_CONFIG[:sitekey] }

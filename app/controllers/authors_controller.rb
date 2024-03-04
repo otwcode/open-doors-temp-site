@@ -2,6 +2,7 @@
 
 class AuthorsController < ApplicationController
   require 'application_helper'
+  require "resolv"
 
   include OtwArchive
   include OtwArchive::Request
@@ -11,13 +12,16 @@ class AuthorsController < ApplicationController
   # Prevent unhandled errors from returning the normal HTML page
   rescue_from StandardError, with: :render_standard_error_response
 
+  $page_size = 100
+
   def initialize
     super
     @client ||= otw_client
   end
 
   def index
-    @all_letters ||= Author.all_letters
+    @letter_counts ||= Author.letter_counts
+    @authors ||= current_authors
   end
 
   def author_letters
@@ -39,7 +43,7 @@ class AuthorsController < ApplicationController
         current_user,
         processing_status: "importing")
 
-      response = author.import(@client, request.host_with_port)
+      response = author.import(@client, get_host(request))
 
       message = "Processed import for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
       processing_status = response[:author_imported] ? "imported" : "none"
@@ -88,7 +92,7 @@ class AuthorsController < ApplicationController
     begin
       ApplicationHelper.broadcast_message("Checking #{author.name}", id, current_user, processing_status: "checking")
 
-      response = author.check(@client, request.host_with_port)
+      response = author.check(@client, get_host(request))
 
       message = "Processed check for #{author.name} with status #{response[:status]}: #{response[:messages].join(' ')}"
       ApplicationHelper.broadcast_message(message, id, current_user, response: response)
@@ -132,12 +136,18 @@ class AuthorsController < ApplicationController
     OtwArchive::Client.new(import_config)
   end
 
+  def get_host(request)
+    if @client.config.archive_host.split("//")[1].split(":")[0] =~ Resolv::IPv4::Regex
+      host = @client.config.archive_host.dup.sub("3000", "3010")
+    else
+      host = request.host_with_port
+    end
+    host
+  end
+
   def current_authors
-    max = 30
     page = params[:page] || '1'
     letter = params[:letter] || 'A'
-    all_current_authors = Author.by_letter_with_items(letter)
-    @pages = (all_current_authors.size.to_f / max.to_f).ceil
-    all_current_authors[(page.to_i - 1) * 30, 30]
+    Author.get_letter(letter, page, $page_size)
   end
 end
