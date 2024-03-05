@@ -61,7 +61,7 @@ class Story < ApplicationRecord
         end,
       id,
       summary,
-      chapters.map { |c| chapter_url(c, host: host) }
+      chapters.sort_by(&:position).map { |c| chapter_url(c, host: host) }
     )
   end
 end
