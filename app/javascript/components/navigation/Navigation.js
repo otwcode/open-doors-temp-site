@@ -30,7 +30,12 @@ class Navigation extends Component {
   render() {
     return (
       <Navbar bg="primary" variant="dark" expand="lg">
-        <Navbar.Brand href={this.authorsPath}><img src={this.data.logo_path} style={{ width: 50 + "px" }}/></Navbar.Brand>
+        <Navbar.Brand href={this.authorsPath}>
+          <img src={this.data.logo_path} style={{ width: 50 + "px" }}/>
+          <Navbar.Text style={{ paddingLeft: "25px" }}>
+            <strong>{this.data.config.name}</strong>
+          </Navbar.Text>
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
