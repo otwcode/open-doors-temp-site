@@ -32,7 +32,7 @@ gem 'redis', '~> 4.6'
 gem 'bcrypt', '~> 3.1.17'
 
 # Adding because version 1.17 throws an unsupported rubygems error
-gem "ffi", "< 1.17.0"
+gem "ffi", '~> 1.15.5'
 
 group :development do
   # Use Puma as the app server
