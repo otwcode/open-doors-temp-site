@@ -55,6 +55,8 @@ hosts
 # Ignore auto-generated Docker files
 docker-compose.yml
 /scripts/docker/archive_config.sql
+config/cable.yml~
+config/database.yml~
 
 # Ignore compiled assets folder
 /public/opendoorstempsite/assets
