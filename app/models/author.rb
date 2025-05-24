@@ -51,6 +51,15 @@ class Author < ApplicationRecord
   def self.size_errors(author_ids)
     author_errors = {}
     author_names = Author.where("id in (#{author_ids})").pluck(:id, :name).to_h
+
+    chapter_stories = Story.joins(:chapters).where("author_id in (#{author_ids}) AND chapters.id IS NOT NULL").distinct.group(:author_id).count
+    author_ids.split(",").map do |a_str|
+      a_id = a_str.to_i
+      if !chapter_stories.key?(a_id)
+        msg = "Author '#{author_names[a_id]}' has no stories with chapters"
+        author_errors[a_id] = [msg]
+      end
+    end
     
     items = [
       {model: Story, label: :stories},
@@ -83,15 +92,15 @@ class Author < ApplicationRecord
   def all_items_as_json
     {
       author_imported: all_imported?,
-      stories: stories_with_chapters.all.index_by { |s| s.id },
+      stories: stories.all.index_by { |s| s.id },
       story_links: story_links.all.index_by { |b| b.id },
       coauthored: coauthored_stories
     }
   end
 
   def works_and_bookmarks(archive_config, host)
-    works = stories.map { |s| s.to_work(archive_config, host) }
-    bookmarks = story_links.map { |b| b.to_bookmark(archive_config) }
+    works = stories_with_chapters.map { |s| s.to_work(archive_config, host) if s.to_be_imported }
+    bookmarks = story_links.map { |b| b.to_bookmark(archive_config) if b.to_be_imported }
     [works, bookmarks]
   end
 
@@ -152,6 +161,7 @@ class Author < ApplicationRecord
         id: a.id,
         name: a.name,
         imported: a.imported,
+        do_not_import: a.do_not_import,
         s_to_import: id_to_stories[a.id] || 0,
         l_to_import: id_to_links[a.id] || 0,
         errors: errors[a.id] || []
@@ -215,7 +225,7 @@ class Author < ApplicationRecord
 
   # True if items are blank, or items are present and none remain to be imported
   def items_all_imported?
-    stories_all_imported = stories.blank? || (stories.present? && stories.all? { |s| s.imported || s.do_not_import })
+    stories_all_imported = stories_with_chapters.blank? || (stories_with_chapters.present? && stories_with_chapters.all? { |s| s.imported || s.do_not_import })
     story_links_all_imported = story_links.blank? || (story_links.present? && story_links.all? { |s| s.imported || s.do_not_import })
     all_imported = (stories_all_imported && story_links_all_imported)
     imported = all_imported if all_imported != imported

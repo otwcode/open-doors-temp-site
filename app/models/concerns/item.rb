@@ -35,6 +35,7 @@ module Item
 
   def self.all_errors(author_ids)
     author_errors = {}
+    author_errors = Item.iterate_errors(Item.no_chapter_errors(author_ids), author_errors)
 
     items = [
       {model: Story, label: :story},
@@ -59,7 +60,7 @@ module Item
     ]
 
     chapter_params.map do |field|
-      author_errors = Item.iterate_errors(Item.chapter_errors(field[:col], field[:max], author_ids), author_errors)
+      author_errors = Item.iterate_errors(Item.chapter_length_errors(field[:col], field[:max], author_ids), author_errors)
     end
 
     author_errors
@@ -94,13 +95,22 @@ module Item
     Item.parse_author_errors(length_errors, type_sym, col, too_long_text)
   end
 
-  def self.chapter_errors(col, max, author_ids)
+  def self.chapter_length_errors(col, max, author_ids)
     where = Item.get_auth_id_query("chapters.#{col} is not null AND length(chapters.#{col}) > #{max}", author_ids).dup.sub("author_id", "stories.author_id")
     length_errors = Chapter.joins(:story).where(where).select(Arel.sql("chapters.*, stories.author_id as a_id, stories.title as s_title")).group_by { |c| c[:a_id] }
     chapter_text = Proc.new do |type_sym, col, item|
       "#{col.capitalize} for #{type_sym} #{item.position} in story '#{item.s_title}' is too long (#{item[col].length})"
     end
     Item.parse_author_errors(length_errors, :chapter, col, chapter_text)
+  end
+
+  def self.no_chapter_errors(author_ids)
+    where = Item.get_auth_id_query("chapters.id IS NULL", author_ids)
+    no_chapters = Story.left_outer_joins(:chapters).where(where).distinct.group_by { |item| item[:author_id] }
+    no_chapter_text = Proc.new do |type_sym, col, item|
+      "Story '#{item.title}' has no chapters"
+    end
+    Item.parse_author_errors(no_chapters, :chapter, nil, no_chapter_text)
   end
 
   def self.parse_author_errors(item_errors, type_sym, col, text_proc)
