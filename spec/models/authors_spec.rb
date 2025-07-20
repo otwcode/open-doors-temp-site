@@ -69,6 +69,17 @@ describe Author, type: :model do
       do_not_import_story_link = create(:story_link, author_id: author.id, do_not_import: true, audit_comment: "Test")
       expect(Author.all_imported.include?(author.id)).to eq true
     end
+    it "returns true if author has no stories with chapters" do
+      author = create(:author)
+      story = create(:story_no_chapters, author_id: author.id, audit_comment: "Test")
+      expect(Author.all_imported.include?(author.id)).to eq true
+    end
+    it "returns true if author has imported story and a story with no chapters" do
+      author = create(:author)
+      imported_story = create(:story, author_id: author.id, imported: true, audit_comment: "Test")
+      story_no_chapters = create(:story_no_chapters, author_id: author.id, audit_comment: "Test")
+      expect(Author.all_imported.include?(author.id)).to eq true
+    end
     it "returns false if only some stories are imported or marked as do not import and story links are empty" do
       author = create(:author)
       story = create(:story, author_id: author.id, audit_comment: "Test")
@@ -100,5 +111,13 @@ describe Author, type: :model do
     expect(errors.key?(author.id)).to eq true
     expect(errors[author.id].include?("Author 'testy' has 5 stories - the Archive can only import 4 at a time")).to eq true
     expect(errors[author.id].include?("Author 'testy' has 5 bookmarks - the Archive can only import 4 at a time")).to eq true
+  end
+
+  it 'returns author has no stories with chapters errors' do
+    author = create(:author, name: "testy")
+    story = create(:story_no_chapters, author_id: author.id, title: "title", audit_comment: "Test")
+    errors = Author.all_errors(author.id.to_s)
+    expect(errors.key?(author.id)).to eq true
+    expect(errors[author.id].include?("Author 'testy' has no stories with chapters")).to eq true
   end
 end

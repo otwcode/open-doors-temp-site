@@ -132,8 +132,13 @@ module Item
   end
 
   def self.auth_id_to_not_imported_dni(type, author_ids = nil)
-    where = Item.get_auth_id_query("imported = false AND do_not_import = false", author_ids)
-    type.where(where).group(:author_id).count
+    if type == Story
+      where = Item.get_auth_id_query("imported = false AND do_not_import = false AND chapters.id IS NOT NULL", author_ids)
+      Story.joins(:chapters).where(where).distinct.group(:author_id).count
+    else
+      where = Item.get_auth_id_query("imported = false AND do_not_import = false", author_ids)
+      type.where(where).group(:author_id).count
+    end
   end
 
   def self.get_auth_id_query(where, author_ids = nil)
