@@ -36,16 +36,13 @@ export default class NumberPagination extends Component {
     const lastPageIndex = totalPageCount;
 
     if (!shouldShowLeftDots && shouldShowRightDots) {
-      let leftItemCount = 3 + 2 * siblingCount;
-      let leftRange = range(1, leftItemCount);
-
+      let leftRange = range(1, totalPageNumbers);
       return [...leftRange, DOTS, totalPageCount];
     }
 
     if (shouldShowLeftDots && !shouldShowRightDots) {
-      let rightItemCount = 3 + 2 * siblingCount;
       let rightRange = range(
-        totalPageCount - rightItemCount + 1,
+        totalPageCount - totalPageNumbers + 1,
         totalPageCount
       );
       return [firstPageIndex, DOTS, ...rightRange];
@@ -61,7 +58,7 @@ export default class NumberPagination extends Component {
     const currentPageInt = parseInt(this.props.page);
     const totalPagesInt = parseInt(this.props.pages);
     const siblingCount = 3;
-    const totalPageNumbers = siblingCount + 5;
+    const totalPageNumbers = 3 + 2 * siblingCount;
     const paginationRange = this.getPaginationRange(currentPageInt, totalPagesInt, siblingCount, totalPageNumbers);
 
     let dotCount = 0;
