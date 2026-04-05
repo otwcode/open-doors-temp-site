@@ -22,10 +22,21 @@ class Author extends Component {
       hideAlert: true,
       isImporting: false,
       isChecking: false,
-      isImported: this.props.author.imported,
+      isImported: this.setIsImported(this.props.author),
       // Increment this on each change to force children to update
       version: 1
     };
+  }
+
+  setIsImported(author) {
+    let isImported = author.imported || author.do_not_import;
+    for (const err of author.errors) {
+      if (err.includes("has no stories with chapters")) {
+        isImported = true;
+        break;
+      }
+    }
+    return isImported;
   }
 
   componentDidUpdate(prevProps) {
@@ -147,6 +158,7 @@ class Author extends Component {
                        onReceived={this.handleBroadcast}/>
           <ButtonToolbar className="justify-content-between">
             <Card.Title>{author.name}</Card.Title>
+            {author.errors.length > 0 && <ul>{author.errors.map((e, i) => <li key={i}>{e}</li>)}</ul>}
             { this.props.user ?
             <ImportButtons isChecking={isChecking}
                            isImporting={isImporting}
@@ -158,7 +170,6 @@ class Author extends Component {
                            showText={true}
             />
               : "" }
-            {author.errors.length > 0 && <ul>{author.errors.map((e, i) => <li key={i}>{e}</li>)}</ul>}
           </ButtonToolbar>
           {this.msgAlert(key, messages)}
         </Card.Header>

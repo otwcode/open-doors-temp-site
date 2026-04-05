@@ -68,7 +68,7 @@ export default class ImportButtons extends Component {
 
         <ImportButton variant="outline-success"
                       className={this.props.showText ? "import-button" : "import-button-no-text"}
-                      disabled={isChecking}
+                      disabled={isChecking || isImported}
                       clickHandler={(e) => this.handleCheck(e)}
                       contents={this.checkText()}/>
 
