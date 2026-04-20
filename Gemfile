@@ -19,7 +19,7 @@ gem 'mysql2', '0.5.3'
 gem 'faraday', '1.10.2'
 gem 'faraday_middleware', '1.2.0'
 
-gem 'audited', '~> 5.0'
+gem 'audited', '~> 5.4'
 
 # Use React for the front end
 gem 'react-rails', '2.6.2'
