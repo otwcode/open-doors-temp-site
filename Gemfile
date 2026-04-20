@@ -36,7 +36,7 @@ gem "ffi", '~> 1.15.5'
 
 group :development do
   # Use Puma as the app server
-  gem 'puma', '~> 5.6'
+  gem 'puma', '~> 6.4'
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   # gem 'listen', '~> 3.0.5'
