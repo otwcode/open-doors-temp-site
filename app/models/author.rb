@@ -99,8 +99,8 @@ class Author < ApplicationRecord
   end
 
   def works_and_bookmarks(archive_config, host)
-    works = stories_with_chapters.map { |s| s.to_work(archive_config, host) if s.to_be_imported }
-    bookmarks = story_links.map { |b| b.to_bookmark(archive_config) if b.to_be_imported }
+    works = stories_with_chapters.select { |s| s.to_be_imported }.map { |s| s.to_work(archive_config, host) }
+    bookmarks = story_links.select { |b| b.to_be_imported }.map { |b| b.to_bookmark(archive_config) }
     [works, bookmarks]
   end
 

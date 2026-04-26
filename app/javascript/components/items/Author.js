@@ -176,7 +176,7 @@ class Author extends Component {
 
         <Collapse in={this.state.open}>
           <Card.Body id={`${key}-collapse`}>
-            <Items key={`${key}-items`} data={items} user={this.props.user} authorVersion={this.state.version} />
+            <Items key={`${key}-items`} data={items} user={this.props.user} authorVersion={this.state.version} authorImported={isImported} />
           </Card.Body>
         </Collapse>
       </Card>

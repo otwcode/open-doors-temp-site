@@ -28,6 +28,7 @@ export default class Items extends Component {
                     return <Item key={`story-${id}-${this.props.authorVersion}`}
                                  item={s}
                                  user={this.props.user}
+                                 authorImported={this.props.authorImported}
                                  type="story"/>
                   })}
                 </div> : ''
@@ -40,6 +41,7 @@ export default class Items extends Component {
                     return <Item key={`link-${id}-${this.props.authorVersion}`}
                                  item={s}
                                  user={this.props.user}
+                                 authorImported={this.props.authorImported}
                                  type="link"/>
                   })}
                 </div> : ''
