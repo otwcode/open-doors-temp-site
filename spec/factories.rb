@@ -10,6 +10,13 @@ FactoryBot.define do
     audit_comment {"Test"}
   end
 
+  factory :story_no_chapters, class: 'Story' do
+    author
+    id { generate :id }
+    chapters { [] }
+    audit_comment {"Test"}
+  end
+
   factory :story_link do
     author
     id { generate :id }

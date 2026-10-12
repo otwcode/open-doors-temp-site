@@ -54,4 +54,12 @@ describe Item, type: :model do
     expect(errors.key?(author.id)).to eq true
     expect(errors[author.id].include?("Text for chapter 1 in story 'title' is too long (24)")).to eq true
   end
+
+  it 'returns story has no chapters errors' do
+    author = create(:author)
+    story = create(:story_no_chapters, author_id: author.id, title: "title", audit_comment: "Test")
+    errors = Item.all_errors(author.id.to_s)
+    expect(errors.key?(author.id)).to eq true
+    expect(errors[author.id].include?("Story 'title' has no chapters")).to eq true
+  end
 end

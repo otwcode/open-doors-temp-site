@@ -19,8 +19,16 @@ class Item extends Component {
     this.state = {
       open: this.props.open,
       isImporting: false,
-      isImported: this.props.item.imported
+      isImported: this.setIsImported(this.props)
     };
+  }
+
+  setIsImported(props) {
+    let isImported = props.authorImported || props.item.imported || props.item.do_not_import;
+    if (!_.isUndefined(props.item.chapters) && props.item.chapters.length == 0) {
+      isImported = true;
+    }
+    return isImported;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -98,9 +106,9 @@ class Item extends Component {
       <span/>;
   };
 
-  itemClass = (item) => {
+  itemClass = (item, isImported) => {
     if (item) {
-      const imported = item.imported ? "imported" : "";
+      const imported = item.imported || isImported ? "imported" : "";
       const dni = item.do_not_import ? "do_not_import" : "";
       const errors = _.isEmpty(item.errors) ? "" : "error";
       return `item ${imported} ${dni} ${errors}`;
@@ -108,7 +116,7 @@ class Item extends Component {
   };
 
   render() {
-    const { isImporting, isChecking } = this.state;
+    const { isImporting, isChecking, isImported } = this.state;
     const { item } = this.props;
     const isStory = !_.isUndefined(item.chapters)
     // logStateAndProps("Item", item.name, this);
@@ -116,7 +124,7 @@ class Item extends Component {
     const headerClass = (isImporting ? " importing" : "") + (isChecking ? " checking" : "");
     const { messages, success, ao3_url, imported } = item;
     return (
-      <Card id={key} key={key} className={this.itemClass(item)}>
+      <Card id={key} key={key} className={this.itemClass(item, isImported)}>
         <Card.Header onClick={this.handleItemClick}
                      aria-controls="blurb"
                      aria-expanded={open}
@@ -133,7 +141,7 @@ class Item extends Component {
             {this.props.user ?
               <ImportButtons isChecking={isChecking}
                              isImporting={isImporting}
-                             isImported={imported}
+                             isImported={isImported}
                              importText="Import"
                              onChecking={this.handleChecking}
                              onDNI={this.handleDNI}
