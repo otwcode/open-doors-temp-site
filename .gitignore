@@ -68,3 +68,10 @@ config/database.yml~
 /bin/setup
 /bin/update
 /bin/yarn
+
+# Ignore Google Drive credential files
+/scripts/ansible/credentials.json
+/scripts/ansible/token.json
+
+# Ignore Python venv
+/venv

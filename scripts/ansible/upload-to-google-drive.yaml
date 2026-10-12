@@ -1,0 +1,21 @@
+---
+- name: Upload to Google Drive
+  hosts: localhost
+  connection: local
+
+  vars:
+    zip_file_name: "{{ sitekey }}-temp-site.gz"
+    zip_file_path: "{{ playbook_dir }}/{{ zip_file_name }}"
+    venv_path: "{{ playbook_dir }}/../../venv"
+
+  tasks:
+  - name: Setup python
+    pip: 
+      requirements: "{{ playbook_dir }}/requirements.txt"
+      virtualenv: "{{ venv_path }}"
+      virtualenv_command: 'python3 -m venv'
+
+  - name: run python script
+    command: "{{ venv_path }}/bin/python3 {{ playbook_dir }}/upload-to-google-drive.py --filename {{ zip_file_path }} --parent {{ parent_drive_folder_id }}"
+    delegate_to: 127.0.0.1
+    run_once: true

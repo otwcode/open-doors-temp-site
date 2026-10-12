@@ -1,0 +1,30 @@
+---
+- name: Download Zip File
+  hosts: all
+  remote_user: "{{ opendoors_user }}"
+  become: yes
+
+  vars:
+    deploy_path: "{{ remote_path }}/{{ sitekey }}"
+    zip_file_name: "{{ sitekey }}-temp-site.gz"
+    zip_file_path: "{{ remote_path }}/{{ zip_file_name }}"
+
+  tasks:
+  - name: Archive app directory with database dump
+    archive:
+      path: "{{ deploy_path }}"
+      dest: "{{ zip_file_path }}"
+      format: gz
+
+  - name: Download zip file
+    fetch:
+      src: "{{ zip_file_path }}"
+      dest: "{{ playbook_dir }}/"
+      flat: yes
+    register: downloaded
+
+  - name: Delete remote copy of zip file
+    file:
+      path: "{{ zip_file_path }}"
+      state: absent
+    when: downloaded
