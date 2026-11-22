@@ -26,22 +26,22 @@ do
   cp "scripts/docker/$file" "config/$file"
 done
 
-docker-compose up -d
+docker compose up -d
 
 #Setting up the rails db
-docker-compose run --rm web bundle exec rake db:drop
-docker-compose run --rm web bundle exec rake db:create
-docker-compose run --rm web bundle exec rake db:schema:load
-docker-compose run --rm web bundle exec rake db:migrate
+docker compose run --rm web bundle exec rake db:drop
+docker compose run --rm web bundle exec rake db:create
+docker compose run --rm web bundle exec rake db:schema:load
+docker compose run --rm web bundle exec rake db:migrate
 
 #Makes sure the rails server runs properly
-docker-compose run --rm web bundle exec rake app:update:bin
+docker compose run --rm web bundle exec rake app:update:bin
 
 #Needed for the front-end
-docker-compose run --rm web bundle exec rake assets:precompile
+docker compose run --rm web bundle exec rake assets:precompile
 
 #Start server on localhost
-docker-compose up -d web
+docker compose up -d web
 
 #Create sample SQL file
 SQL_FILE="scripts/docker/archive_config.sql"
@@ -53,4 +53,4 @@ sed -i'' -e "s/DEFAULT 'test',/DEFAULT 'local',/g" $SQL_FILE
 sed -i'' -e 's/, "test");/, "local");/g' $SQL_FILE
 
 #Auto-load sample SQL file
-docker-compose exec -T db mysql -h db -uroot -p$MYSQL_PASS opendoorstempsite < $SQL_FILE
+docker compose exec -T db mysql -h db -uroot -p$MYSQL_PASS opendoorstempsite < $SQL_FILE

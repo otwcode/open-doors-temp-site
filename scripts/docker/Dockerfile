@@ -1,4 +1,4 @@
-FROM node:14-bullseye-slim
+FROM node:current-bullseye-slim
 
 # Install additional packages
 RUN apt-get update             &&  \
