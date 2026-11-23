@@ -25,9 +25,6 @@ RUN rm -rf /tempsite && mkdir -p /tempsite
 WORKDIR /tempsite
 VOLUME /tempsite
 
-# path so yarn will execute
-RUN export PATH=$PATH:/tempsite/bin
-
 # Install ruby packages
 COPY Gemfile .
 COPY Gemfile.lock .
