@@ -1,14 +1,13 @@
-FROM node:current-bullseye-slim
+FROM node:14-bullseye-slim
 
 # updates sources.list to use archive packages instead of main deprecated repo, stopgap fix
-RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list
+RUN sed -i 's/deb.debian.org/archive.debian.org/g' 
 # Install additional packages=
 RUN apt-get update             &&  \
     apt-get install -y             \
         build-essential            \
         curl                       \
         g++                        \
-        gcc                        \
         git                        \
         default-libmysqlclient-dev \
         make                       \
