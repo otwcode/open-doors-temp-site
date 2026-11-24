@@ -13,6 +13,7 @@ RUN apt-get update             &&  \
         make                       \
         software-properties-common \
         zlib1g-dev                 \
+        yarnpkg
         npm
 
 # Install ruby
